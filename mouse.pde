@@ -1,10 +1,4 @@
 
-/*
-Author: matthew.mcnicol@gmail.com
-Date: 02/SEP/2011
-*/
-
-
 int clickStartX=-1;
 int clickStartY=-1;
 bool mousePrsd=false;

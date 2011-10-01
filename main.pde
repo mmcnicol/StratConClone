@@ -1,7 +1,3 @@
-/*
-Author: matthew.mcnicol@gmail.com
-Date: 02/SEP/2011
-*/
 
 /* @pjs preload="images/sea.png,images/land.png,images/city0.png,images/city1.png,images/city2.png,images/tank1.png,images/tank2.png,images/fighter1.png,images/fighter2.png,images/battleship1.png,images/battleship2.png,images/bomber1.png,images/bomber2.png,images/carrier1.png,images/carrier2.png,images/destroyer1.png,images/destroyer2.png,images/transport1.png,images/transport2.png,images/submarine1.png,images/submarine2.png"; */
 

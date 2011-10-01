@@ -1,10 +1,4 @@
 
-/*
-Author: matthew.mcnicol@gmail.com
-Date: 02/SEP/2011
-*/
-
-
 class cPlayer {
 
 	int iPlayerId;
