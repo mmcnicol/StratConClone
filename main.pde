@@ -33,7 +33,7 @@ cGameEngine oGameEngine;
 
 int cellWidth=16;
 int cellHeight=16;
-int GameState=0; // 0=init, 1=startup diag, 2=startup diag closed, 3= initial city production, 4=play, 5=pause, 99=end
+int GameState=0; // 0=init, 1=startup diag, 2=startup diag closed, 3= initial city production, 4=play, 5=pause, 6=surrender?, 99=end
 int iPlayer1Mode=1; // 1=human, 2=computer.
 int iMapSize=1; // 1=Small (45x25), 2=large (90x50)
 
@@ -87,7 +87,7 @@ void draw() {
 
 			//oViewport.draw();
 		
-			if ( oDialogueCityProduction.isActive()==false && oGameEngine.isIdle() ) {
+			if ( oDialogueCityProduction.isActive()==false && oDialogueSurrender.isActive()==false && oGameEngine.isIdle() ) {
 				oGameEngine.doPlayerMove();
 
 			} //else println("oDialogueCityProduction.isActive()==true");
@@ -140,6 +140,7 @@ void draw() {
 			
 			oDialogueStartup = new cDialogueStartup(157,200);
 			oDialogueCityProduction = new cDialogueCityProduction(157,200);
+			oDialogueSurrender = new cDialogueSurrender(157,200);
 			
 			oViewport.draw();
 			

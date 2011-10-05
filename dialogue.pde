@@ -453,3 +453,105 @@ class cDialogueStartup extends cDialogue {
 }
 
 
+
+
+
+
+
+/* ====================================================================================
+   this dialogue displays a startup splash page.
+*/
+class cDialogueSurrender extends cDialogue {
+
+
+	cLabel oLabelPanelTitle;
+
+	cButton oButtonYes;
+	cButton oButtonNo;
+	int iSpaceHeight;
+		
+	cDialogueSurrender(int panelStartY_, int panelHeight_) {
+		
+		super(panelStartY_, panelHeight_);
+		
+		//println("in cDialogueStartup constructor......2 "+panelStartY+","+ panelHeight);
+		
+		iSpaceHeight=16;
+		
+		iLineNumber=1;
+				
+		oLabelPanelTitle = new cLabel("General, will you accept my surrender?", (panelStartX+iLeftTextIndent), panelStartY+(iSpaceHeight*iLineNumber));  
+		iLineNumber++;
+		iLineNumber++;
+		
+		oButtonYes = new cButton(999, "Yes", (panelStartX+iLeftTextIndent), (panelStartY+(iSpaceHeight*iLineNumber)) ); 
+		iLineNumber++;
+		iLineNumber++;
+		
+		oButtonNo = new cButton(998, "No", (panelStartX+iLeftTextIndent), (panelStartY+(iSpaceHeight*iLineNumber)) ); 
+		
+		//println("cDialogueStartup, button " +(panelStartX+iLeftTextIndent)+","+ (panelStartY+(iSpaceHeight*iLineNumber)) );
+
+	}
+
+
+	void show() {
+		
+		bActive=true;
+				
+		textSize(12);
+				
+		display();
+	}
+	
+	private void display() {
+	
+		clear(255);
+		noStroke();
+		fill(150); 
+		rect(panelStartX, panelStartY, panelWidth, panelHeight );
+		
+		
+		//println("in cDialogueCityProduction.display() iProductionUnitTypeId="+iProductionUnitTypeId);
+		
+		//println("in cDialogueCityProduction.display() bIsPort="+bIsPort);
+
+		oLabelPanelTitle.display();
+
+		oButtonYes.display();
+		oButtonNo.display();
+			
+		redraw();
+		
+	}	
+	
+	
+	void handleEvent(int x_, int y_) {
+
+		if ( oButtonYes.isClicked(x_, y_) ) {
+			
+			hide();
+			bActive=false;
+			//GameState=99;
+			//println("Surrender dialogue, yes button clicked");
+			//println("Player 1 has won!");
+			//println("Thank you for playing StratConClone!");
+			//println("");
+			oGameEngine.gameOver(1);
+		}
+
+		if ( oButtonNo.isClicked(x_, y_) ) {
+			
+			hide();
+			bActive=false;
+			GameState=4;
+			//println("Surrender dialogue, no button clicked");
+			println("Continue game.");
+			println("");			
+		}
+		
+	}
+	
+}
+
+

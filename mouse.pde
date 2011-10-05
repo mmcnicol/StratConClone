@@ -32,6 +32,9 @@ void mouseReleased() {
 		} else if ( GameState>2 && oDialogueCityProduction.isActive() ) {
 			oDialogueCityProduction.handleEvent(mouseX, mouseY);
 
+			
+		} else if ( oDialogueSurrender.isActive() ) {
+			oDialogueSurrender.handleEvent(mouseX, mouseY);
 		
 			
 		//} else if ( cPanelSelectedCity.isActive() ) {
@@ -86,7 +89,7 @@ void mouseReleased() {
 					
 					//println("did user click on a unit? at "+tempX+","+tempY);
 					
-					int iUnitCount = oUnitList.getCountOfPlayerUnits(1, tempX, tempY);
+					int iUnitCount = oUnitList.getCountOfPlayerUnitsAt(1, tempX, tempY);
 					
 					//println("...iUnitCount="+iUnitCount);
 
@@ -138,7 +141,7 @@ void mouseReleased() {
 					int targetCellX=oGrid.getShowFromCellX()-1+int(floor((mouseX+15)/16));
 					int targetCellY=oGrid.getShowFromCellY()-1+int(floor((mouseY+15)/16));
 					
-					if ( targetCellX<oGrid.getCellCountX() && targetCellY<oGrid.getCellCountY() ) {
+					if ( targetCellX<oGrid.getCellCountX()+1 && targetCellY<oGrid.getCellCountY()+1 ) {
 
 						switch( oGameEngine.getCommand() ) {
 							

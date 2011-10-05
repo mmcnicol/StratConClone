@@ -90,6 +90,9 @@ class cGameEngine {
 			// if payer 1 and player 2 have no units to be moved, progress to next day
 			//println("debug 7: GameState="+GameState);
 			nextDay();
+			
+			checkforGameOver();
+			
 		}
 
 		oCityList.updateSelectedCityPanelInformation( getSelectedCityListId() );
@@ -107,5 +110,45 @@ class cGameEngine {
 		oViewport.draw();
 	}
 
+
+	void checkforGameOver() {
+	
+		//should player 2 surrender?
+		//println("should player 2 surrender?");
+		int iMinDayNumber=60;
+		int iMinUnitNumber=2;
+		int iMinCityNumber=2;
+		
+		if ( getDayNumber()>=iMinDayNumber ) {
+		
+			if ( oUnitList.getCountOfPlayerUnits(2)<=iMinUnitNumber && oCityList.getCountPlayerCity(2)<=iMinCityNumber ) {
+
+				if ( oPlayer1.getIsAI() ) {
+					gameOver(1);			
+				} else {
+					//println("display DialogueSurrender...");
+					oDialogueSurrender.show();
+					//println("displayed DialogueSurrender.");
+				}
+
+			} else if ( oUnitList.getCountOfPlayerUnits(1)<=iMinUnitNumber && oCityList.getCountPlayerCity(1)<=iMinCityNumber ) {
+				gameOver(2);
+
+			}
+		}
+	}
+
+
+	void gameOver(int iPlayerIdWinner_) {
+		GameState=99;	
+		if (iPlayerIdWinner_==1) {
+			println("");
+			println("General, I surrender.");
+			println("");
+		}
+		println("Player "+iPlayerIdWinner_+" has won!");
+		println("Thank you for playing StratConClone!");
+		println("");	
+	}
 
 }

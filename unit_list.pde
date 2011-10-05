@@ -27,7 +27,7 @@ class cUnitList {
 	}
 	*/
 	
-	int getCountOfPlayerUnits(int iPlayerId_, int x_, int y_) {
+	int getCountOfPlayerUnitsAt(int iPlayerId_, int x_, int y_) {
 	
 		int counter=0;
 		for (int i = 0; i < listUnit.size(); i++) { 
@@ -786,6 +786,27 @@ class cUnitList {
 		oPanelSelectedUnit.clear(255);
 
 	}
+
+
+
+	// ****************************************************************
+	// GAVE OVER?
+	// ****************************************************************
+
+	int getCountOfPlayerUnits(int iPlayerId_) {
+	
+		//println("in unit_list.getCountOfPlayerUnits() ");
+	
+		int counter=0;
+		for (int i = 0; i < listUnit.size(); i++) { 
+			cUnit unit = (cUnit) listUnit.get(i);
+			if( unit.getPlayerId()==iPlayerId_ && unit.isAlive() ) {
+				counter++;
+			}
+		}  
+		return counter;	
+	}
+	
 
 
 	// ****************************************************************

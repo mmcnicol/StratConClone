@@ -418,7 +418,10 @@ class cUnit {
 
 		if ( cityAttackSuccessful ) {
 
-			if (intPlayerId==1) println("attack was successful");
+			if (intPlayerId==1) {
+				println("attack was successful");
+				println("");
+			}
 
 			oUnitList.deleteUnit(iUnitListId_);
 			//oGrid.DrawCell(intCellX, intCellY, false);
@@ -442,7 +445,10 @@ class cUnit {
 
 
 			// if attack was not successful, 
-			if (intPlayerId==1) println("attack was not successful");
+			if (intPlayerId==1) {
+				println("attack was not successful");
+				println("");
+			}
 				
 			// 50% probability unit strength is to be reduced
 			if ( (int)random(1,1000)%2==0 ) {
@@ -518,7 +524,10 @@ class cUnit {
 
 		if ( unitAttackSuccessful ) {
 
-			if (intPlayerId==1) println("attack was successful");
+			if (intPlayerId==1) {
+				println("attack was successful");
+				println("");
+			}
 			
 			//if (intPlayerId==1) println("reducing defending unit strength following successful attack");
 
@@ -538,7 +547,10 @@ class cUnit {
 		} else {
 
 			// if attack was not successful, 
-			if (intPlayerId==1) println("attack was not successful");
+			if (intPlayerId==1) {
+				println("attack was not successful");
+				println("");
+			}
 
 
 			// 50% probability unit strength is to be reduced

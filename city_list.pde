@@ -112,7 +112,7 @@ class cCityList {
 			int iCityPlayerId = city.getPlayerId();
 			if (iCityPlayerId==1) {
 
-				oPanelSelectedCity.show( city.getLocation(), city.getProductionUnitTypeName(), city.getProductionDaysLeft(), oUnitList.getCountOfPlayerUnits(1, city.getCellX(), city.getCellY()) );
+				oPanelSelectedCity.show( city.getLocation(), city.getProductionUnitTypeName(), city.getProductionDaysLeft(), oUnitList.getCountOfPlayerUnitsAt(1, city.getCellX(), city.getCellY()) );
 
 			}
 		}
@@ -272,6 +272,28 @@ class cCityList {
 	}
 
 
+
+	// ****************************************************************
+	// GAVE OVER?
+	// ****************************************************************
+
+	int getCountPlayerCity(int iPlayerId_) {
+
+		//println("in city_list.getCountPlayerCity() ");
+		
+		int counter=0;
+		
+		for (int i = 0; i < listCity.size(); i++) { 
+			cCity city = (cCity) listCity.get(i);
+			if ( city.getPlayerId()==iPlayerId_ ) 
+				counter=counter+1;
+
+		}  
+		//println("in city_list.getCountPlayerCityProducingUnit() counter="+counter);
+		return counter;	
+	}
+
+	
 	
 	// ******************************************************
 	// PRODUCTION
