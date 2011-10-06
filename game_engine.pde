@@ -115,9 +115,9 @@ class cGameEngine {
 	
 		//should player 2 surrender?
 		//println("should player 2 surrender?");
-		int iMinDayNumber=60;
-		int iMinUnitNumber=2;
-		int iMinCityNumber=2;
+		int iMinDayNumber=10;
+		int iMinUnitNumber=10;
+		int iMinCityNumber=0;
 		
 		if ( getDayNumber()>=iMinDayNumber ) {
 		

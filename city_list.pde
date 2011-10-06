@@ -271,7 +271,15 @@ class cCityList {
 		if ( city.getPlayerId()==1 ) oViewport.scrollIfAppropriate(city.getCellX(), city.getCellY());
 	}
 
+	void clearFogOfWarByPlayerId(int iPlayerId_) {
 
+		for (int i = 0; i < listCity.size(); i++) { 
+			cCity city = (cCity) listCity.get(i);
+			if( city.getPlayerId()==iPlayerId_) {
+				city.clearFogOfWar();	
+			}
+		}  
+	}
 
 	// ****************************************************************
 	// GAVE OVER?

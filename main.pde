@@ -170,7 +170,8 @@ void draw() {
 			//println("debug#3");
 			// show the city production panel for the human player 1 first city
 			int iCityListId = oCityList.getPlayerFirstCityListId(1);
-			oCityList.clearFogOfWar(iCityListId);
+			//oCityList.clearFogOfWar(iCityListId);
+			oCityList.clearFogOfWarByPlayerId(1);
 			
 			println("debug#4");
 			if ( oPlayer1.getIsAI() ) {

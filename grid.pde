@@ -431,9 +431,9 @@ class cGrid {
 
 		int i;
 
-		defineIslandAsRandomPoly(1, 16*(int)random(18,25), 16*(int)random(8,14), 16*(int)random(4,5), 16*(int)random(4,5) );
+		//defineIslandAsRandomPoly(1, 16*(int)random(10,15), 16*(int)random(10,15), 16*(int)random(4,5), 16*(int)random(4,5) );
 
-		defineIslandAsRandomPoly(2, 16*(int)random(4,8), 16*(int)random(15,25), 16*(int)random(4,6), 16*(int)random(5,7) );
+		//defineIslandAsRandomPoly(2, 16*(int)random(20,25), 16*(int)random(20,25), 16*(int)random(4,6), 16*(int)random(5,7) );
 
 		int i,j;
 		for (i=5; i<countX; i=i+8) {
@@ -608,13 +608,36 @@ class cGrid {
 							//println("debug grid#3");
 							// game rule: cities should not be immediately next to each other
 							if ( oCityList.getCountCityNearby(intPlayerId, xxx, yyy)==0) {
-								//println("debug grid#4");
-								// game rule: each player should only have one city at the beginning.
-								if ( cityCount==0 ) oCityList.AddCity(intPlayerId, xxx, yyy, iIslandListId);
-								else oCityList.AddCity(-1, xxx, yyy, iIslandListId); // city with player -1 is empty city
-								//println("debug grid#5");
-								cityCount++;
-								//println("debug grid#6");
+							
+								// an innovation, each city is assigned a player at the start of the game
+								if ( iMapSize==1) { 
+									
+									switch( (int)random(1,5) ) {
+										case 1:
+											oCityList.AddCity(1, xxx, yyy, iIslandListId);
+											break;	
+										case 2:
+											oCityList.AddCity(2, xxx, yyy, iIslandListId);
+											break;
+										case 3:
+											oCityList.AddCity(-1, xxx, yyy, iIslandListId); // city with player -1 is empty city
+											break;
+										case 4:
+											oCityList.AddCity(-1, xxx, yyy, iIslandListId); // city with player -1 is empty city
+											break;											
+									} 
+									cityCount++;
+									
+								// classic game
+								} else {
+									//println("debug grid#4");
+									// game rule: each player should only have one city at the beginning.
+									if ( cityCount==0 ) oCityList.AddCity(intPlayerId, xxx, yyy, iIslandListId);
+									else oCityList.AddCity(-1, xxx, yyy, iIslandListId); // city with player -1 is empty city
+									//println("debug grid#5");
+									cityCount++;
+									//println("debug grid#6");								
+								}
 							}
 						}
 					}				

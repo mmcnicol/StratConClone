@@ -345,13 +345,13 @@ class cDialogueStartup extends cDialogue {
 		iLineNumber++;
 
 
-		oLabelPromptMapSize = new cLabel("Map Size:", (panelStartX+iLeftTextIndent), panelStartY+(iSpaceHeight*iLineNumber));  
+		oLabelPromptMapSize = new cLabel("Game Scenario:", (panelStartX+iLeftTextIndent), panelStartY+(iSpaceHeight*iLineNumber));  
 		iLineNumber++;
 
-		oCheckboxMapSize1Small = new cCheckbox(1, "Small", (panelStartX+iLeftTextIndent), panelStartY+(iSpaceHeight*iLineNumber));  
+		oCheckboxMapSize1Small = new cCheckbox(1, "an innovated version, small map", (panelStartX+iLeftTextIndent), panelStartY+(iSpaceHeight*iLineNumber));  
 		iLineNumber++;
 
-		oCheckboxMapSize2Large = new cCheckbox(2, "Large", (panelStartX+iLeftTextIndent), panelStartY+(iSpaceHeight*iLineNumber));  
+		oCheckboxMapSize2Large = new cCheckbox(2, "classic, large map", (panelStartX+iLeftTextIndent), panelStartY+(iSpaceHeight*iLineNumber));  
 		iLineNumber++;
 		iLineNumber++;
 
