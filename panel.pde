@@ -94,13 +94,14 @@ class cPanel1 extends cPanel {
 
 
 /* ====================================================================================
-   this panel displays game title and version number.
+   this panel displays current player.
 */
 class cPanel2 extends cPanel {
 
 	cPanel2(int panelStartY_, int panelHeight_) {
 		super(panelStartY_, panelHeight_);
 		panelStartX = 5;
+		panelWidth=95;
 		//println("leaving cPanel2 constructor");
 	}
 	
@@ -124,7 +125,11 @@ class cPanel2 extends cPanel {
 class cPanelSelectedUnit extends cPanel {
 
 	cPanelSelectedUnit(int panelStartY_, int panelHeight_) {
+	
 		super(panelStartY_, panelHeight_);
+		
+		panelStartX=120;
+		panelWidth=450;
 	}
 	
 	void show(string unitName_, int location_, int strength_, int fuel_, int movesLeftToday_) {
@@ -134,8 +139,19 @@ class cPanelSelectedUnit extends cPanel {
 		fill(0); //fill(255,0,0);
 		
 		textSize(12);
-		iLineNumber=1;
+
+		string strMsg = "";
 		
+		if ( fuel_==-1 ) strMsg = unitName_ +", strength "+ strength_ +", "+ movesLeftToday_ +" moves left, at "+location_
+		else strMsg = unitName_ +", strength "+ strength_ +", fuel: "+ fuel_ +", "+ movesLeftToday_ +" moves left, at "+location_
+		
+		
+		text(strMsg, panelStartX+2, panelStartY+10);
+
+		
+		/*
+		iLineNumber=1;
+				
 		text("      unit: "+unitName_, (panelStartX+iLeftTextIndent), panelStartY+(iSpaceHeight*iLineNumber));
 		iLineNumber++;
 		
@@ -151,7 +167,8 @@ class cPanelSelectedUnit extends cPanel {
 		}
 		
 		text("moves left: "+movesLeftToday_, (panelStartX+iLeftTextIndent), panelStartY+(iSpaceHeight*iLineNumber));
-
+		*/
+		
 	}
 }
 

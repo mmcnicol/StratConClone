@@ -6,7 +6,7 @@ PImage imgSea, imgLand, imgCity0, imgCity1, imgCity2, imgTank1, imgTank2, imgFig
 PFont FontA;
 
 string GAMETITLE="StratConClone";
-string GAMEVERSION="version 0.41";
+string GAMEVERSION="version 0.42";
 
 cWorld oWorld;
 cAnimate oAnimate;
@@ -43,7 +43,7 @@ void setup() {
 
 	size( 930, 460 );
 
-	frameRate(4);
+	frameRate(10);
 	background(0);
 	
 	//FontA = loadFont("Arial");
@@ -127,11 +127,11 @@ void draw() {
 			}
 
 			oPanel1 = new cPanel1(0,45);
-			oPanel2 = new cPanel2(height-20,20);
+			oPanel2 = new cPanel2(height-30,20);
 			
 			oPanelSelectedCity = new cPanelSelectedCity(160,100);
 			
-			oPanelSelectedUnit = new cPanelSelectedUnit(260,80);	
+			oPanelSelectedUnit = new cPanelSelectedUnit(height-30,20);	
 			
 			oPanelMap = new cPanelMap(50,102);
 			

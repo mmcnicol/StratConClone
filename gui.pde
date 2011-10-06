@@ -71,7 +71,9 @@ class cViewport {
 
 	
 	void draw() {
-		println("debug: in viewport.draw()");
+	
+		//println("debug: in viewport.draw()");
+		
 		background(#FFFFFF);
 		fill(0);
 		rect(0,0,viewportWidth-ScrollBarWidth,viewportHeight-ScrollBarWidth);
@@ -100,7 +102,7 @@ class cViewport {
 			}
 
 
-}
+		}
 		
 		//oPanel2.show();
 

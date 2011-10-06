@@ -436,11 +436,11 @@ class cGrid {
 		//defineIslandAsRandomPoly(2, 16*(int)random(20,25), 16*(int)random(20,25), 16*(int)random(4,6), 16*(int)random(5,7) );
 
 		int i,j;
-		for (i=5; i<countX; i=i+8) {
-			for (j=5; j<countY; j=j+6) {
+		for (i=3; i<countX; i=i+8) {
+			for (j=3; j<countY; j=j+7) {
 				//switch( (int)random(1,3) ) {
 				//	case 1:
-						if ((int)random(1,1000)%2==0) defineIslandAsRandomPoly(-1, 16*(int)random(i-5,i+5), 16*(int)random(j-5,j+5), 16*(int)random(2,5), 16*(int)random(2,5) );
+						if ((int)random(1,1000)%2==0) defineIslandAsRandomPoly(-1, 16*(int)random(i-5,i+5), 16*(int)random(j-5,j+5), 16*(int)random(3,6), 16*(int)random(3,6) );
 				/*		break;
 					case 2:
 						if ((int)random(1,1000)%2==0) defineIslandAsRandomPoly(-1, 16*(int)random(i-5,i+5), 16*(int)random(j-5,j+5), 16*(int)random(4,6), 16*(int)random(4,6) );

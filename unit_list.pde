@@ -26,6 +26,21 @@ class cUnitList {
 		}  
 	}
 	*/
+
+	int getCountEnemyUnitNearby(int intPlayerId_, int intRow_, int intCol_) {
+	
+		int TempCount=0;
+		int iEnemyPlayerId;
+		
+		if (intPlayerId_==1) iEnemyPlayerId=2;
+		else iEnemyPlayerId=1;
+		
+		for (int i = 0; i < listUnit.size(); i++) { 
+			cUnit unit = (cUnit) listUnit.get(i);
+			if ( unit.getPlayerId()==iEnemyPlayerId && unit.isNearby(intRow_, intCol_,1)==true && unit.isAlive() ) TempCount++;
+		}  
+		return TempCount;	
+	}
 	
 	int getCountOfPlayerUnitsAt(int iPlayerId_, int x_, int y_) {
 	
@@ -398,7 +413,10 @@ class cUnitList {
 		cUnit unit = (cUnit) listUnit.get(iUnitListId_);
 		unit.reduceStrength();
 		if ( unit.getStrength()==0 ) {
-			if ( unit.getPlayerId()==1 ) println("Unit destroyed!");
+			if ( unit.getPlayerId()==1 ) {
+				println("Unit destroyed!");
+				println("");
+			}
 			unit.kill();
 			/////////listUnit.remove(iUnitListId_);
 		}

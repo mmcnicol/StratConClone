@@ -147,6 +147,7 @@ class cCityList {
 		} else {
 			println("note: unable to identify nearest city.");
 			//setMovesLeftToday(0);
+			oUnitList.moveTo(iUnitListId_, cellX_, cellY_ ); // stay where you are
 		}	
 	}
 

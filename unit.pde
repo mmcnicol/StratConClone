@@ -203,6 +203,11 @@ class cUnit {
 		else return false; 
 	}	
 	
+
+	boolean isNearby(int intCellX_, int intCellY_, int iCellCount) {
+		if ( abs(intCellX_ - intCellX)<=iCellCount && abs(intCellY_ - intCellY)<=iCellCount ) return true;
+		else return false; 
+	}
 	
 	int getMovesPerDay() { return movesPerTurn; }
 	
@@ -2148,93 +2153,94 @@ class cUnit {
 			
 			if ( oGrid.isFogOfWar(intCellX, intCellY)==false ) { // for testing purposes
 			
+				if ( intPlayerId==1 || ( intPlayerId==2 && oUnitList.getCountEnemyUnitNearby(intPlayerId, intCellX, intCellY)>=1 ) )  {
 			
-			
-				switch(intUnitTypeId) {
-					case 0:
-						//println("drawing Tank, player="+intPlayerId);
-						if (intPlayerId==1) {
-							//println("player 1");
-							//if ( !isCargoOf() && oGameGrid.XXX() ) {
-							
-								image( imgTank1, DisplayX, DisplayY );
-							
-								// show player Tank count at X,Y on unit image, if more than 1
-								countOfPlayerUnits = oUnitList.getCountOfPlayerTankUnitsAt(intPlayerId, intCellX, intCellY);
-								if ( countOfPlayerUnits > 1 && oGrid.isLand(intCellX, intCellY) ) {
-									fill(255);
-									rect(DisplayX+1,DisplayY+1,5,7);
-									fill(0);
-									textSize(8);
-									text(countOfPlayerUnits, DisplayX+2, DisplayY+7 );
-									textSize(12);
-								}
-							//}
-							
-						} else {
-							//println("player 2");
-							if (!isCargoOf()) image( imgTank2,DisplayX, DisplayY );
-						}
-						//println("DONE drawing Tank, player="+intPlayerId);
-						break;
-					case 1:
-						//println("drawing Fighter");
-						if (intPlayerId==1) image( imgFighter1, DisplayX, DisplayY );
-						else image( imgFighter2, DisplayX, DisplayY );
-						break;
-					case 2:
-						//println("drawing Battleship");
-						if (intPlayerId==1) image( imgBattleship1, DisplayX, DisplayY );
-						else image( imgBattleship2, DisplayX, DisplayY );
-						break;	
-					case 3:
-						//println("drawing Bomber");
-						if (intPlayerId==1) image( imgBomber1, DisplayX, DisplayY );
-						else image( imgBomber2, DisplayX, DisplayY );
-						break;	
-					case 4:
-						//println("drawing Carrier");
-						if (intPlayerId==1) image( imgCarrier1, DisplayX, DisplayY );
-						else image( imgCarrier2, DisplayX, DisplayY );
-						
-						if( intPlayerId==1 && getCargoCount() > 0 ) {
-							// show cargo count on unit image
-							fill(255);
-							rect(DisplayX+1,DisplayY+1,5,7);
-							fill(0);
-							textSize(8);
-							text(getCargoCount(), DisplayX+2, DisplayY+7 );
-							textSize(12);
-						}
-						
-						break;	
-					case 5:
-						//println("drawing Destroyer");
-						if (intPlayerId==1) image( imgDestroyer1, DisplayX, DisplayY );
-						else image( imgDestroyer2, DisplayX, DisplayY );
-						break;
-					case 6:
-						//println("drawing Transport");
-						if (intPlayerId==1) image( imgTransport1, DisplayX, DisplayY );
-						else image( imgTransport2, DisplayX, DisplayY );
-						
-						if( intPlayerId==1 && getCargoCount() > 0 ) {
-							// show cargo count on unit image
-							fill(255);
-							rect(DisplayX+1,DisplayY+1,5,7);
-							fill(0);
-							textSize(8);
-							text(getCargoCount(), DisplayX+2, DisplayY+7 );
-							textSize(12);
-						}
-						
-						break;
+					switch(intUnitTypeId) {
+						case 0:
+							//println("drawing Tank, player="+intPlayerId);
+							if (intPlayerId==1) {
+								//println("player 1");
+								//if ( !isCargoOf() && oGameGrid.XXX() ) {
 
-					case 7:
-						//println("drawing Submarine");
-						if (intPlayerId==1) image( imgSubmarine1, DisplayX, DisplayY );
-						else image( imgSubmarine2, DisplayX, DisplayY );						
-						break;						
+									image( imgTank1, DisplayX, DisplayY );
+
+									// show player Tank count at X,Y on unit image, if more than 1
+									countOfPlayerUnits = oUnitList.getCountOfPlayerTankUnitsAt(intPlayerId, intCellX, intCellY);
+									if ( countOfPlayerUnits > 1 && oGrid.isLand(intCellX, intCellY) ) {
+										fill(255);
+										rect(DisplayX+1,DisplayY+1,5,7);
+										fill(0);
+										textSize(8);
+										text(countOfPlayerUnits, DisplayX+2, DisplayY+7 );
+										textSize(12);
+									}
+								//}
+
+							} else {
+								//println("player 2");
+								if (!isCargoOf()) image( imgTank2,DisplayX, DisplayY );
+							}
+							//println("DONE drawing Tank, player="+intPlayerId);
+							break;
+						case 1:
+							//println("drawing Fighter");
+							if (intPlayerId==1) image( imgFighter1, DisplayX, DisplayY );
+							else image( imgFighter2, DisplayX, DisplayY );
+							break;
+						case 2:
+							//println("drawing Battleship");
+							if (intPlayerId==1) image( imgBattleship1, DisplayX, DisplayY );
+							else image( imgBattleship2, DisplayX, DisplayY );
+							break;	
+						case 3:
+							//println("drawing Bomber");
+							if (intPlayerId==1) image( imgBomber1, DisplayX, DisplayY );
+							else image( imgBomber2, DisplayX, DisplayY );
+							break;	
+						case 4:
+							//println("drawing Carrier");
+							if (intPlayerId==1) image( imgCarrier1, DisplayX, DisplayY );
+							else image( imgCarrier2, DisplayX, DisplayY );
+
+							if( intPlayerId==1 && getCargoCount() > 0 ) {
+								// show cargo count on unit image
+								fill(255);
+								rect(DisplayX+1,DisplayY+1,5,7);
+								fill(0);
+								textSize(8);
+								text(getCargoCount(), DisplayX+2, DisplayY+7 );
+								textSize(12);
+							}
+
+							break;	
+						case 5:
+							//println("drawing Destroyer");
+							if (intPlayerId==1) image( imgDestroyer1, DisplayX, DisplayY );
+							else image( imgDestroyer2, DisplayX, DisplayY );
+							break;
+						case 6:
+							//println("drawing Transport");
+							if (intPlayerId==1) image( imgTransport1, DisplayX, DisplayY );
+							else image( imgTransport2, DisplayX, DisplayY );
+
+							if( intPlayerId==1 && getCargoCount() > 0 ) {
+								// show cargo count on unit image
+								fill(255);
+								rect(DisplayX+1,DisplayY+1,5,7);
+								fill(0);
+								textSize(8);
+								text(getCargoCount(), DisplayX+2, DisplayY+7 );
+								textSize(12);
+							}
+
+							break;
+
+						case 7:
+							//println("drawing Submarine");
+							if (intPlayerId==1) image( imgSubmarine1, DisplayX, DisplayY );
+							else image( imgSubmarine2, DisplayX, DisplayY );						
+							break;						
+					}
 				}
 			}	
 			
