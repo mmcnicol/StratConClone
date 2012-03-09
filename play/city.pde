@@ -109,8 +109,8 @@ class cCity {
 		if ( oViewport.isCellWithinViewport(intCellX, intCellY) ) { 
 			
 			
-			int DisplayY=((intCellY-oGrid.getShowFromCellY()+1)*16)-15;
-			int DisplayX=((intCellX-oGrid.getShowFromCellX()+1)*16)-15;
+			int DisplayY=((intCellY-oGrid.getShowFromCellY()+1)*cellWidth)-(cellWidth-1);
+			int DisplayX=((intCellX-oGrid.getShowFromCellX()+1)*cellHeight)-(cellHeight-1);
 			
 			if ( oGrid.isFogOfWar(intCellX, intCellY)==false ) { // for testing purposes
 				switch(intPlayerId) {
@@ -123,11 +123,11 @@ class cCity {
 						if( getProductionDaysLeft() > 0 ) {
 							// show Production Days Left on city image
 							fill(255);
-							rect(DisplayX+1,DisplayY+1,10,8);
+							rect(DisplayX+iNumberIndent,DisplayY+iNumberIndent,iNumberTextSize,iNumberTextSize+5);
 							fill(0);
-							textSize(8);
-							text(getProductionDaysLeft(), DisplayX+2, DisplayY+7 );
-							textSize(12);
+							textSize(iNumberTextSize);
+							text(getProductionDaysLeft(), DisplayX+iNumberIndent, DisplayY+iNumberTextSize+4 );
+							//textSize(iStringTextSize);
 						}
 
 						break;				
@@ -140,9 +140,9 @@ class cCity {
 			/*
 			if ( oGrid.isFogOfWar(intCellX, intCellY)==true ) { // for testing purposes
 				fill(0);
-				textSize(10);
-				text("F", DisplayX+2, DisplayY+9 );
-				textSize(12);
+				textSize(iNumberTextSize);
+				text("F", DisplayX+iNumberIndent, DisplayY+iNumberTextSize );
+				//textSize(iStringTextSize);
 			}
 			*/
 			

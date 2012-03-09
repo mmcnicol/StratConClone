@@ -379,8 +379,8 @@ class cUnit {
 	}
 
 	bool isAtXY(int x_, int y_) {
-		int tempX=int(floor((x_+15)/16));
-		int tempY=int(floor((y_+15)/16));
+		int tempX=int(floor((x_+(cellWidth-1))/cellWidth));
+		int tempY=int(floor((y_+(cellHeight-1))/cellHeight));
 
 		if( intCellX==tempX && intCellY==tempY ) {
 			//println("unit.isAtXY("+x_+", "+y_+"), tempX=" + tempX + ", tempY=" + tempY + ", intPlayerId="+intPlayerId+" match!");
@@ -592,8 +592,8 @@ class cUnit {
 
 
 		// draw bomb explosion
-		int DisplayX=((intCellX_-oGrid.getShowFromCellX()+1)*16)-15;
-		int DisplayY=((intCellY_-oGrid.getShowFromCellY()+1)*16)-15;
+		int DisplayX=((intCellX_-oGrid.getShowFromCellX()+1)*cellWidth)-(cellWidth-1);
+		int DisplayY=((intCellY_-oGrid.getShowFromCellY()+1)*cellHeight)-(cellHeight-1);
 		fill(126);
 		
 		//println("drawing bomb blast radius "+iBombBlastRadius);
@@ -601,9 +601,14 @@ class cUnit {
 		//println("drawing bomb blast radius "+( (iBombBlastRadius+1) * 16 ));
 		//println("drawing bomb blast radius "+round( ( (iBombBlastRadius+1) * 16 ) / 2 ) );
 		
-		int iDisplayRadius = round( ( (iBombBlastRadius+1) * 16 )  );
+		int iDisplayRadius = round( ( (iBombBlastRadius+1) * cellWidth )  );
+		int iDisplayRadiusX = round( ( (iBombBlastRadius+1) * cellWidth )  );
+		int iDisplayRadiusY = round( ( (iBombBlastRadius+1) * cellHeight )  );
 		iDisplayRadius=iDisplayRadius+8;
-		ellipse(DisplayX+8, DisplayY+8, iDisplayRadius, iDisplayRadius);
+		iDisplayRadiusX=iDisplayRadiusX+(cellWidth/2);
+		iDisplayRadiusY=iDisplayRadiusY+(cellHeight/2);
+		
+		ellipse(DisplayX+8, DisplayY+8, iDisplayRadiusX, iDisplayRadiusY);
 		
 		// TODO: NOTE: drawing a large vircle will be a problem if near edge of viewport
 		
@@ -2148,8 +2153,8 @@ class cUnit {
 			//int DisplayY=(intCellX*16)-15;
 			//int DisplayX=(intCellY*16)-15;
 			
-			int DisplayX=((intCellX-oGrid.getShowFromCellX()+1)*16)-15;
-			int DisplayY=((intCellY-oGrid.getShowFromCellY()+1)*16)-15;
+			int DisplayX=((intCellX-oGrid.getShowFromCellX()+1)*cellWidth)-(cellWidth-1);
+			int DisplayY=((intCellY-oGrid.getShowFromCellY()+1)*cellHeight)-(cellHeight-1);
 			
 			if ( oGrid.isFogOfWar(intCellX, intCellY)==false ) { // for testing purposes
 			
@@ -2168,11 +2173,11 @@ class cUnit {
 									countOfPlayerUnits = oUnitList.getCountOfPlayerTankUnitsAt(intPlayerId, intCellX, intCellY);
 									if ( countOfPlayerUnits > 1 && oGrid.isLand(intCellX, intCellY) ) {
 										fill(255);
-										rect(DisplayX+1,DisplayY+1,5,7);
+										rect(DisplayX+iNumberIndent,DisplayY+iNumberIndent,iNumberTextSize,iNumberTextSize+5);
 										fill(0);
-										textSize(8);
-										text(countOfPlayerUnits, DisplayX+2, DisplayY+7 );
-										textSize(12);
+										textSize(iNumberTextSize);
+										text(countOfPlayerUnits, DisplayX+iNumberIndent+1, DisplayY+iNumberTextSize+4 );
+										//textSize(iStringTextSize);
 									}
 								//}
 
@@ -2205,11 +2210,11 @@ class cUnit {
 							if( intPlayerId==1 && getCargoCount() > 0 ) {
 								// show cargo count on unit image
 								fill(255);
-								rect(DisplayX+1,DisplayY+1,5,7);
+								rect(DisplayX+iNumberIndent,DisplayY+iNumberIndent,iNumberTextSize,iNumberTextSize+5);
 								fill(0);
-								textSize(8);
-								text(getCargoCount(), DisplayX+2, DisplayY+7 );
-								textSize(12);
+								textSize(iNumberTextSize);
+								text(getCargoCount(), DisplayX+iNumberIndent+1, DisplayY+iNumberTextSize+4 );
+								//textSize(iStringTextSize);
 							}
 
 							break;	
@@ -2226,11 +2231,11 @@ class cUnit {
 							if( intPlayerId==1 && getCargoCount() > 0 ) {
 								// show cargo count on unit image
 								fill(255);
-								rect(DisplayX+1,DisplayY+1,5,7);
+								rect(DisplayX+iNumberIndent,DisplayY+iNumberIndent,iNumberTextSize,iNumberTextSize+5);
 								fill(0);
-								textSize(8);
-								text(getCargoCount(), DisplayX+2, DisplayY+7 );
-								textSize(12);
+								textSize(iNumberTextSize);
+								text(getCargoCount(), DisplayX+iNumberIndent+1, DisplayY+iNumberTextSize+4 );
+								//textSize(iStringTextSize);
 							}
 
 							break;
@@ -2247,9 +2252,9 @@ class cUnit {
 			/*
 			if ( oGrid.isFogOfWar(intCellX, intCellY)==true ) { // for testing purposes
 				fill(0);
-				textSize(10);
-				text("F", DisplayX+2, DisplayY+9 );
-				textSize(12);
+				textSize(iNumberTextSize);
+				text("F", DisplayX+iNumberIndent+1, DisplayY+12 );
+				//textSize(iStringTextSize);
 			}
 			*/
 			

@@ -11,16 +11,16 @@ class cDialogue {
 
 		//println("in cDialogue constructor "+panelStartY_+","+ panelHeight_);
 		
-		panelWidth = 350;
+		panelWidth = 400;
 		panelHeight = panelHeight_;	
-		panelStartX = round( ((oViewport.getWidth()-15)/2)-(panelWidth/2) );
+		panelStartX = round( ((oViewport.getWidth()-(cellWidth-1))/2)-(panelWidth/2) );
 		panelStartY = panelStartY_;
 		//println("in cDialogue constructor... "+panelStartY+","+ panelHeight);
 		
 		bActive=false; // when active, system checks for mouse clicks. use if panel contains clickable items.
 		
-		iSpaceHeight=16;
-		iLeftTextIndent=8;
+		iSpaceHeight=iStringTextSize+3;
+		iLeftTextIndent=(cellWidth/2);
 	}
 
 	int getWidth() { return panelWidth; }
@@ -85,10 +85,10 @@ class cDialogueCityProduction extends cDialogue {
 		super(panelStartY_, panelHeight_);
 		
 		//println("in cDialogueCityProduction constructor....1.. "+panelStartY+","+ panelHeight);
-		iSpaceHeight=16;
+		iSpaceHeight=iStringTextSize+3;
 		
 		iLineNumber=1;
-		int iColumn2LeftTextIndend=130;
+		int iColumn2LeftTextIndend=200;
 				
 		oLabelPanelTitle = new cLabel("City Production: ", (panelStartX+iLeftTextIndent), panelStartY+(iSpaceHeight*iLineNumber)); 
 		//oLabelCityLocation = new cLabel("City Location: ", (panelStartX+iLeftTextIndent), panelStartY+(iSpaceHeight*iLineNumber)); 
@@ -146,7 +146,7 @@ class cDialogueCityProduction extends cDialogue {
 		iCityListId = iCityListId_;
 		bActive=true;
 				
-		textSize(12);
+		textSize(iStringTextSize);
 		
 		iProductionUnitTypeId = oCityList.getCityProductionUnitTypeId(iCityListId);
 		//println("in cDialogueCityProduction.display() iProductionUnitTypeId="+iProductionUnitTypeId);
@@ -325,7 +325,7 @@ class cDialogueStartup extends cDialogue {
 		
 		//println("in cDialogueStartup constructor......2 "+panelStartY+","+ panelHeight);
 		
-		iSpaceHeight=16;
+		iSpaceHeight=iStringTextSize+3;
 		
 		iLineNumber=1;
 				
@@ -344,7 +344,8 @@ class cDialogueStartup extends cDialogue {
 		iLineNumber++;
 		iLineNumber++;
 
-
+			
+		/*
 		oLabelPromptMapSize = new cLabel("Game Scenario:", (panelStartX+iLeftTextIndent), panelStartY+(iSpaceHeight*iLineNumber));  
 		iLineNumber++;
 
@@ -354,7 +355,7 @@ class cDialogueStartup extends cDialogue {
 		oCheckboxMapSize2Large = new cCheckbox(2, "classic, large map", (panelStartX+iLeftTextIndent), panelStartY+(iSpaceHeight*iLineNumber));  
 		iLineNumber++;
 		iLineNumber++;
-
+		*/
 
 		oButtonContinue = new cButton(999, "Continue", (panelStartX+iLeftTextIndent), (panelStartY+(iSpaceHeight*iLineNumber)) ); 
 		
@@ -367,7 +368,7 @@ class cDialogueStartup extends cDialogue {
 		
 		bActive=true;
 				
-		textSize(12);
+		textSize(iStringTextSize);
 				
 		display();
 	}
@@ -396,6 +397,7 @@ class cDialogueStartup extends cDialogue {
 		else oCheckboxPlayer1Computer.display(false, true);
 
 
+		/*
 		oLabelPromptMapSize.display();
 
 		if (iMapSize==1 ) oCheckboxMapSize1Small.display(true, true);
@@ -403,7 +405,7 @@ class cDialogueStartup extends cDialogue {
 
 		if (iMapSize==2 ) oCheckboxMapSize2Large.display(true, true);
 		else oCheckboxMapSize2Large.display(false, true);
-
+		*/
 		
 		oButtonContinue.display();
 			
@@ -427,7 +429,7 @@ class cDialogueStartup extends cDialogue {
 		}
 
 
-
+		/*
 		if ( oCheckboxMapSize1Small.isClicked(x_, y_) ) { //println("debug: clicked MapSize1Small checkbox");
 			iMapSize = 1;
 			display();
@@ -437,7 +439,7 @@ class cDialogueStartup extends cDialogue {
 			iMapSize = 2;
 			display();
 		}
-
+		*/
 
 
 		if ( oButtonContinue.isClicked(x_, y_) ) {
@@ -459,7 +461,7 @@ class cDialogueStartup extends cDialogue {
 
 
 /* ====================================================================================
-   this dialogue displays a startup splash page.
+   this dialogue displays a Surrender page.
 */
 class cDialogueSurrender extends cDialogue {
 
@@ -476,7 +478,7 @@ class cDialogueSurrender extends cDialogue {
 		
 		//println("in cDialogueStartup constructor......2 "+panelStartY+","+ panelHeight);
 		
-		iSpaceHeight=16;
+		iSpaceHeight=iStringTextSize+3;
 		
 		iLineNumber=1;
 				
@@ -499,7 +501,7 @@ class cDialogueSurrender extends cDialogue {
 		
 		bActive=true;
 				
-		textSize(12);
+		textSize(iStringTextSize);
 				
 		display();
 	}

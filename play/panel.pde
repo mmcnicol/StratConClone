@@ -10,14 +10,14 @@ class cPanel {
 	cPanel(int panelStartY_, int panelHeight_) {
 	
 		panelStartX = oViewport.getWidth()+5;
-		panelStartY = panelStartY_;
+		panelStartY = panelStartY_+2;
 		panelWidth = 210;
 		panelHeight = panelHeight_;
 		
 		bActive=false; // when active, system checks for mouse clicks. use if panel contains clickable items.
 		
-		iSpaceHeight=16;
-		iLeftTextIndent=8;
+		iSpaceHeight=cellHeight;
+		iLeftTextIndent=(cellWidth/2);
 	}
 
 	int getWidth() { return panelWidth; }
@@ -57,13 +57,13 @@ class cPanel1 extends cPanel {
 		clear(255);
 		
 		fill(0); //fill(255,0,0);
-		int cellY=oGrid.getShowFromCellY()-1+int(floor((mouseY+16)/16));
-		int cellX=oGrid.getShowFromCellX()-1+int(floor((mouseX+16)/16));
+		int cellY=oGrid.getShowFromCellY()-1+int(floor((mouseY+cellHeight)/cellHeight));
+		int cellX=oGrid.getShowFromCellX()-1+int(floor((mouseX+cellWidth)/cellWidth));
 
-		iSpaceHeight=10;
+		iSpaceHeight=iNumberTextSize+2;
 		iLineNumber=1;
-		textSize(11);
-
+		
+		textSize(iNumberTextSize);
 		text("     day: "+ oGameEngine.getDayNumber(), (panelStartX+iLeftTextIndent), panelStartY+(iSpaceHeight*iLineNumber));
 		
 		
@@ -71,20 +71,23 @@ class cPanel1 extends cPanel {
 		if ( mouseX > 0 && mouseY > 0 && mouseX < oViewport.getWidth() && mouseY < oViewport.getHeight() ) {
 			
 			iLineNumber++;
+			//textSize(iNumberTextSize);
 			text("    grid: "+ nf(cellX,3) + ","+nf(cellY,3), (panelStartX+iLeftTextIndent), panelStartY+(iSpaceHeight*iLineNumber));
 			
 			iLineNumber++;
+			//textSize(iNumberTextSize);
 			text("   coord: "+nf(mouseX,3) + "," + nf(mouseY,3), (panelStartX+iLeftTextIndent), panelStartY+(iSpaceHeight*iLineNumber));
 			
 			int iDistanceInCells=oGeometry.getDistanceInCells();
 			if (iDistanceInCells!=-1) {
 				iLineNumber++;
+				//textSize(iNumberTextSize);
 				text("distance: "+iDistanceInCells, (panelStartX+iLeftTextIndent), panelStartY+(iSpaceHeight*iLineNumber));
 			}
 			
 		}
 		
-		textSize(12);
+		//textSize(iNumberTextSize);
 		
 		//color c1 = color(255, 120, 0);
 		//set(10, 10, c1);		
@@ -111,8 +114,8 @@ class cPanel2 extends cPanel {
 			//println("in cPanel2.show()");
 			clear(255);
 			fill(50);
-			textSize(12);
-			text("Player "+oGameEngine.getCurrentPlayerId()+" turn", panelStartX+2, panelStartY+10);
+			textSize(iNumberTextSize);
+			text("Player "+oGameEngine.getCurrentPlayerId()+" turn", panelStartX+2, panelStartY+14);
 		}
 	}
 }
@@ -128,7 +131,7 @@ class cPanelSelectedUnit extends cPanel {
 	
 		super(panelStartY_, panelHeight_);
 		
-		panelStartX=120;
+		panelStartX=170;
 		panelWidth=450;
 	}
 	
@@ -138,7 +141,7 @@ class cPanelSelectedUnit extends cPanel {
 		
 		fill(0); //fill(255,0,0);
 		
-		textSize(12);
+		textSize(iNumberTextSize);
 
 		string strMsg = "";
 		
@@ -146,7 +149,7 @@ class cPanelSelectedUnit extends cPanel {
 		else strMsg = unitName_ +", strength "+ strength_ +", fuel: "+ fuel_ +", "+ movesLeftToday_ +" moves left, at "+location_
 		
 		
-		text(strMsg, panelStartX+2, panelStartY+10);
+		text(strMsg, panelStartX+2, panelStartY+14);
 
 		
 		/*
@@ -185,9 +188,9 @@ class cPanelSelectedCity extends cPanel {
 	cPanelSelectedCity(int panelStartY_, int panelHeight_) {
 		super(panelStartY_, panelHeight_);
 		
-		iSpaceHeight=14;
+		iSpaceHeight=iNumberTextSize+3;
 		
-		oButtonProduction = new cButton(999, "Change Production", panelStartX+iLeftTextIndent, panelStartY+(iSpaceHeight*6)); 
+		oButtonProduction = new cButton(999, "Change Production", panelStartX+iLeftTextIndent, panelStartY+(iSpaceHeight*7)); 
 	}
 	
 	void show(int location_, string productionUnitTypeName_, int productionDaysLeft_, int unitCount_) {
@@ -196,7 +199,7 @@ class cPanelSelectedCity extends cPanel {
 		
 		fill(0); //fill(255,0,0);
 		int iLineNumber=1;
-		textSize(12);
+		textSize(iNumberTextSize);
 		
 		text("          city", (panelStartX+iLeftTextIndent), panelStartY+(iSpaceHeight*iLineNumber));
 		iLineNumber++;
@@ -211,7 +214,7 @@ class cPanelSelectedCity extends cPanel {
 		iLineNumber++;
 		
 		text("     prod unit: "+productionUnitTypeName_, (panelStartX+iLeftTextIndent), panelStartY+(iSpaceHeight*iLineNumber));
-
+		
 		oButtonProduction.display();
 		
 		bActive=true;

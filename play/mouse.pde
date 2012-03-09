@@ -48,19 +48,19 @@ void mouseReleased() {
 			oPanelSelectedCity.handleEvent(mouseX, mouseY);
 			
 			
-			int tempX=oGrid.getShowFromCellX()-1+int(floor((clickStartX+15)/16));
-			int tempY=oGrid.getShowFromCellY()-1+int(floor((clickStartY+15)/16));
+			int tempX=oGrid.getShowFromCellX()-1+int(floor((clickStartX+(cellWidth-1))/cellWidth));
+			int tempY=oGrid.getShowFromCellY()-1+int(floor((clickStartY+(cellHeight-1))/cellHeight));
 
 			if (mouseX==clickStartX && mouseY==clickStartY) {
 			
 				//println("mouse click, release location same location as press "+tempX+","+tempY+"");
 				
 				if ( oVScrollBar.isClicked(clickStartX, clickStartY) ) {
-					println("clicked VScrollBar");
+					//println("clicked VScrollBar");
 					oVScrollBar.handleClick(clickStartX, clickStartY);
 					
 				} else if ( oHScrollBar.isClicked(clickStartX, clickStartY) ) {
-					println("clicked HScrollBar");
+					//println("clicked HScrollBar");
 					oHScrollBar.handleClick(clickStartX, clickStartY);
 				
 				} else {
@@ -138,8 +138,8 @@ void mouseReleased() {
 				
 					//println("human unit number at ("+clickStartX+","+clickStartY+")="+intUnitListId);
 				
-					int targetCellX=oGrid.getShowFromCellX()-1+int(floor((mouseX+15)/16));
-					int targetCellY=oGrid.getShowFromCellY()-1+int(floor((mouseY+15)/16));
+					int targetCellX=oGrid.getShowFromCellX()-1+int(floor((mouseX+(cellWidth-1))/cellWidth));
+					int targetCellY=oGrid.getShowFromCellY()-1+int(floor((mouseY+(cellHeight-1))/cellHeight));
 					
 					if ( targetCellX<oGrid.getCellCountX()+1 && targetCellY<oGrid.getCellCountY()+1 ) {
 

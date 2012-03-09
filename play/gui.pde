@@ -20,15 +20,17 @@ class cViewport {
 		viewportCellCountX = viewportCellCountX_;
 		viewportCellCountY = viewportCellCountY_;
 	
-		viewportWidth = (viewportCellCountX*16)+16; 
-		viewportHeight = (viewportCellCountY*16)+16;
+		viewportWidth = (viewportCellCountX*cellWidth)+cellWidth; 
+		viewportHeight = (viewportCellCountY*cellHeight)+cellHeight;
 
 		oVScrollBar = new cVScrollBar(viewportWidth, viewportHeight, viewportCellCountX, viewportCellCountY, gridCellCountX, gridCellCountY); 
 		oHScrollBar = new cHScrollBar(viewportWidth, viewportHeight, viewportCellCountX, viewportCellCountY, gridCellCountX, gridCellCountY); 
 
+		//println("create grid...gridCellCountX="+ gridCellCountX  +", gridCellCountY="+gridCellCountY);
+
 		oGrid = new cGrid(gridCellCountX, gridCellCountY, iStartX, iStartY); 
 		
-		ScrollBarWidth = 15;
+		ScrollBarWidth = cellWidth;
 
 	}
 
@@ -37,17 +39,22 @@ class cViewport {
 		iStartX=1;
 		iStartY=1;
 	
+		//println("in viewport.resize...viewportCellCountX="+ viewportCellCountX  +", viewportCellCountY="+viewportCellCountY);
+		
 		viewportCellCountX = viewportCellCountX_;
 		viewportCellCountY = viewportCellCountY_;
+		
+		//println("in viewport.resize...viewportCellCountX="+ viewportCellCountX  +", viewportCellCountY="+viewportCellCountY);
 	
-		viewportWidth = (viewportCellCountX*16)+16; 
-		viewportHeight = (viewportCellCountY*16)+16;
+		viewportWidth = (viewportCellCountX*cellWidth)+cellWidth; 
+		viewportHeight = (viewportCellCountY*cellHeight)+cellHeight;
 
 		oVScrollBar = new cVScrollBar(viewportWidth, viewportHeight, viewportCellCountX, viewportCellCountY, gridCellCountX, gridCellCountY); 
 		oHScrollBar = new cHScrollBar(viewportWidth, viewportHeight, viewportCellCountX, viewportCellCountY, gridCellCountX, gridCellCountY); 
 
 		//oGrid = new cGrid(gridCellCountX, gridCellCountY, iStartX, iStartY);
 		oGrid.resize(gridCellCountX, gridCellCountY, iStartX, iStartY);  
+		//oGrid.resize(viewportCellCountX_, viewportCellCountY_, iStartX, iStartY);  
 		
 		ScrollBarWidth = 15;
 
@@ -90,7 +97,7 @@ class cViewport {
 
 			switch( iMapSize ) {
 				case 1:
-					// do nothing
+					oPanelMap.show();
 					break;
 				case 2:
 					oPanelMap.show();
@@ -132,10 +139,10 @@ class cViewport {
 			//switch( oWorld.getScenario() ) {
 			switch( iMapSize ) {
 				case 1:
-					iMargin=1;
+					iMargin=2;
 					break;
 				case 2:
-					iMargin=6;
+					iMargin=2;
 					break;
 			}
 
@@ -149,22 +156,32 @@ class cViewport {
 		
 			//println("in adjustIfAppropriate("+x_+","+y_+") iHalfWidthX="+iHalfWidthX);
 		
-			int temp = x_-(iMargin*3);
+			int temp = x_-(iMargin);
 			if ( temp < 1 ) temp=1;
 			else if ( temp > (oGrid.getCellCountX()-getViewportCellCountX()-2) ) temp=(oGrid.getCellCountX()-getViewportCellCountX()-2);
+			
+			
 
 			if ( (x_-iMargin)<1 ) { 
 				oGrid.setShowFromCellX(1); bRedraw=true;
 				//println("debug1: oGrid.setShowFromCellX=1");
+				//println("debug gui/viewport... show from cell x 1");
 			} else if ( x_ > (oGrid.getCellCountX()-iMargin) ) { 
 				oGrid.setShowFromCellX( (oGrid.getCellCountX()-getViewportCellCountX()-1) ); bRedraw=true;
+				//println("temp="+temp+" x_="+x_);
+				//println("debug gui/viewport... x is greater than");
 				//println("debug2: oGrid.setShowFromCellX="+ (oGrid.getCellCountX()-getViewportCellCountX()-1) );
 			} else if ( x_ < (oGrid.getShowFromCellX()+iMargin) ) { 
 				oGrid.setShowFromCellX( temp ); bRedraw=true;
+				//println("temp="+temp+" x_="+x_);
+				//println("debug gui/viewport... x is less than");
 				//println("debug3: x_"+x_+", (oGrid.getShowFromCellX()+iMargin)="+(oGrid.getShowFromCellX()+iMargin)  );
 			} else if ( x_ > (oGrid.getShowFromCellX()+getViewportCellCountX()-iMargin) ) { 
 				oGrid.setShowFromCellX( temp ); bRedraw=true;
+				//println("temp="+temp+" x_="+x_);
+				//println("debug gui/viewport... x is greater than 2nd  "+ (oGrid.getShowFromCellX()+getViewportCellCountX()-iMargin) );
 				//println("debug4: x_"+x_+", (getViewportCellCountX()-iMargin)="+(getViewportCellCountX()-iMargin)  );
+				//println("");
 			}
 
 
@@ -173,17 +190,27 @@ class cViewport {
 			temp = y_-iMargin;
 			if ( temp < 1 ) temp=1;
 			else if ( temp > (oGrid.getCellCountY()-getViewportCellCountY()-2) ) temp=(oGrid.getCellCountY()-getViewportCellCountY()-2);
+			
+			
 
 			if ( (y_-iMargin)<1 ) { 
 				oGrid.setShowFromCellY(1); bRedraw=true;
+				//println("debug gui/viewport... show from cell y 1");
 			} else if ( y_ > (oGrid.getCellCountY()-iMargin) ) { 
 				oGrid.setShowFromCellY( (oGrid.getCellCountY()-getViewportCellCountY()-1) ); bRedraw=true;
+				//println("temp="+temp+" y_="+y_);
+				//println("debug gui/viewport... y is greater than");
 			} else if ( y_ < (oGrid.getShowFromCellY()+iMargin) ) { 
 				oGrid.setShowFromCellY( temp ); bRedraw=true;
+				//println("temp="+temp+" y_="+y_);
+				//println("debug gui/viewport... y is less than");
 				//println("debug3: y_"+y_+", (oGrid.getShowFromCellY()+iMargin)="+(oGrid.getShowFromCellY()+iMargin)  );
 			} else if ( y_ > (oGrid.getShowFromCellY()+getViewportCellCountY()-iMargin) ) { 
 				oGrid.setShowFromCellY( temp ); bRedraw=true;
+				//println("temp="+temp+" y_="+y_);
+				//println("debug gui/viewport... y is greater than 2nd  "+ (oGrid.getShowFromCellY()+getViewportCellCountY()-iMargin) );
 				//println("debug4: y_"+y_+", (getViewportCellCountY()-iMargin)="+(getViewportCellCountY()-iMargin)  );
+				//println("");
 			}
 
 			oHScrollBar.setBlockStartX( (oGrid.getShowFromCellX()*8) );
@@ -257,8 +284,8 @@ class cButton extends cClickable {
 	
 		super(objId_, strLabel_, startX_, startY_);
 		
-		objWidth = 150;
-		objHeight = 14;
+		objWidth = 210;
+		objHeight = iStringTextSize+2;
 	}
 
 	bool isClicked(int x_, int y_) {
@@ -280,7 +307,7 @@ class cButton extends cClickable {
 		fill(150); 
 		rect(startX+1, startY-objHeight+4, objWidth, objHeight );
 		
-		// show checkbox
+		// show button
 		fill(255); 
 		text( "[" + strLabel + "]", startX, startY);
 		
@@ -294,8 +321,8 @@ class cCheckbox extends cClickable {
 	
 		super(objId_, strLabel_, startX_, startY_);
 		
-		objWidth = 20;
-		objHeight = 14;
+		objWidth = 32;
+		objHeight = iStringTextSize+2;
 	}
 
 	bool isClicked(int x_, int y_) {
@@ -335,7 +362,7 @@ class cScrollBar {
 	int startY;
 	int endX;
 	int endY;
-	int barWidth = 15;
+	int barWidth = cellWidth;
 	bool showScrollBar = true;
 
 	int blockStartX;
@@ -389,12 +416,12 @@ class cVScrollBar extends cScrollBar {
 			blockStartX = startX;
 			blockStartY = startY;
 			blockEndX = endX;
-			blockEndY = round( (viewportCellCountY*16) / ( (gridCellCountY*16) / (viewportCellCountY*16) ) );
+			blockEndY = round( (viewportCellCountY*cellHeight) / ( (gridCellCountY*cellHeight) / (viewportCellCountY*cellHeight) ) );
 			blockLength = blockEndY - blockStartY;
 			//println("blockStartY="+blockStartY+", blockEndY="+blockEndY+", blockLength="+blockLength);
 			
-			iScrollByPixelX = round((viewportCellCountX*16)/10);
-			iScrollByPixelY = round((viewportCellCountY*16)/10);
+			iScrollByPixelX = round((viewportCellCountX*cellWidth)/10);
+			iScrollByPixelY = round((viewportCellCountY*cellHeight)/10);
 		}
 	}
 
@@ -404,7 +431,7 @@ class cVScrollBar extends cScrollBar {
 	}
 
 	void moveUp() {
-		int temp = 10;
+		int temp = 4;
 		oViewport.setStartY( oViewport.getStartY()-temp );
 		oGrid.moveUp( temp );
 		//blockStartY = blockStartX-round(blockLength/2);
@@ -421,7 +448,7 @@ class cVScrollBar extends cScrollBar {
 		//blockStartY = blockStartY+round(blockLength/2);
 		//oViewport.draw();
 		
-		int temp = 10;
+		int temp = 4;
 		oViewport.setStartY( oViewport.getStartY()+temp );
 		oGrid.moveDown( temp );
 		//blockStartX = blockStartX+round(blockLength/2);
@@ -455,12 +482,12 @@ class cHScrollBar extends cScrollBar {
 		if ( showScrollBar ) {
 			blockStartX = startX;
 			blockStartY = startY;
-			blockEndX = round( (viewportCellCountX*16) / ( (gridCellCountX*16) / (viewportCellCountX*16) ) );
+			blockEndX = round( (viewportCellCountX*cellWidth) / ( (gridCellCountX*cellWidth) / (viewportCellCountX*cellWidth) ) );
 			blockEndY = endY;
 			blockLength = blockEndX - blockStartX;
 			
-			iScrollByPixelX = round((viewportCellCountX*16)/10);
-			iScrollByPixelY = round((viewportCellCountY*16)/10);
+			iScrollByPixelX = round((viewportCellCountX*cellWidth)/10);
+			iScrollByPixelY = round((viewportCellCountY*cellHeight)/10);
 		}
 	}
 
@@ -470,7 +497,7 @@ class cHScrollBar extends cScrollBar {
 	}
 
 	void moveLeft() {
-		int temp = 10;
+		int temp = 8;
 		oViewport.setStartX( oViewport.getStartX()-temp );
 		oGrid.moveLeft( temp );
 		//blockStartX = blockStartX-round(blockLength/2);
@@ -479,7 +506,7 @@ class cHScrollBar extends cScrollBar {
 	}
 
 	void moveRight() {
-		int temp = 10;
+		int temp = 8;
 		oViewport.setStartX( oViewport.getStartX()+temp );
 		oGrid.moveRight( temp );
 		//blockStartX = blockStartX+round(blockLength/2);
