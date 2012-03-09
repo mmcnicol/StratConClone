@@ -1,12 +1,12 @@
 
-/* @pjs preload="images/sea.png,images/land.png,images/city0.png,images/city1.png,images/city2.png,images/tank1.png,images/tank2.png,images/fighter1.png,images/fighter2.png,images/battleship1.png,images/battleship2.png,images/bomber1.png,images/bomber2.png,images/carrier1.png,images/carrier2.png,images/destroyer1.png,images/destroyer2.png,images/transport1.png,images/transport2.png,images/submarine1.png,images/submarine2.png"; */
+/* @pjs preload="images/48x48/sea.png,images/48x48/land.png,images/48x48/city0.png,images/48x48/city1.png,images/48x48/city2.png,images/48x48/tank1.png,images/48x48/tank2.png,images/48x48/fighter1.png,images/48x48/fighter2.png,images/48x48/battleship1.png,images/48x48/battleship2.png,images/48x48/bomber1.png,images/48x48/bomber2.png,images/48x48/carrier1.png,images/48x48/carrier2.png,images/48x48/destroyer1.png,images/48x48/destroyer2.png,images/48x48/transport1.png,images/48x48/transport2.png,images/48x48/submarine1.png,images/48x48/submarine2.png"; */
 
 PImage imgSea, imgLand, imgCity0, imgCity1, imgCity2, imgTank1, imgTank2, imgFighter1, imgFighter2, imgBattleship1, imgBattleship2, imgBomber1, imgBomber2, imgCarrier1, imgCarrier2, imgDestroyer1, imgDestroyer2, imgTransport1, imgTransport2, imgSubmarine1, imgSubmarine2;  
 
 PFont FontA;
 
 string GAMETITLE="StratConClone";
-string GAMEVERSION="version 0.42";
+string GAMEVERSION="version 0.43";
 
 cWorld oWorld;
 cAnimate oAnimate;
@@ -31,17 +31,20 @@ cDialogueStartup oDialogueStartup;
 cDialogueCityProduction oDialogueCityProduction;
 cGameEngine oGameEngine; 
 
-int cellWidth=16;
-int cellHeight=16;
+int cellWidth=48;
+int cellHeight=48;
+int iNumberIndent=3;
 int GameState=0; // 0=init, 1=startup diag, 2=startup diag closed, 3= initial city production, 4=play, 5=pause, 6=surrender?, 99=end
 int iPlayer1Mode=1; // 1=human, 2=computer.
-int iMapSize=1; // 1=Small (45x25), 2=large (90x50)
+int iMapSize=2; // 1=Small (45x25), 2=large (90x50)
+int iNumberTextSize=10;
+int iStringTextSize=18;
 
 void setup() {
 	
 	//size( oViewport.getWidth()+oPanel1.getWidth(), oViewport.getHeight() );
 
-	size( 930, 460 );
+	size( 1100, 460 );
 
 	frameRate(10);
 	background(0);
@@ -55,7 +58,7 @@ void setup() {
 	//text("generating map...",(width/2)-90,height/2);
 	
 	
-	textSize(12);
+	textSize(iStringTextSize);
 	noStroke();
 	//redraw();
 	
@@ -119,28 +122,32 @@ void draw() {
 			switch( iMapSize ) {
 			
 				case 1:
-					oViewport = new cViewport(45, 25, 45, 25); 
+					//oViewport = new cViewport(45, 25, 45, 25); // 16x16
+					//oViewport = new cViewport(22, 12, 22, 12); // 32x32
+					oViewport = new cViewport(15, 8, 15, 8); // 32x32
 					break;
 				case 2:
-					oViewport = new cViewport(90, 50, 45, 25); 
+					//oViewport = new cViewport(90, 50, 45, 25); // 16x16
+					//oViewport = new cViewport(88, 48, 22, 12); // 32x32
+					oViewport = new cViewport(120, 64, 15, 8); // 48x48
 					break;
 			}
 
-			oPanel1 = new cPanel1(0,45);
+			oPanel1 = new cPanel1(0,50);
 			oPanel2 = new cPanel2(height-30,20);
 			
-			oPanelSelectedCity = new cPanelSelectedCity(160,100);
+			oPanelSelectedCity = new cPanelSelectedCity(160,300);
 			
 			oPanelSelectedUnit = new cPanelSelectedUnit(height-30,20);	
 			
-			oPanelMap = new cPanelMap(50,102);
+			oPanelMap = new cPanelMap(70,102);
 			
 			oGameEngine = new cGameEngine(); 
 			
 			
-			oDialogueStartup = new cDialogueStartup(157,200);
-			oDialogueCityProduction = new cDialogueCityProduction(157,200);
-			oDialogueSurrender = new cDialogueSurrender(157,200);
+			oDialogueStartup = new cDialogueStartup(90,250);
+			oDialogueCityProduction = new cDialogueCityProduction(90,250);
+			oDialogueSurrender = new cDialogueSurrender(90,250);
 			
 			oViewport.draw();
 			
@@ -158,10 +165,14 @@ void draw() {
 			switch( iMapSize ) {
 			
 				case 1:
-					oViewport.resize(45, 25, 45, 25); 
+					//oViewport = new cViewport(45, 25, 45, 25); // 16x16
+					//oViewport = new cViewport(44, 24, 22, 12); // 32x32
+					oViewport = new cViewport(15, 8, 15, 8); // 32x32
 					break;
 				case 2:
-					oViewport.resize(90, 50, 45, 25); 
+					//oViewport = new cViewport(90, 50, 45, 25); // 16x16
+					//oViewport = new cViewport(88, 48, 22, 12); // 32x32
+					oViewport = new cViewport(120, 64, 15, 8); // 48x48
 					break;
 			}
 
@@ -173,7 +184,7 @@ void draw() {
 			//oCityList.clearFogOfWar(iCityListId);
 			oCityList.clearFogOfWarByPlayerId(1);
 			
-			println("debug#4");
+			//println("debug#4");
 			if ( oPlayer1.getIsAI() ) {
 				//println("debug#5");
 				oCityList.clearFogOfWar(iCityListId);
@@ -252,33 +263,33 @@ class cWorld {
 	
 		println("debug: in loadimages");
 	
-		imgSea = loadImage("images/sea.png");
-		imgLand = loadImage("images/land.png");
-		imgCity0 = loadImage("images/city0.png");
-		imgCity1 = loadImage("images/city1.png");
-		imgCity2 = loadImage("images/city2.png");
-		imgTank1 = loadImage("images/tank1.png");
-		imgTank2 = loadImage("images/tank2.png");
-		imgFighter1 = loadImage("images/fighter1.png");
-		imgFighter2 = loadImage("images/fighter2.png");
+		imgSea = loadImage("images/48x48/sea.png");
+		imgLand = loadImage("images/48x48/land.png");
+		imgCity0 = loadImage("images/48x48/city0.png");
+		imgCity1 = loadImage("images/48x48/city1.png");
+		imgCity2 = loadImage("images/48x48/city2.png");
+		imgTank1 = loadImage("images/48x48/tank1.png");
+		imgTank2 = loadImage("images/48x48/tank2.png");
+		imgFighter1 = loadImage("images/48x48/fighter1.png");
+		imgFighter2 = loadImage("images/48x48/fighter2.png");
 
-		imgBattleship1 = loadImage("images/battleship1.png");
-		imgBattleship2 = loadImage("images/battleship2.png");
+		imgBattleship1 = loadImage("images/48x48/battleship1.png");
+		imgBattleship2 = loadImage("images/48x48/battleship2.png");
 
-		imgBomber1 = loadImage("images/bomber1.png");
-		imgBomber2 = loadImage("images/bomber2.png");
+		imgBomber1 = loadImage("images/48x48/bomber1.png");
+		imgBomber2 = loadImage("images/48x48/bomber2.png");
 
-		imgCarrier1 = loadImage("images/carrier1.png");
-		imgCarrier2 = loadImage("images/carrier2.png");
+		imgCarrier1 = loadImage("images/48x48/carrier1.png");
+		imgCarrier2 = loadImage("images/48x48/carrier2.png");
 
-		imgDestroyer1 = loadImage("images/destroyer1.png");
-		imgDestroyer2 = loadImage("images/destroyer2.png");
+		imgDestroyer1 = loadImage("images/48x48/destroyer1.png");
+		imgDestroyer2 = loadImage("images/48x48/destroyer2.png");
 
-		imgTransport1 = loadImage("images/transport1.png");
-		imgTransport2 = loadImage("images/transport2.png");
+		imgTransport1 = loadImage("images/48x48/transport1.png");
+		imgTransport2 = loadImage("images/48x48/transport2.png");
 
-		imgSubmarine1 = loadImage("images/submarine1.png");
-		imgSubmarine2 = loadImage("images/submarine2.png");
+		imgSubmarine1 = loadImage("images/48x48/submarine1.png");
+		imgSubmarine2 = loadImage("images/48x48/submarine2.png");
 	}
   
 }
@@ -313,7 +324,7 @@ class cGeometry {
 	// cell = a viewport grid square.
 	
 	int translateCoordToCell(int showCellFrom_, int coord_) {
-		return showCellFrom_-1+int(floor((coord_+15)/16));
+		return showCellFrom_-1+int(floor((coord_+(cellWidth-1))/cellWidth));
 	}
 	
 	void distanceDragBegin(int sX_, int sY_, int eX_, int eY_) { 

@@ -1,1 +1,13 @@
-Hello World!
+online strategic military army battle game clone implemented using processing.js (HTML5).
+
+turn-based computer wargame.
+
+conquer cities and islands. attack and bomb opponent.
+
+produce player units: tank, fighter, destroyer, submarine, transport, carrier, Battleship, and bomber.
+
+version 0.43 changes:
+* increased grid cell size from 16x16 to 48x48 to see if it is playable on an iPad.
+* increased font size.
+* disabled choice of small map or large map.
+

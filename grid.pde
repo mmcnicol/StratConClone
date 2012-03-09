@@ -7,8 +7,8 @@ class cGrid {
 	int showFromX;
 	int showFromY;
 
-	final int cellWidth=16;
-	final int cellHeight=16;
+	//final int cellWidth=16;
+	//final int cellHeight=16;
 	
 	//constants  
 	final static int SEA=0;
@@ -50,8 +50,8 @@ class cGrid {
 		for (y=1; y<=countY; y=y+1) {
 			for (x=1; x<=countX; x=x+1) {
 
-				//int yy=round(intX/16);
-				//int yyy=round(intY/16);
+				//int yy=round(intX/cellWidth);
+				//int yyy=round(intY/cellHeight);
 				//println( "y=" + y + ", x=" + x );
 				//image( imgSea, x, y ); 
 				
@@ -209,6 +209,8 @@ class cGrid {
 		//println("debug: in grid.draw()");
 		int DisplayX, DisplayY;
 		//println("showFromY="+showFromY+", countY="+countY+  ", showFromX="+showFromX+", countX="+countX);
+		//println("oViewport.getViewportCellCountX()="+oViewport.getViewportCellCountX() );
+		//println("oViewport.getViewportCellCountY()="+oViewport.getViewportCellCountY() );
 
 		int showToX = showFromX + oViewport.getViewportCellCountX()-1;
 		int showToY = showFromY + oViewport.getViewportCellCountY()-1;
@@ -221,8 +223,8 @@ class cGrid {
 				/*
 				
 				//println("x="+x+", y="+y);
-				DisplayY=(((y-showFromY)+1)*16)-15;
-				DisplayX=(((x-showFromX)+1)*16)-15;
+				DisplayY=(((y-showFromY)+1)*cellHeight)-(cellHeight-1);
+				DisplayX=(((x-showFromX)+1)*cellWidth)-(cellWidth-1);
 				
 				//if ( intCellX >= oGrid.getShowFromCellY() && intCellX <= (oGrid.getShowFromCellX()+oGrid.getCellCountX())   &&   intCellY >= oGrid.getShowFromCellY() && intCellY <= (oGrid.getShowFromCellY()+oGrid.getCellCountX()) )  {
 				
@@ -235,9 +237,9 @@ class cGrid {
 						/=*
 						// for testing purposes
 						fill(0);
-						textSize(8);
-						text("S", DisplayX+2, DisplayY+7 );
-						textSize(12);
+						textSize(iNumberTextSize);
+						text("S", DisplayX+iNumberIndent, DisplayY+iNumberTextSize );
+						textSize(iStringTextSize);
 						*=/
 					} else {
 						//println("drawing land... at ("+x+","+y+") "("+DisplayX+","+DisplayY+")");
@@ -247,9 +249,9 @@ class cGrid {
 						/=*
 						// for testing purposes
 						fill(0);
-						textSize(8);
-						text("L", DisplayX+2, DisplayY+7 );
-						textSize(12);
+						textSize(+iNumberTextSize);
+						text("L", DisplayX+iNumberIndent, DisplayY+iNumberTextSize );
+						//textSize(+iStringTextSize);
 						*=/
 					}
 				}
@@ -291,7 +293,7 @@ class cGrid {
 				
 				
 				DisplayY=sy+y; //(((y-showFromY)+1)*16)-15;
-				DisplayX=sx+x;(((x-showFromX)+1)*16)-15;
+				DisplayX=sx+x; //(((x-showFromX)+1)*16)-(15);
 				
 				// for testing purposes
 				if (intGridCellFog[x][y]==false) {
@@ -337,8 +339,8 @@ class cGrid {
 
 
 		//println("x="+x+", y="+y);
-		DisplayY=(((y-showFromY)+1)*16)-15;
-		DisplayX=(((x-showFromX)+1)*16)-15;
+		DisplayY=(((y-showFromY)+1)*cellHeight)-(cellHeight-1);
+		DisplayX=(((x-showFromX)+1)*cellWidth)-(cellWidth-1);
 
 		//if ( x >= oGrid.getShowFromCellX() && x <= (oGrid.getShowFromCellX()+oGrid.getCellCountX())   &&   y >= oGrid.getShowFromCellY() && y <= (oGrid.getShowFromCellY()+oGrid.getCellCountY()) )  {
 		if ( oViewport.isCellWithinViewport(x, y) ) { 
@@ -356,9 +358,9 @@ class cGrid {
 						/*
 						// for testing purposes
 						fill(0);
-						textSize(8);
-						text("S", DisplayX+2, DisplayY+7 );
-						textSize(12);
+						textSize(iNumberTextSize);
+						text("S", DisplayX+iNumberIndent, DisplayY+iNumberTextSize );
+						textSize(iStringTextSize);
 						*/
 					} else {
 						//println("drawing land... at ("+x+","+y+") "("+DisplayX+","+DisplayY+")");
@@ -368,9 +370,9 @@ class cGrid {
 						/*
 						// for testing purposes
 						fill(0);
-						textSize(8);
-						text("L", DisplayX+2, DisplayY+7 );
-						textSize(12);
+						textSize(iNumberTextSize);
+						text("L", DisplayX+iNumberIndent, DisplayY+iNumberTextSize );
+						textSize(iStringTextSize);
 						*/
 					}
 					if (bDrawAnyUnits)
@@ -383,9 +385,9 @@ class cGrid {
 		/*
 		if ( isFogOfWar(x, y)==true ) { // for testing purposes
 			fill(0);
-			textSize(10);
-			text("F", DisplayX+2, DisplayY+9 );
-			textSize(12);
+			textSize(iNumberTextSize);
+			text("F", DisplayX+iNumberIndent, DisplayY+iNumberTextSize );
+			textSize(iStringTextSize);
 		}
 		*/
 
@@ -406,15 +408,16 @@ class cGrid {
 	}
 
 
+
 	void AddIslands() {
 
 		//switch( oWorld.getScenario() ) {
 		switch( iMapSize ) {
 			case 1:
-				AddIslands_45_25();
+				AddIslands();
 				break;
 			case 2:
-				AddIslands_90_50();
+				AddIslands();
 				break;
 			case 100:
 				 AddIslands_TestScenario1Transport(); 
@@ -427,65 +430,65 @@ class cGrid {
 
 
 
-	void AddIslands_45_25() {
+	void AddIslands() {
 
 		int i;
 
-		//defineIslandAsRandomPoly(1, 16*(int)random(10,15), 16*(int)random(10,15), 16*(int)random(4,5), 16*(int)random(4,5) );
 
-		//defineIslandAsRandomPoly(2, 16*(int)random(20,25), 16*(int)random(20,25), 16*(int)random(4,6), 16*(int)random(5,7) );
-
-		int i,j;
-		for (i=3; i<countX; i=i+8) {
-			for (j=3; j<countY; j=j+7) {
-				//switch( (int)random(1,3) ) {
-				//	case 1:
-						if ((int)random(1,1000)%2==0) defineIslandAsRandomPoly(-1, 16*(int)random(i-5,i+5), 16*(int)random(j-5,j+5), 16*(int)random(3,6), 16*(int)random(3,6) );
-				/*		break;
-					case 2:
-						if ((int)random(1,1000)%2==0) defineIslandAsRandomPoly(-1, 16*(int)random(i-5,i+5), 16*(int)random(j-5,j+5), 16*(int)random(4,6), 16*(int)random(4,6) );
-						break;
-					case 3:
-						if ((int)random(1,1000)%2==0) defineIslandAsRandomPoly(-1, 16*(int)random(i-5,i+5), 16*(int)random(j-5,j+5), 16*(int)random(6,10), 16*(int)random(6,10) );
-						break;
-				} 
-				*/					
-			}
-		}
-
+		switch( iMapSize ) {
 		
+			case 1:
+			
+				//defineIslandAsRandomPoly(1, 16*(int)random(10,15), 16*(int)random(10,15), 16*(int)random(4,5), 16*(int)random(4,5) );
+
+				//defineIslandAsRandomPoly(2, 16*(int)random(20,25), 16*(int)random(20,25), 16*(int)random(4,6), 16*(int)random(5,7) );
+
+				int i,j;
+				for (i=3; i<countX; i=i+8) {
+					for (j=3; j<countY; j=j+7) {
+						//switch( (int)random(1,3) ) {
+						//	case 1:
+								if ((int)random(1,1000)%2==0) defineIslandAsRandomPoly(-1, cellWidth*(int)random(i-5,i+5), cellHeight*(int)random(j-5,j+5), cellWidth*(int)random(3,6), cellHeight*(int)random(3,6) );
+						/*		break;
+							case 2:
+								if ((int)random(1,1000)%2==0) defineIslandAsRandomPoly(-1, cellWidth*(int)random(i-5,i+5), cellHeight*(int)random(j-5,j+5), cellWidth*(int)random(4,6), cellHeight*(int)random(4,6) );
+								break;
+							case 3:
+								if ((int)random(1,1000)%2==0) defineIslandAsRandomPoly(-1, cellWidth*(int)random(i-5,i+5), cellHeight*(int)random(j-5,j+5), cellWidth*(int)random(6,10), cellHeight*(int)random(6,10) );
+								break;
+						} 
+						*/					
+					}
+				}
+				break;
+
+			case 2:
+
+				defineIslandAsRandomPoly(1, cellWidth*(int)random(35,45), cellHeight*(int)random(20,25), cellWidth*(int)random(4,5), cellHeight*(int)random(4,5) );
+
+				defineIslandAsRandomPoly(2, cellWidth*(int)random(65,75), cellHeight*(int)random(40,45), cellWidth*(int)random(3,4), cellHeight*(int)random(3,4) );
+
+				int i,j;
+				for (i=5; i<countX; i=i+9) {
+					for (j=5; j<countY; j=j+8) {
+						switch( (int)random(1,3) ) {
+							case 1:
+								if ((int)random(1,1000)%2==0) defineIslandAsRandomPoly(-1, cellWidth*(int)random(i-5,i+5), cellHeight*(int)random(j-5,j+5), cellWidth*(int)random(2,5), cellHeight*(int)random(2,5) );
+								break;
+							case 2:
+								if ((int)random(1,1000)%2==0) defineIslandAsRandomPoly(-1, cellWidth*(int)random(i-5,i+5), cellHeight*(int)random(j-5,j+5), cellWidth*(int)random(3,6), cellHeight*(int)random(3,6) );
+								break;
+							case 3:
+								if ((int)random(1,1000)%2==0) defineIslandAsRandomPoly(-1, cellWidth*(int)random(i-5,i+5), cellHeight*(int)random(j-5,j+5), cellWidth*(int)random(4,7), cellHeight*(int)random(4,7) );
+								break;
+						} 					
+					}
+				}			
+			break;
+		}
+			
 	}
 
-	
-	
-	
-
-	void AddIslands_90_50() {
-
-		int i;
-
-		defineIslandAsRandomPoly(1, 16*(int)random(35,45), 16*(int)random(20,25), 16*(int)random(4,5), 16*(int)random(4,5) );
-
-		defineIslandAsRandomPoly(2, 16*(int)random(65,75), 16*(int)random(40,45), 16*(int)random(3,4), 16*(int)random(3,4) );
-
-		int i,j;
-		for (i=5; i<countX; i=i+9) {
-			for (j=5; j<countY; j=j+8) {
-				switch( (int)random(1,3) ) {
-					case 1:
-						if ((int)random(1,1000)%2==0) defineIslandAsRandomPoly(-1, 16*(int)random(i-5,i+5), 16*(int)random(j-5,j+5), 16*(int)random(2,5), 16*(int)random(2,5) );
-						break;
-					case 2:
-						if ((int)random(1,1000)%2==0) defineIslandAsRandomPoly(-1, 16*(int)random(i-5,i+5), 16*(int)random(j-5,j+5), 16*(int)random(3,6), 16*(int)random(3,6) );
-						break;
-					case 3:
-						if ((int)random(1,1000)%2==0) defineIslandAsRandomPoly(-1, 16*(int)random(i-5,i+5), 16*(int)random(j-5,j+5), 16*(int)random(4,7), 16*(int)random(4,7) );
-						break;
-				} 					
-			}
-		}
-		
-	}
 
 
 
@@ -561,13 +564,13 @@ class cGrid {
 
 		// for each cell that is within the rectangle (that contains the poly)
 		// credits: amended version of 'point in poly' algorithm by Randolph Franklin
-		for (xx=X-w; xx<=(int)X+w; xx=xx+16) {
+		for (xx=X-w; xx<=(int)X+w; xx=xx+cellWidth) {
 
-			for (yy=Y-h; yy<=(int)Y+h; yy=yy+16) {
+			for (yy=Y-h; yy<=(int)Y+h; yy=yy+cellHeight) {
 
 
 				// next identify if this cell is within the poly (island)
-				int npol=count, x=xx+8, y=yy+8;
+				int npol=count, x=xx+(cellWidth/2), y=yy+(cellHeight/2);
 
 				int i, j, c = 0;
 
@@ -592,8 +595,8 @@ class cGrid {
 				if ( c==1 ) {  
 					//image( imgLand, xx+1, yy+1 ); 
 					//intGridCellType[(int)xx/16][(int)yy/16]=1;
-					xxx=ceil((xx)/16);
-					yyy=ceil((yy)/16);
+					xxx=ceil((xx)/cellWidth);
+					yyy=ceil((yy)/cellHeight);
 
 					if ( xxx>=1 && yyy>=1 && xxx<=countX && yyy<=countY) {
 						intGridCellType[xxx][yyy]=1;
