@@ -321,7 +321,7 @@ class cCheckbox extends cClickable {
 	
 		super(objId_, strLabel_, startX_, startY_);
 		
-		objWidth = 32;
+		objWidth = 18;
 		objHeight = iStringTextSize+2;
 	}
 

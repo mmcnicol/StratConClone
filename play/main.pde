@@ -1,5 +1,5 @@
 
-/* @pjs preload="images/48x48/sea.png,images/48x48/land.png,images/48x48/city0.png,images/48x48/city1.png,images/48x48/city2.png,images/48x48/tank1.png,images/48x48/tank2.png,images/48x48/fighter1.png,images/48x48/fighter2.png,images/48x48/battleship1.png,images/48x48/battleship2.png,images/48x48/bomber1.png,images/48x48/bomber2.png,images/48x48/carrier1.png,images/48x48/carrier2.png,images/48x48/destroyer1.png,images/48x48/destroyer2.png,images/48x48/transport1.png,images/48x48/transport2.png,images/48x48/submarine1.png,images/48x48/submarine2.png"; */
+/* @pjs preload="images/16x16/sea.png,images/16x16/land.png,images/16x16/city0.png,images/16x16/city1.png,images/16x16/city2.png,images/16x16/tank1.png,images/16x16/tank2.png,images/16x16/fighter1.png,images/16x16/fighter2.png,images/16x16/battleship1.png,images/16x16/battleship2.png,images/16x16/bomber1.png,images/16x16/bomber2.png,images/16x16/carrier1.png,images/16x16/carrier2.png,images/16x16/destroyer1.png,images/16x16/destroyer2.png,images/16x16/transport1.png,images/16x16/transport2.png,images/16x16/submarine1.png,images/16x16/submarine2.png"; */
 
 PImage imgSea, imgLand, imgCity0, imgCity1, imgCity2, imgTank1, imgTank2, imgFighter1, imgFighter2, imgBattleship1, imgBattleship2, imgBomber1, imgBomber2, imgCarrier1, imgCarrier2, imgDestroyer1, imgDestroyer2, imgTransport1, imgTransport2, imgSubmarine1, imgSubmarine2;  
 
@@ -31,14 +31,16 @@ cDialogueStartup oDialogueStartup;
 cDialogueCityProduction oDialogueCityProduction;
 cGameEngine oGameEngine; 
 
-int cellWidth=48;
-int cellHeight=48;
-int iNumberIndent=3;
+int cellWidth=16;
+int cellHeight=16;
+int iNumberIndent=1;
 int GameState=0; // 0=init, 1=startup diag, 2=startup diag closed, 3= initial city production, 4=play, 5=pause, 6=surrender?, 99=end
 int iPlayer1Mode=1; // 1=human, 2=computer.
 int iMapSize=2; // 1=Small (45x25), 2=large (90x50)
-int iNumberTextSize=10;
-int iStringTextSize=18;
+//int iNumberTextSize=10;
+//int iStringTextSize=18;
+int iNumberTextSize=5;
+int iStringTextSize=11;
 
 void setup() {
 	
@@ -128,8 +130,9 @@ void draw() {
 					break;
 				case 2:
 					//oViewport = new cViewport(90, 50, 45, 25); // 16x16
+					oViewport = new cViewport(120, 64, 45, 25); // 16x16
 					//oViewport = new cViewport(88, 48, 22, 12); // 32x32
-					oViewport = new cViewport(120, 64, 15, 8); // 48x48
+					//oViewport = new cViewport(120, 64, 15, 8); // 48x48
 					break;
 			}
 
@@ -171,8 +174,9 @@ void draw() {
 					break;
 				case 2:
 					//oViewport = new cViewport(90, 50, 45, 25); // 16x16
+					oViewport = new cViewport(120, 64, 45, 25); // 16x16
 					//oViewport = new cViewport(88, 48, 22, 12); // 32x32
-					oViewport = new cViewport(120, 64, 15, 8); // 48x48
+					//oViewport = new cViewport(120, 64, 15, 8); // 48x48
 					break;
 			}
 
@@ -263,33 +267,33 @@ class cWorld {
 	
 		println("debug: in loadimages");
 	
-		imgSea = loadImage("images/48x48/sea.png");
-		imgLand = loadImage("images/48x48/land.png");
-		imgCity0 = loadImage("images/48x48/city0.png");
-		imgCity1 = loadImage("images/48x48/city1.png");
-		imgCity2 = loadImage("images/48x48/city2.png");
-		imgTank1 = loadImage("images/48x48/tank1.png");
-		imgTank2 = loadImage("images/48x48/tank2.png");
-		imgFighter1 = loadImage("images/48x48/fighter1.png");
-		imgFighter2 = loadImage("images/48x48/fighter2.png");
+		imgSea = loadImage("images/16x16/sea.png");
+		imgLand = loadImage("images/16x16/land.png");
+		imgCity0 = loadImage("images/16x16/city0.png");
+		imgCity1 = loadImage("images/16x16/city1.png");
+		imgCity2 = loadImage("images/16x16/city2.png");
+		imgTank1 = loadImage("images/16x16/tank1.png");
+		imgTank2 = loadImage("images/16x16/tank2.png");
+		imgFighter1 = loadImage("images/16x16/fighter1.png");
+		imgFighter2 = loadImage("images/16x16/fighter2.png");
 
-		imgBattleship1 = loadImage("images/48x48/battleship1.png");
-		imgBattleship2 = loadImage("images/48x48/battleship2.png");
+		imgBattleship1 = loadImage("images/16x16/battleship1.png");
+		imgBattleship2 = loadImage("images/16x16/battleship2.png");
 
-		imgBomber1 = loadImage("images/48x48/bomber1.png");
-		imgBomber2 = loadImage("images/48x48/bomber2.png");
+		imgBomber1 = loadImage("images/16x16/bomber1.png");
+		imgBomber2 = loadImage("images/16x16/bomber2.png");
 
-		imgCarrier1 = loadImage("images/48x48/carrier1.png");
-		imgCarrier2 = loadImage("images/48x48/carrier2.png");
+		imgCarrier1 = loadImage("images/16x16/carrier1.png");
+		imgCarrier2 = loadImage("images/16x16/carrier2.png");
 
-		imgDestroyer1 = loadImage("images/48x48/destroyer1.png");
-		imgDestroyer2 = loadImage("images/48x48/destroyer2.png");
+		imgDestroyer1 = loadImage("images/16x16/destroyer1.png");
+		imgDestroyer2 = loadImage("images/16x16/destroyer2.png");
 
-		imgTransport1 = loadImage("images/48x48/transport1.png");
-		imgTransport2 = loadImage("images/48x48/transport2.png");
+		imgTransport1 = loadImage("images/16x16/transport1.png");
+		imgTransport2 = loadImage("images/16x16/transport2.png");
 
-		imgSubmarine1 = loadImage("images/48x48/submarine1.png");
-		imgSubmarine2 = loadImage("images/48x48/submarine2.png");
+		imgSubmarine1 = loadImage("images/16x16/submarine1.png");
+		imgSubmarine2 = loadImage("images/16x16/submarine2.png");
 	}
   
 }
