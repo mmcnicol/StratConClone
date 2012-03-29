@@ -34,7 +34,7 @@ class cUnit {
 	
 	if isTransport()
 	0=move to position beside player island (not under attack) where unit can accept cargo
-	1=issue instruction to accept cargo
+	1=accept cargo
 	2=cargo loaded, move to enemy island (or player island which is under attack)
 	3=unload cargo
 	
@@ -932,6 +932,8 @@ class cUnit {
 
 		//println("in unit.moveToIfSpecified current="+intCellX+","+intCellY+" MoveToCell="+iMoveToCellX+","+iMoveToCellY+" getUnitTypeId()="+getUnitTypeId());
 
+		/*
+		// put unit to sleep if older than 25 days (and not a sea vessel)
 		if ( getAge() == 25 && isAsleep()==false && isSeaVessel()==false ) {
 
 			setMoveToX(-1);
@@ -939,7 +941,13 @@ class cUnit {
 			setMovesLeftToday(0);
 			setTaskStatus(99);
 
-		} else if ( isTransport() && getTaskStatus()==2 &&
+		} else 
+		*/
+
+		// *********************************************
+		// if is transport and status="cargo loaded, move to enemy island (or player island which is under attack)"
+		// *********************************************
+		if ( isTransport() && getTaskStatus()==2 &&
 			(( intCellX < (transportCargoLoadLocationX -5)
 			|| intCellX > (transportCargoLoadLocationX +5) )
 			||
@@ -1293,7 +1301,7 @@ class cUnit {
 					} else {
 					
 						if ( intPlayerId==1 ) println("invalid move. unit cannot move on sea. getUnitTypeId()="+getUnitTypeId()+" isCargoOf()="+isCargoOf() );
-						if ( intPlayerId==1 ) println("current location="+intCellX+","+intCellY+" moveTo="+intCellX_+","+intCellY_ );
+						//if ( intPlayerId==1 ) println("current location="+intCellX+","+intCellY+" moveTo="+intCellX_+","+intCellY_ );
 						
 						ValidMove=false;
 						setMoveToX(-1);
@@ -1417,15 +1425,32 @@ class cUnit {
 		switch ( getTaskStatus() ) {
 			
 			case 0:
-				// 0=move to using basic algorithm
-				if (intPlayerId==1 && isCargoOf() ) println("0=calling identifyNextMoveAI() ");
+
+				// ******************************************************
+				// if transport is nearby which is waiting for units, move towards it
+				if ( oUnitList.IsTransportNearbyWaitingForUnits(intPlayerId, iUnitListId_, intCellX, intCellY)  ) {
+
+					// unit has been instructed to move towards waiting transport
+					
+				// ******************************************************
+				// else, move to using basic algorithm
+				} else {
+					if (intPlayerId==1 && isCargoOf() ) println("0=calling identifyNextMoveAI() ");
+					identifyNextMoveAI(iUnitListId_);				
+				}
+
+
+
 				//if ( isCargoOf() ) {
 				//	setTaskStatus(99);
 				//} else {
 					//println("calling identifyNextMoveAI() ");
-					identifyNextMoveAI(iUnitListId_);				
+					//identifyNextMoveAI(iUnitListId_);				
 				//}
+
+
 				break;
+
 			case 1:
 				// 1=move to waiting transport
 				
@@ -1467,6 +1492,7 @@ class cUnit {
 				//}
 
 				break;
+
 			/*
 			case 98:
 				// 98=move to using basic algorithm
@@ -1477,6 +1503,7 @@ class cUnit {
 				
 				break;				
 			*/
+
 			case 99:
 				if (intPlayerId==1 && isCargoOf() ) println("99=unit sleep ");
 				//if (intPlayerId==1) println("debug: unit is asleep");
@@ -1547,10 +1574,12 @@ class cUnit {
 				
 				break;
 			case 1:
-				// 1=issue instruction to accept cargo
-				//println("transport status=1, issue instruction to accept cargo");
+				// 1=accept cargo
+				//println("transport status=1, accept cargo");
 				int iTargetCargoCount=2;
-				oUnitList.identifyPlayerLandUnitsToMoveTo(intPlayerId, intCellX, intCellY, getCargoCount(), iTargetCargoCount);
+
+				// note: I don't think this is the best approach for getting tanks onto a waiting transport
+				//oUnitList.identifyPlayerLandUnitsToMoveTo(intPlayerId, intCellX, intCellY, getCargoCount(), iTargetCargoCount);
 				
 				//println("is transport ready to move? getCargoCount()="+getCargoCount());
 				//printCargo();
@@ -1978,7 +2007,7 @@ class cUnit {
 		// ******************************************************
 		// define possible moves search area
 		
-		int iMargin=2;
+		int iMargin=3;
 			
 		if( intCellX <= iMargin ) sx=1;
 		else sx=intCellX-iMargin;
@@ -2173,11 +2202,11 @@ class cUnit {
 									countOfPlayerUnits = oUnitList.getCountOfPlayerTankUnitsAt(intPlayerId, intCellX, intCellY);
 									if ( countOfPlayerUnits > 1 && oGrid.isLand(intCellX, intCellY) ) {
 										fill(255);
-										rect(DisplayX+iNumberIndent,DisplayY+iNumberIndent,iNumberTextSize,iNumberTextSize+5);
+										rect(DisplayX+iNumberIndent,DisplayY+iNumberIndent,iNumberTextSize,iNumberTextSize+1);
 										fill(0);
-										textSize(iNumberTextSize);
-										text(countOfPlayerUnits, DisplayX+iNumberIndent+1, DisplayY+iNumberTextSize+4 );
-										//textSize(iStringTextSize);
+										textSize(8);
+										text(countOfPlayerUnits, DisplayX+iNumberIndent+1, DisplayY+iNumberTextSize+1 );
+										textSize(11);
 									}
 								//}
 
@@ -2210,11 +2239,11 @@ class cUnit {
 							if( intPlayerId==1 && getCargoCount() > 0 ) {
 								// show cargo count on unit image
 								fill(255);
-								rect(DisplayX+iNumberIndent,DisplayY+iNumberIndent,iNumberTextSize,iNumberTextSize+5);
+								rect(DisplayX+iNumberIndent,DisplayY+iNumberIndent,iNumberTextSize,iNumberTextSize+1);
 								fill(0);
-								textSize(iNumberTextSize);
-								text(getCargoCount(), DisplayX+iNumberIndent+1, DisplayY+iNumberTextSize+4 );
-								//textSize(iStringTextSize);
+								textSize(8);
+								text(getCargoCount(), DisplayX+iNumberIndent+1, DisplayY+iNumberTextSize+1 );
+								textSize(11);
 							}
 
 							break;	
@@ -2231,11 +2260,11 @@ class cUnit {
 							if( intPlayerId==1 && getCargoCount() > 0 ) {
 								// show cargo count on unit image
 								fill(255);
-								rect(DisplayX+iNumberIndent,DisplayY+iNumberIndent,iNumberTextSize,iNumberTextSize+5);
+								rect(DisplayX+iNumberIndent,DisplayY+iNumberIndent,iNumberTextSize,iNumberTextSize+1);
 								fill(0);
-								textSize(iNumberTextSize);
-								text(getCargoCount(), DisplayX+iNumberIndent+1, DisplayY+iNumberTextSize+4 );
-								//textSize(iStringTextSize);
+								textSize(8);
+								text(getCargoCount(), DisplayX+iNumberIndent+1, DisplayY+iNumberTextSize+1 );
+								textSize(11);
 							}
 
 							break;
@@ -2252,9 +2281,9 @@ class cUnit {
 			/*
 			if ( oGrid.isFogOfWar(intCellX, intCellY)==true ) { // for testing purposes
 				fill(0);
-				textSize(iNumberTextSize);
+				textSize(8);
 				text("F", DisplayX+iNumberIndent+1, DisplayY+12 );
-				//textSize(iStringTextSize);
+				textSize(11);
 			}
 			*/
 			

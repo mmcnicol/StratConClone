@@ -27,6 +27,9 @@ class cUnitList {
 	}
 	*/
 
+
+
+
 	int getCountEnemyUnitNearby(int intPlayerId_, int intRow_, int intCol_) {
 	
 		int TempCount=0;
@@ -77,26 +80,6 @@ class cUnitList {
 			}
 		}  
 		return temp;	
-	}
-	
-	void commandWakePlayerUnitsAt(int iPlayerId_, int x_, int y_) {
-	
-		//println("in oUnitist.commandWakePlayerUnitsAt("+iPlayerId_+","+x_+","+y_+")");
-
-		for (int i = 0; i < listUnit.size(); i++) { 
-			cUnit unit = (cUnit) listUnit.get(i);
-			if( unit.getPlayerId()==iPlayerId_ && unit.isAt(x_, y_)==true && unit.isAlive() ) {
-			
-				unit.setTaskStatus(0);
-				unit.setMoveToX(-1);
-				unit.setMoveToY(-1);
-				//println("unit.getMovesPerDay() ="+unit.getMovesPerDay() );
-				unit.setMovesLeftToday( unit.getMovesPerDay() );
-				println("found unit to wake");
-			}
-		}  
-		oGameEngine.setCommand(-1);
-		//println("leaving oUnitist.commandWakePlayerUnitsAt()");
 	}
 	
 
@@ -170,6 +153,50 @@ class cUnitList {
 
 
 
+
+
+	// ****************************************************************
+	// WAKE
+	// ****************************************************************
+
+	void commandWakePlayerUnitsAt(int iPlayerId_, int x_, int y_) {
+	
+		//println("in oUnitist.commandWakePlayerUnitsAt("+iPlayerId_+","+x_+","+y_+")");
+
+		for (int i = 0; i < listUnit.size(); i++) { 
+			cUnit unit = (cUnit) listUnit.get(i);
+			if( unit.getPlayerId()==iPlayerId_ && unit.isAt(x_, y_)==true && unit.isAlive() ) {
+			
+				unit.setTaskStatus(0);
+				unit.setMoveToX(-1);
+				unit.setMoveToY(-1);
+				//println("unit.getMovesPerDay() ="+unit.getMovesPerDay() );
+				unit.setMovesLeftToday( unit.getMovesPerDay() );
+				println("found unit to wake");
+			}
+		}  
+		oGameEngine.setCommand(-1);
+		//println("leaving oUnitist.commandWakePlayerUnitsAt()");
+	}
+
+	void wake(int UnitListId_) {
+
+		//println("in unit_list.wake, UnitListId_=("+UnitListId_+")");
+		cUnit unit = (cUnit) listUnit.get(UnitListId_);
+		unit.setTaskStatus(0);
+		unit.setMoveToX(-1);
+		unit.setMoveToY(-1);
+		unit.setMovesLeftToday( unit.getMovesPerDay() );
+		
+	}
+	
+
+
+
+	// ****************************************************************
+	// TRANSPORT
+	// ****************************************************************
+
 	bool isPlayerTransportAtRowCol(int iPlayerId_, int x_, int y_) {
 	
 		//println("debug: in unlitlist.isPlayerTransportAtRowCol() ");
@@ -192,8 +219,6 @@ class cUnitList {
 		
 		return false;
 	}	
-
-
 
 	bool isEnemyTransportAtRowCol(int iPlayerId_, int x_, int y_) {
 	
@@ -218,6 +243,49 @@ class cUnitList {
 		return false;
 	}	
 
+	bool IsTransportNearbyWaitingForUnits(int iPlayerId_, int iUnitListId_, int iCellX_, int iCellY_) {
+
+		//println( "unit list debug#1: in IsTransportNearbyWaitingForUnits() ");
+		int temp=-1;
+
+		temp = getTransportUnitNumberNearbyWhichIsWaitingForTanks(iPlayerId_, iCellX_, iCellY_);
+
+		//println( "unit list debug#1: temp= "+temp);
+		if ( temp != -1 && iUnitListId_ != -1 ) {
+
+			// set AvailableUnit movetoXY to WaitingTransportXY
+			//println( "unit list debug#1: set AvailableUnit movetoXY to WaitingTransportXY");
+			cUnit WaitingTransport = (cUnit) listUnit.get(temp);
+			cUnit AvailableUnit = (cUnit) listUnit.get(iUnitListId_);
+			AvailableUnit.setMoveToX( WaitingTransport.getX() );
+			AvailableUnit.setMoveToY( WaitingTransport.getY() );
+
+			//println( "unit list debug#1: in IsTransportNearbyWaitingForUnits() return true ");
+			return true;
+			
+		}
+
+		//println( "unit list debug#1: in IsTransportNearbyWaitingForUnits() return false ");
+		return false;
+	}
+
+	int getTransportUnitNumberNearbyWhichIsWaitingForTanks(int iPlayerId_, int x_, int y_) {
+		int temp=-1;
+		for (int i = 0; i < listUnit.size(); i++) { 
+			cUnit unit = (cUnit) listUnit.get(i);
+			if( unit.getPlayerId()==iPlayerId_ && unit.isNearby(x_, y_,6)==true && unit.getTaskStatus()==1 && unit.isAlive() ) {
+				return i;
+			}
+		}  
+		return temp;	
+	}
+
+
+
+	
+	// ****************************************************************
+	// CARRIER
+	// ****************************************************************
 
 	bool isPlayerCarrierAtRowCol(int iPlayerId_, int x_, int y_) {
 	
@@ -242,7 +310,14 @@ class cUnitList {
 		return false;
 	}
 	
-	
+
+
+
+
+	// ****************************************************************
+	// CARGO
+	// ****************************************************************
+
 	void addUnitCargo(int cargoListUnitId_, int destinationUnitId_) {
 	
 		//println("in unitList.addUnitCargo()...");
@@ -266,6 +341,7 @@ class cUnitList {
 		
 	}	
 	
+
 	void clearUnitFromCargoOf(int UnitListId_, int CargoUnitListId_) {
 		//println("in clearUnitFromCargoOf("+UnitListId_+","+CargoUnitListId_+")");
 		cUnit unit = (cUnit) listUnit.get(UnitListId_);
@@ -275,16 +351,6 @@ class cUnitList {
 
 
 
-	void wake(int UnitListId_) {
-
-		//println("in unit_list.wake, UnitListId_=("+UnitListId_+")");
-		cUnit unit = (cUnit) listUnit.get(UnitListId_);
-		unit.setTaskStatus(0);
-		unit.setMoveToX(-1);
-		unit.setMoveToY(-1);
-		unit.setMovesLeftToday( unit.getMovesPerDay() );
-		
-	}
 
 	
 	// ****************************************************************
@@ -436,6 +502,11 @@ class cUnitList {
 
 
 
+
+
+
+/* note: this method is redundant
+
 	void identifyPlayerLandUnitsToMoveTo(int iPlayerId_, int x_, int y_, int iCargoCount_, int iTargetCargoCount_) {
 	
 		//if (iPlayerId_==1) println("in identifyPlayerTankUnitsToMoveTo("+x_+","+y_+")... iCargoCount_="+iCargoCount_);
@@ -488,7 +559,7 @@ class cUnitList {
 		//if (iPlayerId_==1) println("countLandUnitsIdentified=" + countLandUnitsIdentified);
 			
 	}
-	
+
 
 
 	void getCountPlayerLandUnitsWithToMoveTo(int iPlayerId_, int x_, int y_) {
@@ -515,7 +586,8 @@ class cUnitList {
 		return counter;
 			
 	}	
-	
+
+*/
 	
 	
 	// ****************************************************************

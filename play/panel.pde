@@ -16,7 +16,7 @@ class cPanel {
 		
 		bActive=false; // when active, system checks for mouse clicks. use if panel contains clickable items.
 		
-		iSpaceHeight=cellHeight;
+		iSpaceHeight=cellHeight+2;
 		iLeftTextIndent=(cellWidth/2);
 	}
 
@@ -60,10 +60,10 @@ class cPanel1 extends cPanel {
 		int cellY=oGrid.getShowFromCellY()-1+int(floor((mouseY+cellHeight)/cellHeight));
 		int cellX=oGrid.getShowFromCellX()-1+int(floor((mouseX+cellWidth)/cellWidth));
 
-		iSpaceHeight=iNumberTextSize+2;
+		iSpaceHeight=iNumberTextSize+3;
 		iLineNumber=1;
 		
-		textSize(iNumberTextSize);
+		textSize(11);
 		text("     day: "+ oGameEngine.getDayNumber(), (panelStartX+iLeftTextIndent), panelStartY+(iSpaceHeight*iLineNumber));
 		
 		
@@ -71,23 +71,23 @@ class cPanel1 extends cPanel {
 		if ( mouseX > 0 && mouseY > 0 && mouseX < oViewport.getWidth() && mouseY < oViewport.getHeight() ) {
 			
 			iLineNumber++;
-			//textSize(iNumberTextSize);
+			//textSize(11);
 			text("    grid: "+ nf(cellX,3) + ","+nf(cellY,3), (panelStartX+iLeftTextIndent), panelStartY+(iSpaceHeight*iLineNumber));
 			
 			iLineNumber++;
-			//textSize(iNumberTextSize);
+			//textSize(11);
 			text("   coord: "+nf(mouseX,3) + "," + nf(mouseY,3), (panelStartX+iLeftTextIndent), panelStartY+(iSpaceHeight*iLineNumber));
 			
 			int iDistanceInCells=oGeometry.getDistanceInCells();
 			if (iDistanceInCells!=-1) {
 				iLineNumber++;
-				//textSize(iNumberTextSize);
+				//textSize(11);
 				text("distance: "+iDistanceInCells, (panelStartX+iLeftTextIndent), panelStartY+(iSpaceHeight*iLineNumber));
 			}
 			
 		}
 		
-		//textSize(iNumberTextSize);
+		//textSize(11);
 		
 		//color c1 = color(255, 120, 0);
 		//set(10, 10, c1);		
@@ -114,7 +114,7 @@ class cPanel2 extends cPanel {
 			//println("in cPanel2.show()");
 			clear(255);
 			fill(50);
-			textSize(iNumberTextSize);
+			textSize(11);
 			text("Player "+oGameEngine.getCurrentPlayerId()+" turn", panelStartX+2, panelStartY+14);
 		}
 	}
@@ -141,7 +141,7 @@ class cPanelSelectedUnit extends cPanel {
 		
 		fill(0); //fill(255,0,0);
 		
-		textSize(iNumberTextSize);
+		textSize(11);
 
 		string strMsg = "";
 		
@@ -199,7 +199,7 @@ class cPanelSelectedCity extends cPanel {
 		
 		fill(0); //fill(255,0,0);
 		int iLineNumber=1;
-		textSize(iNumberTextSize);
+		textSize(11);
 		
 		text("          city", (panelStartX+iLeftTextIndent), panelStartY+(iSpaceHeight*iLineNumber));
 		iLineNumber++;
