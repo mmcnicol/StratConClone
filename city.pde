@@ -123,11 +123,14 @@ class cCity {
 						if( getProductionDaysLeft() > 0 ) {
 							// show Production Days Left on city image
 							fill(255);
-							rect(DisplayX+iNumberIndent,DisplayY+iNumberIndent,iNumberTextSize,iNumberTextSize+5);
+							if ( getProductionDaysLeft() < 10 )
+								rect(DisplayX+iNumberIndent,DisplayY+iNumberIndent,iNumberTextSize+1,iNumberTextSize+1);
+							else 
+								rect(DisplayX+iNumberIndent,DisplayY+iNumberIndent,iNumberTextSize+5,iNumberTextSize+1);
 							fill(0);
-							textSize(iNumberTextSize);
-							text(getProductionDaysLeft(), DisplayX+iNumberIndent, DisplayY+iNumberTextSize+4 );
-							//textSize(iStringTextSize);
+							textSize(8);
+							text(getProductionDaysLeft(), DisplayX+iNumberIndent, DisplayY+iNumberTextSize+1 );
+							textSize(11);
 						}
 
 						break;				
@@ -140,9 +143,9 @@ class cCity {
 			/*
 			if ( oGrid.isFogOfWar(intCellX, intCellY)==true ) { // for testing purposes
 				fill(0);
-				textSize(iNumberTextSize);
+				textSize(8);
 				text("F", DisplayX+iNumberIndent, DisplayY+iNumberTextSize );
-				//textSize(iStringTextSize);
+				textSize(11);
 			}
 			*/
 			
@@ -374,15 +377,26 @@ class cCity {
 			numTransport = oUnitList.getCountOfPlayerUnitsByUnitType(iPlayerId_, 6);
 			numDestroyer = oUnitList.getCountOfPlayerUnitsByUnitType(iPlayerId_, 5);
 
-			//player needs a minimum number of tanks
-			//if (numTank<=2 || oCityList.getCountPlayerCityProducingUnit(intPlayerId, 0)<=2 ) {
-			if (numTank<=6) {
+
+			// ******************************************************
+			// if player transport is nearby waiting for tanks, build more tanks
+			if ( oUnitList.IsTransportNearbyWaitingForUnits( getPlayerId(), -1, getCellX(), getCellY() ) ) {
 
 				productionUnitTypeId= oUnitRef[0].getUnitTypeId(); 
 				productionDaysLeft = oUnitRef[0].getDaysToProduce();
 
 
-			//player should have a minimum number of transports
+			// ******************************************************
+			// else, player needs a minimum number of tanks
+			//if (numTank<=2 || oCityList.getCountPlayerCityProducingUnit(intPlayerId, 0)<=2 ) {
+			} else if (numTank<=6) {
+
+				productionUnitTypeId= oUnitRef[0].getUnitTypeId(); 
+				productionDaysLeft = oUnitRef[0].getDaysToProduce();
+
+
+			// ******************************************************
+			// else, player should have a minimum number of transports
 			//} else if (isPort() && ( numTransport <= 1 && oCityList.getCountPlayerCityProducingUnit(intPlayerId, 6)<=1 ) ) {
 			} else if (isPort() && numTransport <= 1 ) {
 
@@ -390,7 +404,8 @@ class cCity {
 				productionDaysLeft = oUnitRef[6].getDaysToProduce();
 
 
-			//player should have a minimum number of destroyers
+			// ******************************************************
+			// else, player should have a minimum number of destroyers
 			//} else if ( isPort() && ( numDestroyer <= 1  && oCityList.getCountPlayerCityProducingUnit(intPlayerId, 5)<=1 ) ) {
 			} else if ( isPort() && numDestroyer <= 1 ) {
 
@@ -398,7 +413,8 @@ class cCity {
 				productionDaysLeft = oUnitRef[5].getDaysToProduce();
 
 
-			// else if port city, build random unit
+			// ******************************************************
+			// else, if port city, build random unit
 			} else if ( isPort() ) {
 				switch( (int)random(1,8) ) {
 					case 1:
@@ -441,6 +457,7 @@ class cCity {
 						//break;						
 				} 			
 
+			// ******************************************************
 			// else not a port city, build random unit			
 			} else {
 				switch( (int)random(1,4) ) {

@@ -56,7 +56,9 @@ class cGrid {
 				//image( imgSea, x, y ); 
 				
 				intGridCellType[x][y]=SEA;
-				intGridCellFog[x][y]=true;
+
+				if (ShowFogOfWar==true) intGridCellFog[x][y]=true;
+				else intGridCellFog[x][y]=false;
 				
 				/*
 				//switch( oWorld.getScenario() ) {
@@ -237,9 +239,9 @@ class cGrid {
 						/=*
 						// for testing purposes
 						fill(0);
-						textSize(iNumberTextSize);
+						textSize(8);
 						text("S", DisplayX+iNumberIndent, DisplayY+iNumberTextSize );
-						textSize(iStringTextSize);
+						textSize(11);
 						*=/
 					} else {
 						//println("drawing land... at ("+x+","+y+") "("+DisplayX+","+DisplayY+")");
@@ -249,9 +251,9 @@ class cGrid {
 						/=*
 						// for testing purposes
 						fill(0);
-						textSize(+iNumberTextSize);
+						textSize(8);
 						text("L", DisplayX+iNumberIndent, DisplayY+iNumberTextSize );
-						//textSize(+iStringTextSize);
+						textSize(11);
 						*=/
 					}
 				}
@@ -345,7 +347,7 @@ class cGrid {
 		//if ( x >= oGrid.getShowFromCellX() && x <= (oGrid.getShowFromCellX()+oGrid.getCellCountX())   &&   y >= oGrid.getShowFromCellY() && y <= (oGrid.getShowFromCellY()+oGrid.getCellCountY()) )  {
 		if ( oViewport.isCellWithinViewport(x, y) ) { 
 			
-			if (intGridCellFog[x][y]==false) { // comment this out for testing purposes, to not show fog of war
+			if (intGridCellFog[x][y]==false) {
 				if ( oCityList.isCity(x,y) ) {
 					oCityList.Draw(x,y);
 				//} else if ( oUnitList.isUnit(x,y) && bDrawAnyUnits==true ) {
@@ -358,9 +360,9 @@ class cGrid {
 						/*
 						// for testing purposes
 						fill(0);
-						textSize(iNumberTextSize);
+						textSize(8);
 						text("S", DisplayX+iNumberIndent, DisplayY+iNumberTextSize );
-						textSize(iStringTextSize);
+						textSize(11);
 						*/
 					} else {
 						//println("drawing land... at ("+x+","+y+") "("+DisplayX+","+DisplayY+")");
@@ -370,9 +372,9 @@ class cGrid {
 						/*
 						// for testing purposes
 						fill(0);
-						textSize(iNumberTextSize);
+						textSize(8);
 						text("L", DisplayX+iNumberIndent, DisplayY+iNumberTextSize );
-						textSize(iStringTextSize);
+						textSize(11);
 						*/
 					}
 					if (bDrawAnyUnits)
@@ -385,9 +387,9 @@ class cGrid {
 		/*
 		if ( isFogOfWar(x, y)==true ) { // for testing purposes
 			fill(0);
-			textSize(iNumberTextSize);
+			textSize(8);
 			text("F", DisplayX+iNumberIndent, DisplayY+iNumberTextSize );
-			textSize(iStringTextSize);
+			textSize(11);
 		}
 		*/
 
@@ -469,17 +471,20 @@ class cGrid {
 				defineIslandAsRandomPoly(2, cellWidth*(int)random(65,75), cellHeight*(int)random(40,45), cellWidth*(int)random(3,4), cellHeight*(int)random(3,4) );
 
 				int i,j;
-				for (i=5; i<countX; i=i+9) {
-					for (j=5; j<countY; j=j+8) {
-						switch( (int)random(1,3) ) {
+				for (i=5; i<countX; i=i+12) {
+					for (j=5; j<countY; j=j+14) {
+						switch( (int)random(1,4) ) {
 							case 1:
 								if ((int)random(1,1000)%2==0) defineIslandAsRandomPoly(-1, cellWidth*(int)random(i-5,i+5), cellHeight*(int)random(j-5,j+5), cellWidth*(int)random(2,5), cellHeight*(int)random(2,5) );
 								break;
 							case 2:
-								if ((int)random(1,1000)%2==0) defineIslandAsRandomPoly(-1, cellWidth*(int)random(i-5,i+5), cellHeight*(int)random(j-5,j+5), cellWidth*(int)random(3,6), cellHeight*(int)random(3,6) );
+								if ((int)random(1,1000)%3==0) defineIslandAsRandomPoly(-1, cellWidth*(int)random(i-5,i+5), cellHeight*(int)random(j-5,j+5), cellWidth*(int)random(3,6), cellHeight*(int)random(3,6) );
 								break;
 							case 3:
-								if ((int)random(1,1000)%2==0) defineIslandAsRandomPoly(-1, cellWidth*(int)random(i-5,i+5), cellHeight*(int)random(j-5,j+5), cellWidth*(int)random(4,7), cellHeight*(int)random(4,7) );
+								if ((int)random(1,1000)%2==0) defineIslandAsRandomPoly(-1, cellWidth*(int)random(i-5,i+5), cellHeight*(int)random(j-5,j+5), cellWidth*(int)random(7,10), cellHeight*(int)random(8,15) );
+								break;
+							case 4:
+								if ((int)random(1,1000)%2==0) defineIslandAsRandomPoly(-1, cellWidth*(int)random(i-5,i+5), cellHeight*(int)random(j-5,j+5), cellWidth*(int)random(10,13), cellHeight*(int)random(14,28) );
 								break;
 						} 					
 					}
@@ -602,7 +607,7 @@ class cGrid {
 						intGridCellType[xxx][yyy]=1;
 
 						//println("debug grid#1");
-						int intRandomNumber = round(random(1,3));
+						int intRandomNumber = round(random(1,6));
 						//println("debug grid#2");
 					
 						

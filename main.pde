@@ -6,7 +6,7 @@ PImage imgSea, imgLand, imgCity0, imgCity1, imgCity2, imgTank1, imgTank2, imgFig
 PFont FontA;
 
 string GAMETITLE="StratConClone";
-string GAMEVERSION="version 0.43";
+string GAMEVERSION="version 0.44";
 
 cWorld oWorld;
 cAnimate oAnimate;
@@ -39,14 +39,15 @@ int iPlayer1Mode=1; // 1=human, 2=computer.
 int iMapSize=2; // 1=Small (45x25), 2=large (90x50)
 //int iNumberTextSize=10;
 //int iStringTextSize=18;
-int iNumberTextSize=5;
+int iNumberTextSize=6;
 int iStringTextSize=11;
+bool ShowFogOfWar=true;
 
 void setup() {
 	
 	//size( oViewport.getWidth()+oPanel1.getWidth(), oViewport.getHeight() );
 
-	size( 1100, 460 );
+	size( 1000, 620 );
 
 	frameRate(10);
 	background(0);
@@ -130,7 +131,7 @@ void draw() {
 					break;
 				case 2:
 					//oViewport = new cViewport(90, 50, 45, 25); // 16x16
-					oViewport = new cViewport(120, 64, 45, 25); // 16x16
+					oViewport = new cViewport(90, 80, 45, 35); // 16x16
 					//oViewport = new cViewport(88, 48, 22, 12); // 32x32
 					//oViewport = new cViewport(120, 64, 15, 8); // 48x48
 					break;
@@ -174,7 +175,7 @@ void draw() {
 					break;
 				case 2:
 					//oViewport = new cViewport(90, 50, 45, 25); // 16x16
-					oViewport = new cViewport(120, 64, 45, 25); // 16x16
+					oViewport = new cViewport(90, 80, 45, 35); // 16x16
 					//oViewport = new cViewport(88, 48, 22, 12); // 32x32
 					//oViewport = new cViewport(120, 64, 15, 8); // 48x48
 					break;
