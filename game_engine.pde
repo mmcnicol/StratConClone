@@ -103,12 +103,17 @@ class cGameEngine {
 
 	void nextDay() {
 		dayNumber++;
-		println("Day " + dayNumber);
-		println("");
+		//println("Day " + dayNumber);
+		//println("");
 		oUnitList.resetMovesLeftToday();
 		oCityList.manageProduction();
 		//oCityList.Draw();
 		oViewport.draw();
+
+		//oPanelCityList.show();
+		//oPanelIslandList.show();
+
+		oIslandList.updateIslandStatus();
 	}
 
 

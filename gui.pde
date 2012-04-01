@@ -92,6 +92,8 @@ class cViewport {
 		oGrid.draw();
 		//oCityList.Draw();
 		oUnitList.Draw();
+		oPanelCityList.show();
+		oPanelIslandList.show();
 		
 		if ( GameState==4 ) {
 

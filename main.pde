@@ -27,6 +27,8 @@ cPanel2 oPanel2;
 cPanelSelectedUnit oPanelSelectedUnit;
 cPanelSelectedCity oPanelSelectedCity;
 cPanelMap oPanelMap;
+cPanelCityList oPanelCityList;
+cPanelIslandList oPanelIslandList;
 cDialogueStartup oDialogueStartup;
 cDialogueCityProduction oDialogueCityProduction;
 cGameEngine oGameEngine; 
@@ -47,7 +49,8 @@ void setup() {
 	
 	//size( oViewport.getWidth()+oPanel1.getWidth(), oViewport.getHeight() );
 
-	size( 1000, 620 );
+	//size( 1000, 620 );
+	size( 1000, 2000 );
 
 	frameRate(10);
 	background(0);
@@ -88,6 +91,7 @@ void draw() {
 			
 			oPanel1.update();
 			oAnimate.do();
+			oPanelCityList.show();
 
 			//oViewport.printWidth();
 
@@ -138,14 +142,19 @@ void draw() {
 			}
 
 			oPanel1 = new cPanel1(0,50);
-			oPanel2 = new cPanel2(height-30,20);
+			//oPanel2 = new cPanel2(height-30,20);
+			oPanel2 = new cPanel2(590,20);
 			
 			oPanelSelectedCity = new cPanelSelectedCity(160,300);
 			
-			oPanelSelectedUnit = new cPanelSelectedUnit(height-30,20);	
+			//oPanelSelectedUnit = new cPanelSelectedUnit(height-30,20);
+			oPanelSelectedUnit = new cPanelSelectedUnit(590,20);
 			
 			oPanelMap = new cPanelMap(70,102);
 			
+			oPanelIslandList = new cPanelIslandList(650,500);
+			oPanelCityList = new cPanelCityList(1200,790);
+
 			oGameEngine = new cGameEngine(); 
 			
 			
@@ -365,6 +374,24 @@ class cGridCell {
 }
 
 
+/************************************************************************
+	String functions
+************************************************************************/
+string LPAD(string str_, int length_) {
+
+	while (str_.length() < length_) {
+		str_=" "+str_;
+	}
+	return str_;
+}
+
+string RPAD(string str_, int length_) {
+
+	while (str_.length() < length_) {
+		str_=str_+" ";
+	}
+	return str_;
+}
 
 
 

@@ -13,6 +13,11 @@ class cCityList {
 			//println("add city for player " + intPlayerId_ +" at row="+intCellRow_+" col="+ intCellCol_);
 			
 		listCity.add( new cCity(intPlayerId_, intCellRow_, intCellCol_, iIslandListId_) );  
+		//if ( intPlayerId_ != 0 ) oIslandList.setPlayerId(iIslandListId_, intPlayerId_);
+
+		//println("in cCityList, AddCity for player id="+intPlayerId_);
+
+		//if ( intPlayerId_ == -1 ) oIslandList.increaseUnoccupiedCityCount(iIslandListId_);
 	}
 	
 	
@@ -27,6 +32,48 @@ class cCityList {
 		for (int i = 0; i < listCity.size(); i++) { 
 			cCity city = (cCity) listCity.get(i);
 			println("city "+city.getCellX()+","+city.getCellY()+" PlayerId="+city.getPlayerId()+", IslandId="+city.getIslandId() );
+		}  
+	}
+
+	int getCountIslandPlayerCity(int iIslandId_, int iPlayerId_) {
+		
+		int counter=0;
+		
+		//println("in cCityList.getCountIslandPlayerCity, island id=" + iIslandId_ + ", player id="+iPlayerId_); 
+
+		for (int i = 0; i < listCity.size(); i++) { 
+			cCity city = (cCity) listCity.get(i);
+			if ( city.getIslandId()==iIslandId_ && city.getPlayerId()==iPlayerId_ ) 
+				counter=counter+1;
+
+		}  
+		//println("in cCityList.getCountIslandPlayerCity, counter="+counter); 
+
+		return counter;	
+	}
+
+	void printIslandCityLocationsToPanelCityList() {
+
+		string strCityId="";
+		string strStatus="";
+		string strLocation="";
+		string strIslandId="";
+		string strIsPort="";
+		string strCurrentProduction="";
+
+		for (int i = 0; i < listCity.size() && i < 80; i++) { 
+
+			cCity city = (cCity) listCity.get(i);
+			strCityId = " " + LPAD(""+i,4);
+			strStatus = RPAD(""+city.getStatus(),10);	
+			strLocation = LPAD(""+city.getCellX(),4) + "," + RPAD(""+city.getCellY(),3);
+			strIslandId = "     " + LPAD(""+city.getIslandId(),3);
+			strIsPort = RPAD(""+city.isPort(),6);
+			strCurrentProduction = city.getProductionUnitTypeName();
+
+			//oPanelCityList.addLine("IslandId="+city.getIslandId() + ", PlayerId="+city.getPlayerId() + ", city "+city.getCellX()+","+city.getCellY() );
+			//oPanelCityList.addLine("CityId=" + i + ", Status="+city.getStatus() + ", Location="+city.getCellX()+","+city.getCellY() + ", IslandId="+city.getIslandId() );
+			oPanelCityList.addLine(" " + strCityId + " | " + strStatus + " | " + strLocation + " | " + strIslandId + " | " + strIsPort + " | " + strCurrentProduction );
 		}  
 	}
 	
@@ -46,7 +93,8 @@ class cCityList {
 	*/
 
 	int getCount() {
-		return listCity.size()-1;
+		//return listCity.size()-1;
+		return listCity.size();
 	}
 
 	int getCountCityNearby(int intPlayerId_, int intRow_, int intCol_) {
@@ -194,8 +242,10 @@ class cCityList {
 		//println("debug#2.1, iCityListId_="+iCityListId_+", iPlayerId_="+iPlayerId_);
 		cCity city = (cCity) listCity.get(iCityListId_);
 		//println("debug#2.2");
+
+		oIslandList.updateIslandPlayerCityCount(city.getIslandId(), city.getPlayerId(), iPlayerId_);
+	
 		city.setPlayerId(iPlayerId_);
-		
 		
 		// continue building unit type, else 
 		// game rule: default initial production to Tank (if city was unoccupied)

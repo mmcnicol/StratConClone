@@ -532,7 +532,7 @@ class cGrid {
 		//oCityList.AddCity(intPlayerId, X, Y);
 		
 		oIslandList.AddIsland(intPlayerId); 
-		iIslandListId = oIslandList.getCount();
+		iIslandListId = oIslandList.getCount()-1;
 
 		// create a poly (island)
 		float deg = 0, deg2;
@@ -640,7 +640,10 @@ class cGrid {
 								} else {
 									//println("debug grid#4");
 									// game rule: each player should only have one city at the beginning.
-									if ( cityCount==0 ) oCityList.AddCity(intPlayerId, xxx, yyy, iIslandListId);
+									if ( cityCount==0 ) {
+										oCityList.AddCity(intPlayerId, xxx, yyy, iIslandListId);
+										oIslandList.setPlayerId(iIslandListId, intPlayerId);
+									}
 									else oCityList.AddCity(-1, xxx, yyy, iIslandListId); // city with player -1 is empty city
 									//println("debug grid#5");
 									cityCount++;

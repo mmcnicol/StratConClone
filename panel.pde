@@ -37,7 +37,6 @@ class cPanel {
 		redraw();
 	}
 	
-	
 }
 
 
@@ -263,3 +262,107 @@ class cPanelMap extends cPanel {
 
 
 
+
+
+/* ====================================================================================
+   this panel displays information based on City List
+*/
+class cPanelCityList extends cPanel {
+
+	int iSpaceHeight;
+	int iLineNumber;
+	//cButton oButtonProduction;
+
+	cPanelCityList(int panelStartY_, int panelHeight_) {
+		super(panelStartY_, panelHeight_);
+		panelStartX = 5;
+		panelWidth=500;
+		iSpaceHeight=iNumberTextSize+3;
+	}
+	
+	void show() {
+		
+		//clear(255);
+		clear(200);
+		
+		fill(0); //fill(255,0,0);
+		iLineNumber=1;
+		textSize(11);
+
+		//println("oCityList.getCount()...");
+		//println("oCityList.getCount()" + oCityList.getCount() );
+		text("City Count: " + oCityList.getCount(), (panelStartX+iLeftTextIndent), panelStartY+(iSpaceHeight*iLineNumber));
+		iLineNumber++;
+		text("City List:", (panelStartX+iLeftTextIndent), panelStartY+(iSpaceHeight*iLineNumber));
+		iLineNumber++;
+		text("CityId | Status     | Location | IslandId | isPort | CurrentProduction", (panelStartX+iLeftTextIndent), panelStartY+(iSpaceHeight*iLineNumber));
+		iLineNumber++;
+		text("----------------------------------------------------------------------", (panelStartX+iLeftTextIndent), panelStartY+(iSpaceHeight*iLineNumber));
+		iLineNumber++;
+		
+		oCityList.printIslandCityLocationsToPanelCityList();
+	
+	}
+
+	void addLine(string str_) {
+
+		//println(str_);
+		//println("cPanelCityList panelStartX="+panelStartX+", panelStartY" + panelStartY );
+		text(str_, (panelStartX+iLeftTextIndent), panelStartY+(iSpaceHeight*iLineNumber));
+		iLineNumber++;
+	}
+	
+}
+
+
+
+
+
+/* ====================================================================================
+   this panel displays information based on Island List
+*/
+class cPanelIslandList extends cPanel {
+
+	int iSpaceHeight;
+	int iLineNumber;
+	//cButton oButtonProduction;
+
+	cPanelIslandList(int panelStartY_, int panelHeight_) {
+		super(panelStartY_, panelHeight_);
+		panelStartX = 5;
+		panelWidth=500;
+		iSpaceHeight=iNumberTextSize+3;
+	}
+	
+	void show() {
+		
+		//clear(255);
+		clear(230);
+		
+		fill(0); //fill(255,0,0);
+		iLineNumber=1;
+		textSize(11);
+		
+		//println("oIslandList.getCount()...");
+		//println("oIslandList.getCount()" + oIslandList.getCount() );
+		text("Island Count: " + oIslandList.getCount(), (panelStartX+iLeftTextIndent), panelStartY+(iSpaceHeight*iLineNumber));
+		iLineNumber++;
+		text("Island List:", (panelStartX+iLeftTextIndent), panelStartY+(iSpaceHeight*iLineNumber));
+		iLineNumber++;
+		text("IslandId | Status     | P1City | P2City | UnoccupiedCity", (panelStartX+iLeftTextIndent), panelStartY+(iSpaceHeight*iLineNumber));
+		iLineNumber++;
+		text("--------------------------------------------------------", (panelStartX+iLeftTextIndent), panelStartY+(iSpaceHeight*iLineNumber));
+		iLineNumber++;
+		oIslandList.printIslandListToPanelIslandList();
+	
+	}
+
+	void addLine(string str_) {
+
+		//println(str_);
+		//println("cPanelIslandList panelStartX="+panelStartX+", panelStartY" + panelStartY );
+		text(str_, (panelStartX+iLeftTextIndent), panelStartY+(iSpaceHeight*iLineNumber));
+		iLineNumber++;
+	}
+	
+}

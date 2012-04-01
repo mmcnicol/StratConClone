@@ -28,6 +28,9 @@ class cCity {
 			productionDaysLeft = oUnitRef[0].getDaysToProduce();
 			productionUnitTypeName = oUnitRef[0].getUnitName();
 			//println("productionUnitTypeId=" + productionUnitTypeId + ", productionDaysLeft=" + productionDaysLeft);
+
+			oIslandList.updateIslandPlayerCityCount(getIslandId(), -1, intPlayerId_);
+
 		} else { 
 			//println("city is unoccupied so build nothing");
 			// game rule: empty city does not produce anything
@@ -35,6 +38,8 @@ class cCity {
 			productionDaysLeft = -1;
 			productionUnitTypeName = "N/A";
 			//println("productionUnitTypeId=" + productionUnitTypeId + ", productionDaysLeft=" + productionDaysLeft);
+
+			oIslandList.increaseUnoccupiedCityCount(iIslandListId_);
 		}
 	}
 
@@ -50,6 +55,22 @@ class cCity {
 	
 	void printRowCol() {
 		println("city at row="+intCellX+", col="+intCellY);
+	}
+
+	string getStatus() {
+
+		string strStatus="Unoccupied";
+
+		switch( getPlayerId() ) {
+			case 1: 
+				strStatus="player 1";
+				break;
+			case 2: 
+				strStatus="player 2";
+				break;
+		}
+
+		return strStatus;
 	}
 
 	boolean isNearby(int intCellX_, int intCellY_) {
