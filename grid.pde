@@ -283,10 +283,10 @@ class cGrid {
 	void AddCitiesToIslandListId(int islandListId_) {
 
 		//println("debug#1");
-
+		int x,y;
 		int maxCityPerIsland=(int)random(3,8);
 		//println("debug#2");
-		int intRandomNumber = round(random(1,3));
+		//int intRandomNumber = round(random(1,3));
 		//println("debug#4");
 		int cityCount=0;
 		//println("debug#5");
@@ -294,9 +294,11 @@ class cGrid {
 		// scan through grid
 		for (y=1; y<=countY; y=y+1) {
 			for (x=1; x<=countX; x=x+1) {
+
 				if ( intGridIslands[x][y]==islandListId_ ) {
+
 					//println("debug#6, "+islandListId_);
-					if ( intRandomNumber==2 && cityCount<maxCityPerIsland ) {
+					if ( ((int)random(1,1000)%3==0) && cityCount<maxCityPerIsland ) {
 						//println("debug#7, add city?");
 						// game rule: cities should not be immediately next to each other
 						if ( oCityList.getCountCityNearby(1, x, y)==0 && oCityList.getCountCityNearby(2, x, y)==0) {
@@ -307,7 +309,9 @@ class cGrid {
 							cityCount++;					
 						}
 					}
+
 				}
+
 			}
 		}
 	}
@@ -601,10 +605,10 @@ class cGrid {
 						if ((int)random(1,1000)%3==0) defineIslandAsRandomPoly(-1, cellWidth*(int)random(i-5,i+5), cellHeight*(int)random(j-5,j+5), cellWidth*(int)random(3,6), cellHeight*(int)random(3,6) );
 						break;
 					case 3:
-						if ((int)random(1,1000)%2==0) defineIslandAsRandomPoly(-1, cellWidth*(int)random(i-5,i+5), cellHeight*(int)random(j-5,j+5), cellWidth*(int)random(7,10), cellHeight*(int)random(8,15) );
+						if ((int)random(1,1000)%2==0) defineIslandAsRandomPoly(-1, cellWidth*(int)random(i-5,i+5), cellHeight*(int)random(j-5,j+5), cellWidth*(int)random(6,9), cellHeight*(int)random(7,14) );
 						break;
 					case 4:
-						if ((int)random(1,1000)%2==0) defineIslandAsRandomPoly(-1, cellWidth*(int)random(i-5,i+5), cellHeight*(int)random(j-5,j+5), cellWidth*(int)random(10,13), cellHeight*(int)random(14,28) );
+						if ((int)random(1,1000)%2==0) defineIslandAsRandomPoly(-1, cellWidth*(int)random(i-5,i+5), cellHeight*(int)random(j-5,j+5), cellWidth*(int)random(9,12), cellHeight*(int)random(13,26) );
 						break;
 				} 					
 			}
