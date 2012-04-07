@@ -28,7 +28,7 @@ class cViewport {
 
 		//println("create grid...gridCellCountX="+ gridCellCountX  +", gridCellCountY="+gridCellCountY);
 
-		oGrid = new cGrid(gridCellCountX, gridCellCountY, iStartX, iStartY); 
+		//oGrid = new cGrid(gridCellCountX, gridCellCountY, iStartX, iStartY); 
 		
 		ScrollBarWidth = cellWidth;
 
@@ -97,20 +97,7 @@ class cViewport {
 		
 		if ( GameState==4 ) {
 
-			switch( iMapSize ) {
-				case 1:
-					oPanelMap.show();
-					break;
-				case 2:
-					oPanelMap.show();
-					break;
-				case 100:
-					// do nothing
-					break;
-
-			}
-
-
+			oPanelMap.show();
 		}
 		
 		//oPanel2.show();
@@ -133,94 +120,26 @@ class cViewport {
 
 	void scrollIfAppropriate(int x_, int y_) {
 
-		int iMargin=1;
+		//println("oViewport.scrollIfAppropriate("+x_+","+y_+"), getShowFromCellX()="+oGrid.getShowFromCellX()+", getShowFromCellY()="+oGrid.getShowFromCellY() );
+
+		int iMargin=4;
 		bool bRedraw=false;
 
-		if( getViewportCellCountX() - oGrid.getCellCountX()!=0 ) { 
+		if ( x_ < oGrid.getShowFromCellX()+iMargin && oGrid.getShowFromCellX()>1 ) { oGrid.setShowFromCellX(oGrid.getShowFromCellX()-iMargin); bRedraw=true; }
+		if ( y_ < oGrid.getShowFromCellY()+iMargin && oGrid.getShowFromCellY()>1  ) { oGrid.setShowFromCellY(oGrid.getShowFromCellY()-iMargin); bRedraw=true; }
 
-			//switch( oWorld.getScenario() ) {
-			switch( iMapSize ) {
-				case 1:
-					iMargin=2;
-					break;
-				case 2:
-					iMargin=2;
-					break;
-			}
+		if ( x_ > oGrid.getShowFromCellX()+getViewportCellCountX()-iMargin && oGrid.getShowFromCellX()<41 ) { oGrid.setShowFromCellX(oGrid.getShowFromCellX()+iMargin); bRedraw=true; }
+		if ( y_ > oGrid.getShowFromCellY()+getViewportCellCountY()-iMargin && oGrid.getShowFromCellY()<44  ) { oGrid.setShowFromCellY(oGrid.getShowFromCellY()+iMargin); bRedraw=true; }
 
-			//println("debug#1 iMargin="+iMargin);
+		oHScrollBar.setBlockStartX( (oGrid.getShowFromCellX()*8) );
+		oVScrollBar.setBlockStartY( (oGrid.getShowFromCellY()*8) );
 
-			//println("debug halfX="+ (round(getViewportCellCountX()/2)) );
-			//println("debug halfY="+ (round(getViewportCellCountY()/2)) );
-		
-			//int iHalfWidthX = round( ( getViewportCellCountX()-getStartX() ) /2 );
-		
-		
-			//println("in adjustIfAppropriate("+x_+","+y_+") iHalfWidthX="+iHalfWidthX);
-		
-			int temp = x_-(iMargin);
-			if ( temp < 1 ) temp=1;
-			else if ( temp > (oGrid.getCellCountX()-getViewportCellCountX()-2) ) temp=(oGrid.getCellCountX()-getViewportCellCountX()-2);
-			
-			
+		//println("bRedraw="+bRedraw);
 
-			if ( (x_-iMargin)<1 ) { 
-				oGrid.setShowFromCellX(1); bRedraw=true;
-				//println("debug1: oGrid.setShowFromCellX=1");
-				//println("debug gui/viewport... show from cell x 1");
-			} else if ( x_ > (oGrid.getCellCountX()-iMargin) ) { 
-				oGrid.setShowFromCellX( (oGrid.getCellCountX()-getViewportCellCountX()-1) ); bRedraw=true;
-				//println("temp="+temp+" x_="+x_);
-				//println("debug gui/viewport... x is greater than");
-				//println("debug2: oGrid.setShowFromCellX="+ (oGrid.getCellCountX()-getViewportCellCountX()-1) );
-			} else if ( x_ < (oGrid.getShowFromCellX()+iMargin) ) { 
-				oGrid.setShowFromCellX( temp ); bRedraw=true;
-				//println("temp="+temp+" x_="+x_);
-				//println("debug gui/viewport... x is less than");
-				//println("debug3: x_"+x_+", (oGrid.getShowFromCellX()+iMargin)="+(oGrid.getShowFromCellX()+iMargin)  );
-			} else if ( x_ > (oGrid.getShowFromCellX()+getViewportCellCountX()-iMargin) ) { 
-				oGrid.setShowFromCellX( temp ); bRedraw=true;
-				//println("temp="+temp+" x_="+x_);
-				//println("debug gui/viewport... x is greater than 2nd  "+ (oGrid.getShowFromCellX()+getViewportCellCountX()-iMargin) );
-				//println("debug4: x_"+x_+", (getViewportCellCountX()-iMargin)="+(getViewportCellCountX()-iMargin)  );
-				//println("");
-			}
-
-
-			//println("debug#2");
-
-			temp = y_-iMargin;
-			if ( temp < 1 ) temp=1;
-			else if ( temp > (oGrid.getCellCountY()-getViewportCellCountY()-2) ) temp=(oGrid.getCellCountY()-getViewportCellCountY()-2);
-			
-			
-
-			if ( (y_-iMargin)<1 ) { 
-				oGrid.setShowFromCellY(1); bRedraw=true;
-				//println("debug gui/viewport... show from cell y 1");
-			} else if ( y_ > (oGrid.getCellCountY()-iMargin) ) { 
-				oGrid.setShowFromCellY( (oGrid.getCellCountY()-getViewportCellCountY()-1) ); bRedraw=true;
-				//println("temp="+temp+" y_="+y_);
-				//println("debug gui/viewport... y is greater than");
-			} else if ( y_ < (oGrid.getShowFromCellY()+iMargin) ) { 
-				oGrid.setShowFromCellY( temp ); bRedraw=true;
-				//println("temp="+temp+" y_="+y_);
-				//println("debug gui/viewport... y is less than");
-				//println("debug3: y_"+y_+", (oGrid.getShowFromCellY()+iMargin)="+(oGrid.getShowFromCellY()+iMargin)  );
-			} else if ( y_ > (oGrid.getShowFromCellY()+getViewportCellCountY()-iMargin) ) { 
-				oGrid.setShowFromCellY( temp ); bRedraw=true;
-				//println("temp="+temp+" y_="+y_);
-				//println("debug gui/viewport... y is greater than 2nd  "+ (oGrid.getShowFromCellY()+getViewportCellCountY()-iMargin) );
-				//println("debug4: y_"+y_+", (getViewportCellCountY()-iMargin)="+(getViewportCellCountY()-iMargin)  );
-				//println("");
-			}
-
-			oHScrollBar.setBlockStartX( (oGrid.getShowFromCellX()*8) );
-			oVScrollBar.setBlockStartY( (oGrid.getShowFromCellY()*8) );
-
-			if ( bRedraw ) oViewport.draw();
-
+		if ( bRedraw ) {
+			oViewport.draw();
 		}
+
 	}
 	
 }

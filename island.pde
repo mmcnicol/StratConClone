@@ -6,7 +6,8 @@ class cIsland {
 	int P2CityCount;
 	int UnoccupiedCityCount;
 
-	cIsland(int iPlayerId_, int iCellX_, int iCellY_) {
+	cIsland(int iPlayerId_) {
+
 		iPlayerId=iPlayerId_;
 		P1CityCount=0;
 		P2CityCount=0;

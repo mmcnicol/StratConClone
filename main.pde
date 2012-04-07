@@ -6,7 +6,7 @@ PImage imgSea, imgLand, imgCity0, imgCity1, imgCity2, imgTank1, imgTank2, imgFig
 PFont FontA;
 
 string GAMETITLE="StratConClone";
-string GAMEVERSION="version 0.44";
+string GAMEVERSION="version 0.45";
 
 cWorld oWorld;
 cAnimate oAnimate;
@@ -35,6 +35,9 @@ cGameEngine oGameEngine;
 
 int cellWidth=16;
 int cellHeight=16;
+//int cellWidth=32;
+//int cellHeight=32;
+
 int iNumberIndent=1;
 int GameState=0; // 0=init, 1=startup diag, 2=startup diag closed, 3= initial city production, 4=play, 5=pause, 6=surrender?, 99=end
 int iPlayer1Mode=1; // 1=human, 2=computer.
@@ -77,6 +80,7 @@ void setup() {
 	oPlayer1 = new cPlayer(1, false);
 	oPlayer2 = new cPlayer(2, true);
 	oGeometry = new cGeometry();
+	//oGrid = new cGrid();
 
 }
 
@@ -125,6 +129,8 @@ void draw() {
 			oCityList = new cCityList();
 			oUnitList = new cUnitList(); 
 
+			oGrid = new cGrid(80, 79, 1, 1); 
+
 			//switch( oWorld.getScenario() ) {
 			switch( iMapSize ) {
 			
@@ -134,10 +140,10 @@ void draw() {
 					oViewport = new cViewport(15, 8, 15, 8); // 32x32
 					break;
 				case 2:
-					//oViewport = new cViewport(90, 50, 45, 25); // 16x16
-					oViewport = new cViewport(90, 80, 45, 35); // 16x16
-					//oViewport = new cViewport(88, 48, 22, 12); // 32x32
-					//oViewport = new cViewport(120, 64, 15, 8); // 48x48
+					////oViewport = new cViewport(90, 50, 45, 25); // 16x16
+					oViewport = new cViewport(80, 79, 40, 35); // 16x16
+					//oViewport = new cViewport(90, 80, 20, 17); // 32x32
+					////oViewport = new cViewport(120, 64, 15, 8); // 48x48
 					break;
 			}
 
@@ -183,10 +189,10 @@ void draw() {
 					oViewport = new cViewport(15, 8, 15, 8); // 32x32
 					break;
 				case 2:
-					//oViewport = new cViewport(90, 50, 45, 25); // 16x16
-					oViewport = new cViewport(90, 80, 45, 35); // 16x16
-					//oViewport = new cViewport(88, 48, 22, 12); // 32x32
-					//oViewport = new cViewport(120, 64, 15, 8); // 48x48
+					////oViewport = new cViewport(90, 50, 45, 25); // 16x16
+					oViewport = new cViewport(80, 79, 40, 35); // 16x16
+					//oViewport = new cViewport(90, 80, 20, 17); // 32x32
+					////oViewport = new cViewport(120, 64, 15, 8); // 48x48
 					break;
 			}
 

@@ -10,7 +10,7 @@ class cCityList {
 	void AddCity(int intPlayerId_, int intCellRow_, int intCellCol_, int iIslandListId_) {
 		
 		//if ( intPlayerId_ != 0 )
-			//println("add city for player " + intPlayerId_ +" at row="+intCellRow_+" col="+ intCellCol_);
+			println("add city for player " + intPlayerId_ +" at row="+intCellRow_+" col="+ intCellCol_);
 			
 		listCity.add( new cCity(intPlayerId_, intCellRow_, intCellCol_, iIslandListId_) );  
 		//if ( intPlayerId_ != 0 ) oIslandList.setPlayerId(iIslandListId_, intPlayerId_);
@@ -128,6 +128,40 @@ class cCityList {
 		return city.isPort();	
 	}
 	
+	bool IslandHasPortCity(int IslandListId_) {
+
+		for (int i = 0; i < listCity.size(); i++) { 
+			cCity city = (cCity) listCity.get(i);
+			if ( city.getIslandId()==IslandListId_ && city.isPort()==true ) return true;
+		}  
+		return false;
+	}
+
+	int getRandomIslandCityId(int IslandListId_) {
+
+		//println("in citylist.getRandomIslandCityId("+IslandListId_+") ");
+
+		int i=0;
+		int IslandCityCount=0;
+		int randomIslandCitySeqNumber=0;
+
+		for (i=0; i < listCity.size(); i++) { 
+			cCity city = (cCity) listCity.get(i);
+			if ( city.getIslandId()==IslandListId_ ) IslandCityCount=IslandCityCount+1;
+		}  
+
+		//println("IslandCityCount="+IslandCityCount);
+
+		randomIslandCitySeqNumber=(int)random(0,IslandCityCount);
+
+		for (i=0; i < listCity.size(); i++) { 
+			cCity city = (cCity) listCity.get(i);
+			if ( city.getIslandId()==IslandListId_ && randomIslandCitySeqNumber==i) return i;
+		}  
+
+		return -1;
+	}
+
 	int getCityId(int cellRow_, int cellCol_) {
 	
 		//println("in citylist.getCityId() ");
@@ -144,6 +178,17 @@ class cCityList {
 
 		cCity city = (cCity) listCity.get(iCityListId_);
 		return city.getPlayerId();	
+	}
+
+	void setCityPlayerId(int iCityListId_, int iPlayerId_) {
+	
+		cCity city = (cCity) listCity.get(iCityListId_);
+
+		oIslandList.setPlayerId(city.getIslandId(), iPlayerId_);			
+		oIslandList.updateIslandPlayerCityCount(city.getIslandId(), city.getPlayerId(), iPlayerId_);
+
+		city.setPlayerId(iPlayerId_);
+		city.setProductionUnitTypeId(0);
 	}
 
 	string getCityLocation(int iCityListId_) {

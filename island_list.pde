@@ -10,7 +10,7 @@ class cIslandList {
 	void AddIsland(int intPlayerId_) {
 		
 		//if ( intPlayerId_ != 0 )
-			//println("add city for player " + intPlayerId_ +" at row="+intCellRow_+" col="+ intCellCol_);
+			//println("add island for player " + intPlayerId_ );
 			
 		listIsland.add( new cIsland(intPlayerId_) );  
 	}
@@ -22,6 +22,13 @@ class cIslandList {
 		island.setPlayerId( intPlayerId_ );
 	}
 
+	int getPlayerId(iIslandListId_) {
+
+		//println("in cIslandList.getPlayerId("+iIslandListId_+")"); 
+
+		cIsland island = (cIsland) listIsland.get( iIslandListId_ );
+		return island.getPlayerId();
+	}
 
 	void increaseUnoccupiedCityCount(int iIslandListId_) {
 

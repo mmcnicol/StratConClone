@@ -2173,7 +2173,7 @@ class cUnit {
 	void Draw() {
 
 		//println("drawing unit, intPlayerId="+intPlayerId+", intUnitTypeId=" + intUnitTypeId + ", strUnitName=" + strUnitName);
-		
+		//println("oViewport.isCellWithinViewport(intCellX, intCellY)="+oViewport.isCellWithinViewport(intCellX, intCellY) );
 		int countOfPlayerUnits;
 		
 		//if ( intCellX >= oGrid.getShowFromCellX() && intCellX <= (oGrid.getShowFromCellX()+oGrid.getCellCountX())   &&   intCellY >= oGrid.getShowFromCellY() && intCellY <= (oGrid.getShowFromCellY()+oGrid.getCellCountY()) )  {
