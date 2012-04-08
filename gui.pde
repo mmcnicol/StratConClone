@@ -95,6 +95,9 @@ class cViewport {
 		oPanelCityList.show();
 		oPanelIslandList.show();
 		
+		oPanelPlayer1UnitCounts.show();
+		oPanelPlayer2UnitCounts.show();
+
 		if ( GameState==4 ) {
 
 			oPanelMap.show();

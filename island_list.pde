@@ -15,14 +15,14 @@ class cIslandList {
 		listIsland.add( new cIsland(intPlayerId_) );  
 	}
 	
-	void setPlayerId(iIslandListId_, intPlayerId_) {
+	void setPlayerId(int iIslandListId_, int intPlayerId_) {
 
 		//println("in cIslandList.setPlayerId("+iIslandListId_+", "+intPlayerId_+")"); 
 		cIsland island = (cIsland) listIsland.get( iIslandListId_ );
 		island.setPlayerId( intPlayerId_ );
 	}
 
-	int getPlayerId(iIslandListId_) {
+	int getPlayerId(int iIslandListId_) {
 
 		//println("in cIslandList.getPlayerId("+iIslandListId_+")"); 
 

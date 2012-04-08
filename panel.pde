@@ -305,9 +305,6 @@ class cPanelCityList extends cPanel {
 	}
 
 	void addLine(string str_) {
-
-		//println(str_);
-		//println("cPanelCityList panelStartX="+panelStartX+", panelStartY" + panelStartY );
 		text(str_, (panelStartX+iLeftTextIndent), panelStartY+(iSpaceHeight*iLineNumber));
 		iLineNumber++;
 	}
@@ -343,8 +340,6 @@ class cPanelIslandList extends cPanel {
 		iLineNumber=1;
 		textSize(11);
 		
-		//println("oIslandList.getCount()...");
-		//println("oIslandList.getCount()" + oIslandList.getCount() );
 		text("Island Count: " + oIslandList.getCount(), (panelStartX+iLeftTextIndent), panelStartY+(iSpaceHeight*iLineNumber));
 		iLineNumber++;
 		text("Island List:", (panelStartX+iLeftTextIndent), panelStartY+(iSpaceHeight*iLineNumber));
@@ -358,11 +353,68 @@ class cPanelIslandList extends cPanel {
 	}
 
 	void addLine(string str_) {
-
-		//println(str_);
-		//println("cPanelIslandList panelStartX="+panelStartX+", panelStartY" + panelStartY );
 		text(str_, (panelStartX+iLeftTextIndent), panelStartY+(iSpaceHeight*iLineNumber));
 		iLineNumber++;
 	}
 	
 }
+
+
+
+
+
+
+
+/* ====================================================================================
+   this panel displays information based on PlayerUnitCounts
+*/
+class cPanelPlayerUnitCounts extends cPanel {
+
+	int iSpaceHeight;
+	int iLineNumber;
+	int iPlayerId;
+	//cButton oButtonProduction;
+
+	cPanelPlayerUnitCounts(int panelStartX_, int panelStartY_, int panelHeight_, int iPlayerId_) {
+		super(panelStartY_, panelHeight_);
+		panelStartX = panelStartX_;
+		panelWidth=200;
+		iSpaceHeight=iNumberTextSize+3;
+		iPlayerId=iPlayerId_;
+	}
+	
+	void show() {
+		
+		//println("in cPanelPlayerUnitCounts.show()...");
+
+		//clear(255);
+		clear(230);
+		
+		fill(0); //fill(255,0,0);
+		iLineNumber=1;
+		textSize(11);
+		
+		text("Player "+iPlayerId+" Unit Counts: ", (panelStartX+iLeftTextIndent), panelStartY+(iSpaceHeight*iLineNumber));
+		iLineNumber++;
+		text("Unit Type     | Count", (panelStartX+iLeftTextIndent), panelStartY+(iSpaceHeight*iLineNumber));
+		iLineNumber++;
+		text("--------------------------", (panelStartX+iLeftTextIndent), panelStartY+(iSpaceHeight*iLineNumber));
+		iLineNumber++;
+
+		if (iPlayerId==1) oPlayer1.printUnitTypeCountsToPanel();
+		else if (iPlayerId==2) oPlayer2.printUnitTypeCountsToPanel();
+	
+		//println("leaving cPanelPlayerUnitCounts.show()...");
+
+	}
+
+	void addLine(string str_) {
+		text(str_, (panelStartX+iLeftTextIndent), panelStartY+(iSpaceHeight*iLineNumber));
+		iLineNumber++;
+	}
+	
+}
+
+
+
+

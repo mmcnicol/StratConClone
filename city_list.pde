@@ -10,7 +10,7 @@ class cCityList {
 	void AddCity(int intPlayerId_, int intCellRow_, int intCellCol_, int iIslandListId_) {
 		
 		//if ( intPlayerId_ != 0 )
-			println("add city for player " + intPlayerId_ +" at row="+intCellRow_+" col="+ intCellCol_);
+			//println("add city for player " + intPlayerId_ +" at row="+intCellRow_+" col="+ intCellCol_);
 			
 		listCity.add( new cCity(intPlayerId_, intCellRow_, intCellCol_, iIslandListId_) );  
 		//if ( intPlayerId_ != 0 ) oIslandList.setPlayerId(iIslandListId_, intPlayerId_);

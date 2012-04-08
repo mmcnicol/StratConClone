@@ -2,7 +2,7 @@
 class cUnit {
 
 	int intUnitTypeId;
-	int intPlayerId;
+	int intUnitPlayerId;
 	int intCellX, intCellY;
 	int iMoveToCellX, iMoveToCellY;
 	int iDayBuilt;
@@ -19,14 +19,14 @@ class cUnit {
 	int fuel; // -1 = N/A
 	int iBombBlastRadius; // -1 = N/A
 
+	bool bAnimate; // whether to highlight/flash so user knows which unit to move next
+	int iAnimateSwitch; // 0=draw, 1=hide
+
+
 	//ArrayList listCargo;
 	//int thisUnitIsCargoOfUnitId; // -1 = N/A
 	int[] cargoUnitListId = new int[6];
-	//float[] coswave = new float[width];
 	int iIsCargoOfUnitListId;
-
-	bool bAnimate; // whether to highlight/flash so user knows which unit to move next
-	int iAnimateSwitch; // 0=draw, 1=hide
 
 	int iTaskStatus; // -1=N/A
 	/*
@@ -50,13 +50,15 @@ class cUnit {
 	int transportCargoDestinationLocationX;
 	int transportCargoDestinationLocationY;
 
-	cUnit(int intUnitTypeId_, int intPlayerId_, int intCellX_, int intCellY_) {
+	int transportCargoLoadIslandId;
+
+	cUnit(int intUnitTypeId_, int intUnitPlayerId_, int intCellX_, int intCellY_, int iIslandListId_) {
 
 		if( intUnitTypeId_!=-1 ) {
 			
 			intUnitTypeId=intUnitTypeId_;
-			intPlayerId=intPlayerId_;
-			//if (intPlayerId==1) println( "in cUnit constructor begin for player " + intPlayerId_ ", intUnitTypeId_"+intUnitTypeId_);
+			intUnitPlayerId=intUnitPlayerId_;
+			//if (intUnitPlayerId==1) println( "in cUnit constructor begin for player " + intUnitPlayerId ", intUnitTypeId_"+intUnitTypeId_);
 			intCellX=intCellX_;
 			intCellY=intCellY_;
 					
@@ -73,13 +75,12 @@ class cUnit {
 			
 			
 			
-			if (intUnitTypeId==3) {
+			if (intUnitTypeId_==3) {
 				//println(" calling calculateBombBlastRadius() ");
 				iBombBlastRadius=oUnitRef[3].calculateBombBlastRadius();
 			} else iBombBlastRadius=-1;
 			//println(" iBombBlastRadius="+iBombBlastRadius);
-			
-			//iBombBlastRadius=-1;
+
 			
 			//listCargo = new ArrayList();  // Create an empty ArrayList
 			//thisUnitIsCargoOfUnitId=-1;
@@ -92,7 +93,7 @@ class cUnit {
 			
 			iIsCargoOfUnitListId=-1;
 			
-			//if (intPlayerId==1) printCargo();
+			//if (intUnitPlayerId==1) printCargo();
 			
 			bAnimate=false;
 			iAnimateSwitch=0;
@@ -115,6 +116,11 @@ class cUnit {
 			transportCargoDestinationLocationX=-1;
 			transportCargoDestinationLocationY=-1;
 	
+			transportCargoLoadIslandId=iIslandListId_;
+
+			if (intUnitPlayerId==1) oPlayer1.increaseUnitTypeCount(intUnitTypeId_);
+			else if (intUnitPlayerId==2) oPlayer2.increaseUnitTypeCount(intUnitTypeId_);
+
 			//println( "in cUnit constructor ");
 			//exit();
 		} else {
@@ -126,12 +132,12 @@ class cUnit {
 	
 	void setXY(int intCellX_, int intCellY_) {
 	
-		//if (intPlayerId==1) println("in unit.setXY("+intCellX_+","+intCellY_+") ");
+		//if (intUnitPlayerId==1) println("in unit.setXY("+intCellX_+","+intCellY_+") ");
 		
 		intCellX=intCellX_;
 		intCellY=intCellY_;
 		
-		//if (intPlayerId==1) println("in unit.setXY() updating any associated cargo");
+		//if (intUnitPlayerId==1) println("in unit.setXY() updating any associated cargo");
 		// if this unit has cargo, update their XY values also
 		if( isTransport() || isCarrier() ) {
 		
@@ -140,7 +146,7 @@ class cUnit {
 			/*
 			for (int i=0; i<6; i++)
 				if ( cargoUnitListId[i] != -1 ) {
-					//if (intPlayerId==1) println("in unit.setXY() updating any associated cargo for cargoUnitListId[i]="+cargoUnitListId[i]);
+					//if (intUnitPlayerId==1) println("in unit.setXY() updating any associated cargo for cargoUnitListId[i]="+cargoUnitListId[i]);
 					oUnitList.moveCargo(cargoUnitListId[i], intCellX_, intCellY_);
 				}
 			*/
@@ -176,12 +182,12 @@ class cUnit {
 	void reduceAttacksLeftToday() {
 		if (attacksLeftToday>0) {
 			attacksLeftToday=attacksLeftToday-1; 
-			//println("intPlayerId#"+intPlayerId+" attacksLeftToday="+attacksLeftToday);
+			//println("intUnitPlayerId#"+intUnitPlayerId+" attacksLeftToday="+attacksLeftToday);
 			
 		} 				
 	}
 	
-	int getPlayerId() { return intPlayerId; }
+	int getPlayerId() { return intUnitPlayerId; }
 	
 	int getUnitTypeId() { return intUnitTypeId; }
 	
@@ -220,13 +226,13 @@ class cUnit {
 		
 		if (movesLeftToday>0) {
 			movesLeftToday=movesLeftToday-1; 
-			//println("intPlayerId#"+intPlayerId+" movesLeftToday="+movesLeftToday);
+			//println("intUnitPlayerId#"+intUnitPlayerId+" movesLeftToday="+movesLeftToday);
 			
 		} else {
 		
 			//setAnimation(false);
 			
-			if ( intPlayerId == 1 ) {
+			if ( intUnitPlayerId == 1 ) {
 				oAnimate.clear();
 			} 
 			
@@ -313,13 +319,13 @@ class cUnit {
 	
 		if (fuel>0) {
 			fuel=fuel-1; 
-			//println("intPlayerId#"+intPlayerId+" fuel="+fuel);
+			//println("intUnitPlayerId#"+intUnitPlayerId+" fuel="+fuel);
 			
 		} else {
 		
 			//setAnimation(false);
 			
-			if ( intPlayerId == 1 ) {
+			if ( intUnitPlayerId == 1 ) {
 				oAnimate.clear();
 			} 
 			
@@ -330,7 +336,7 @@ class cUnit {
 		// unit is a fighter or a bomber so can refuel in its own city city
 		if ( oCityList.isCity(intCellX, intCellY)==true ) {
 			int tempCityId = oCityList.getCityId(intCellX, intCellY);
-			if ( oCityList.getCityPlayerId(tempCityId)==intPlayerId ) {
+			if ( oCityList.getCityPlayerId(tempCityId)==intUnitPlayerId ) {
 				fuel = oUnitRef[intUnitTypeId].getMaxFuel();
 			}
 		}
@@ -342,7 +348,7 @@ class cUnit {
 		
 		if (fuel==0) {
 		
-			if(intPlayerId==1) println(strUnitName+" ran out of fuel and crashed!");
+			if(intUnitPlayerId==1) println(strUnitName+" ran out of fuel and crashed!");
 			
 			oUnitList.deleteUnit(iUnitListId_);
 			oGrid.DrawCell(getX(), getY(), false);
@@ -357,7 +363,7 @@ class cUnit {
 		
 	void updateSelectedUnitPanelInformation() {
 		
-		if (intPlayerId==1) {
+		if (intUnitPlayerId==1) {
 			//if( intCellX==intCellX_ && intCellY==intCellY_ ) {
 			oPanelSelectedUnit.show(strUnitName, nf(intCellX,3)+","+nf(intCellY,3), strength, fuel, movesLeftToday);
 			//}
@@ -383,10 +389,10 @@ class cUnit {
 		int tempY=int(floor((y_+(cellHeight-1))/cellHeight));
 
 		if( intCellX==tempX && intCellY==tempY ) {
-			//println("unit.isAtXY("+x_+", "+y_+"), tempX=" + tempX + ", tempY=" + tempY + ", intPlayerId="+intPlayerId+" match!");
+			//println("unit.isAtXY("+x_+", "+y_+"), tempX=" + tempX + ", tempY=" + tempY + ", intUnitPlayerId="+intUnitPlayerId+" match!");
 			return true
 		} else {
-			//println("unit.isAtXY("+x_+", "+y_+"), tempX=" + tempX + ", tempY=" + tempY + ", intPlayerId="+intPlayerId+" no match");
+			//println("unit.isAtXY("+x_+", "+y_+"), tempX=" + tempX + ", tempY=" + tempY + ", intUnitPlayerId="+intUnitPlayerId+" no match");
 			return false;
 		}
 	}
@@ -423,7 +429,7 @@ class cUnit {
 
 		if ( cityAttackSuccessful ) {
 
-			if (intPlayerId==1) {
+			if (intUnitPlayerId==1) {
 				println("attack was successful");
 				println("");
 			}
@@ -434,7 +440,7 @@ class cUnit {
 			//reDrawNearBy();
 			clearFogOfWarAt(intCellX_, intCellY_);
 			
-			oCityList.CityConquered(tempCityId, intPlayerId);
+			oCityList.CityConquered(tempCityId, intUnitPlayerId);
 		
 			
 			
@@ -445,12 +451,12 @@ class cUnit {
 
 			updateMovesLeftToday();
 			if ( oUnitRef[intUnitTypeId].canFly() ) updateFuelLeft(iUnitListId_);
-			//if( intPlayerId==1) reDrawNearBy();
+			//if( intUnitPlayerId==1) reDrawNearBy();
 			updateSelectedUnitPanelInformation();				
 
 
 			// if attack was not successful, 
-			if (intPlayerId==1) {
+			if (intUnitPlayerId==1) {
 				println("attack was not successful");
 				println("");
 			}
@@ -458,7 +464,7 @@ class cUnit {
 			// 50% probability unit strength is to be reduced
 			if ( (int)random(1,1000)%2==0 ) {
 			
-				//if (intPlayerId==1) println("reducing unit strength following unsuccessful attack");
+				//if (intUnitPlayerId==1) println("reducing unit strength following unsuccessful attack");
 					
 				oUnitList.manageUnitStrengthReduction(iUnitListId_);
 			}
@@ -483,9 +489,9 @@ class cUnit {
 		reduceAttacksLeftToday();
 
 		// if enemy transport exists at attack location, attack that instead of any other units at that location
-		iDefendingUnitListId = oUnitList.getFirstEnemyTransportUnitIdAt(intPlayerId, intCellX, intCellY);
+		iDefendingUnitListId = oUnitList.getFirstEnemyTransportUnitIdAt(intUnitPlayerId, intCellX, intCellY);
 		if (iDefendingUnitListId==-1)
-			iDefendingUnitListId = oUnitList.getFirstEnemyUnitIdAt(intPlayerId, intCellX_, intCellY_);
+			iDefendingUnitListId = oUnitList.getFirstEnemyUnitIdAt(intUnitPlayerId, intCellX_, intCellY_);
 		else 
 			println("found enemy transport to attack");
 
@@ -523,25 +529,25 @@ class cUnit {
 		updateMovesLeftToday();
 		//println("in unit.doAttackEnemyUnit intUnitTypeId="+intUnitTypeId);
 		if ( oUnitRef[intUnitTypeId].canFly() ) updateFuelLeft(iUnitListId_);
-		//if( intPlayerId==1) reDrawNearBy();
+		//if( intUnitPlayerId==1) reDrawNearBy();
 		updateSelectedUnitPanelInformation();				
 
 
 		if ( unitAttackSuccessful ) {
 
-			if (intPlayerId==1) {
+			if (intUnitPlayerId==1) {
 				println("attack was successful");
 				println("");
 			}
 			
-			//if (intPlayerId==1) println("reducing defending unit strength following successful attack");
+			//if (intUnitPlayerId==1) println("reducing defending unit strength following successful attack");
 
 			oUnitList.manageUnitStrengthReduction(iDefendingUnitListId);			
 
 			// only move attacking unit to destination location if destination location contains no further enemy units
-			if ( oUnitList.isEnemyUnitAt(intPlayerId, intCellX_, intCellY_)==false 
-					&& oCityList.isEnemyCity(intPlayerId, intCellX_, intCellY_)==false 
-					&& oUnitList.isEnemyTransportAtRowCol(intPlayerId, intCellX_, intCellY_)==false ) {
+			if ( oUnitList.isEnemyUnitAt(intUnitPlayerId, intCellX_, intCellY_)==false 
+					&& oCityList.isEnemyCity(intUnitPlayerId, intCellX_, intCellY_)==false 
+					&& oUnitList.isEnemyTransportAtRowCol(intUnitPlayerId, intCellX_, intCellY_)==false ) {
 					
 				//intCellX = intCellX_;
 				//intCellY = intCellY_;
@@ -552,7 +558,7 @@ class cUnit {
 		} else {
 
 			// if attack was not successful, 
-			if (intPlayerId==1) {
+			if (intUnitPlayerId==1) {
 				println("attack was not successful");
 				println("");
 			}
@@ -561,7 +567,7 @@ class cUnit {
 			// 50% probability unit strength is to be reduced
 			if ( (int)random(1,1000)%2==0 ) {
 
-				//if (intPlayerId==1) println("reducing attacking unit strength following unsuccessful attack");
+				//if (intUnitPlayerId==1) println("reducing attacking unit strength following unsuccessful attack");
 
 				oUnitList.manageUnitStrengthReduction(iUnitListId_);
 			}
@@ -720,7 +726,7 @@ class cUnit {
 		//println("debug#1.2");
 
 		// if City, change to unoccupied
-		if ( oCityList.isEnemyCity(intPlayerId, x_, y_) ) {
+		if ( oCityList.isEnemyCity(intUnitPlayerId, x_, y_) ) {
 			//println("debug#1.3");
 			oCityList.CityBombed( oCityList.getCityId(x_, y_) );
 		}
@@ -737,6 +743,11 @@ class cUnit {
 		setTaskStatus(999);
 		movesLeftToday=0; 
 		thisUnitIsCargoOfUnitId=-1;
+
+
+		if (intUnitPlayerId==1) oPlayer1.decreaseUnitTypeCount(intUnitTypeId);
+		else if (intUnitPlayerId==2) oPlayer2.decreaseUnitTypeCount(intUnitTypeId);
+
 		// hide unit
 		////////oGrid.DrawCell(intCellX, intCellY, false);
 		//println("leaving unit.kill()");
@@ -781,7 +792,7 @@ class cUnit {
 	void wakeCargo() {
 		println("in wakeCargo()");
 		
-		//oUnitList.commandWakePlayerUnitsAt(intPlayerId, getX(), getY() );
+		//oUnitList.commandWakePlayerUnitsAt(intUnitPlayerId, getX(), getY() );
 		
 		
 		for (int i=0; i<6; i++)
@@ -860,15 +871,15 @@ class cUnit {
 	
 	void doAddCargo(int iUnitListId_, int intCellX_, int intCellY_) {
 
-		if (intPlayerId==1) println("in unit.doAddCargo(iUnitListId_="+iUnitListId_+","+intCellX_+","+intCellY_+") ");
+		if (intUnitPlayerId==1) println("in unit.doAddCargo(iUnitListId_="+iUnitListId_+","+intCellX_+","+intCellY_+") ");
 		
 		int destinationUnitId;
 		
 		// if unit is tank, get unit list id of destination transport
-		if ( isTank() ) destinationUnitId = oUnitList.getFirstPlayerTransportUnitIdAt(intPlayerId, intCellX_, intCellY_);
+		if ( isTank() ) destinationUnitId = oUnitList.getFirstPlayerTransportUnitIdAt(intUnitPlayerId, intCellX_, intCellY_);
 		
 		// if unit is fighter, get unit list id of destination carrier
-		if ( isFighter() ) destinationUnitId = oUnitList.getFirstPlayerCarrierUnitIdAt(intPlayerId, intCellX_, intCellY_);
+		if ( isFighter() ) destinationUnitId = oUnitList.getFirstPlayerCarrierUnitIdAt(intUnitPlayerId, intCellX_, intCellY_);
 		
 		if ( destinationUnitId != -1 ) {
 			// add current unit to destination transport or carrier cargo
@@ -898,7 +909,7 @@ class cUnit {
 
 			
 			if ( oUnitRef[intUnitTypeId].canFly() ) updateFuelLeft(iUnitListId_);
-			//if( intPlayerId==1) reDrawNearBy();
+			//if( intUnitPlayerId==1) reDrawNearBy();
 			updateSelectedUnitPanelInformation();				
 			
 		} else println("error: expected to add unit as cargo to destination unit but destinationUnitId="+destinationUnitId);
@@ -945,8 +956,11 @@ class cUnit {
 		*/
 
 		// *********************************************
-		// if is transport and status="cargo loaded, move to enemy island (or player island which is under attack)"
+		// if is transport and status="cargo loaded, move to another island (an unoccupied island, anenemy island (or a player island which is under attack)"
 		// *********************************************
+		//println("in Unit.moveToIfSpecified(), debug #1 line 960, transportCargoLoadIslandId="+transportCargoLoadIslandId);
+		//println("oGrid.isNextToLand("+intCellX+", "+intCellY+")="+ oGrid.isNextToLand(intCellX, intCellY) );
+		//println("oGrid.getIslandIdIfIsNextToLand("+intCellX+", "+intCellY+")="+ oGrid.getIslandIdIfIsNextToLand(intCellX, intCellY) );
 		if ( isTransport() && getTaskStatus()==2 &&
 			(( intCellX < (transportCargoLoadLocationX -5)
 			|| intCellX > (transportCargoLoadLocationX +5) )
@@ -957,6 +971,15 @@ class cUnit {
 			oGrid.isNextToLand(intCellX, intCellY) 
 			) {
 
+/*
+		if ( isTransport() && getTaskStatus()==2 
+				&& intCellX!=transportCargoLoadLocationX
+				&& intCellY!=transportCargoLoadLocationY
+				&& oGrid.isNextToLand(intCellX, intCellY) 
+				&& oGrid.getIslandIdIfIsNextToLand(intCellX, intCellY)!=transportCargoLoadIslandId  
+			) {
+*/
+
 				transportCargoDestinationLocationX=intCellX;
 				transportCargoDestinationLocationY=intCellY;
 				//println("************************************************");
@@ -964,15 +987,17 @@ class cUnit {
 				//println("************************************************");
 				setMoveToX(-1);
 				setMoveToY(-1);
-				updateMovesLeftToday()
-				println("getCargoCount()="+getCargoCount() );
+				updateMovesLeftToday();
+				//println("getCargoCount()="+getCargoCount() );
 				if ( getCargoCount()>0 ) wakeCargo();
 				setTaskStatus(3);				
-				
+			
+				//println("in Unit.moveToIfSpecified(), debug #2 line 993");
+	
 		} else if ( iMoveToCellX!=-1 && iMoveToCellY!=-1 && getMovesLeftToday()>=1 ) 
 			moveTo(iUnitListId_, iMoveToCellX, iMoveToCellY);
 		else {
-			if (intPlayerId==2) {
+			if (intUnitPlayerId==2) {
 				if ( oPlayer2.getIsAI() ) moveAI(iUnitListId_);
 			} else {
 				if ( oPlayer1.getIsAI() ) moveAI(iUnitListId_);
@@ -988,7 +1013,7 @@ class cUnit {
 
 		//setAnimation(false);
 		
-		if ( intPlayerId == 1 ) {
+		if ( intUnitPlayerId == 1 ) {
 			oAnimate.clear();
 		} 		
 
@@ -1022,12 +1047,12 @@ class cUnit {
 			int moves_on=0;
 			if (movesOnLand) moves_on=1;
 
-			//if (intPlayerId==1) println("calling pathfinding using "+intCellX+","+intCellY+" "+intCellX_+","+intCellY_ );
+			//if (intUnitPlayerId==1) println("calling pathfinding using "+intCellX+","+intCellY+" "+intCellX_+","+intCellY_ );
 
 			oPathfinding = new cPathfinding();
-			next_step = oPathfinding.getNextMove(intPlayerId, intCellX, intCellY, intCellX_, intCellY_, moves_on);
+			next_step = oPathfinding.getNextMove(intUnitPlayerId, intCellX, intCellY, intCellX_, intCellY_, moves_on);
 
-			//if ( isTransport() && intPlayerId==1) println("pathfinding result="+next_step.x+","+next_step.y);
+			//if ( isTransport() && intUnitPlayerId==1) println("pathfinding result="+next_step.x+","+next_step.y);
 
 			//pathfinding found next step	
 			if (next_step.x!=-3 && next_step.y!=-3) {
@@ -1065,7 +1090,7 @@ class cUnit {
 				setMoveToY(-1);
 			}
 
-			//if (intPlayerId==1) println(" in unit.moveTO(), calling unit.move("+iNextCellX+","+iNextCellY+")");
+			//if (intUnitPlayerId==1) println(" in unit.moveTO(), calling unit.move("+iNextCellX+","+iNextCellY+")");
 			move(iUnitListId_, iNextCellX, iNextCellY);
 		}
 
@@ -1092,7 +1117,7 @@ class cUnit {
 		
 			//setAnimation(false);
 
-			if ( intPlayerId == 1 ) {
+			if ( intUnitPlayerId == 1 ) {
 				oAnimate.clear();
 			} 
 			
@@ -1118,7 +1143,7 @@ class cUnit {
 
 			
 			
-			//if( intPlayerId==1) println(" in unit.move() debug#1");
+			//if( intUnitPlayerId==1) println(" in unit.move() debug#1");
 
 			// *********************************************
 			// if unit is bomber and destination contains enemy city or enemy unit (not a fighter or bomber), bomb it
@@ -1126,56 +1151,56 @@ class cUnit {
 			
 			
 			/*
-			if( intPlayerId==1) println(" isBomber()="+isBomber() );
+			if( intUnitPlayerId==1) println(" isBomber()="+isBomber() );
 			
 			if ( isBomber() ) {
-				println("oCityList.isEnemyCity()="+ oCityList.isEnemyCity(intPlayerId, intCellX_, intCellY_) );
-				println("oUnitList.isBombableEnemy()="+ oUnitList.isBombableEnemy(intPlayerId, intCellX_, intCellY_) );
+				println("oCityList.isEnemyCity()="+ oCityList.isEnemyCity(intUnitPlayerId, intCellX_, intCellY_) );
+				println("oUnitList.isBombableEnemy()="+ oUnitList.isBombableEnemy(intUnitPlayerId, intCellX_, intCellY_) );
 			}
 			*/
 			
-			if ( isBomber() && ( ( oCityList.isEnemyCity(intPlayerId, intCellX_, intCellY_) 
+			if ( isBomber() && ( ( oCityList.isEnemyCity(intUnitPlayerId, intCellX_, intCellY_) 
 						&& !oCityList.isUnoccupiedCity(intCellX_, intCellY_) ) 
-						|| oUnitList.isBombableEnemy(intPlayerId, intCellX_, intCellY_) ) ) {
+						|| oUnitList.isBombableEnemy(intUnitPlayerId, intCellX_, intCellY_) ) ) {
 			
 				//println("isBomber()="+isBomber());
-				//println("oCityList.isEnemyCity()="+oCityList.isEnemyCity(intPlayerId, intCellX_, intCellY_));
+				//println("oCityList.isEnemyCity()="+oCityList.isEnemyCity(intUnitPlayerId, intCellX_, intCellY_));
 				//println("oCityList.isUnoccupiedCity()="+oCityList.isUnoccupiedCity(intCellX_, intCellY_));
-				//println("oUnitList.isBombableEnemy()="+oUnitList.isBombableEnemy(intPlayerId, intCellX_, intCellY_));
+				//println("oUnitList.isBombableEnemy()="+oUnitList.isBombableEnemy(intUnitPlayerId, intCellX_, intCellY_));
 				
-				//if (intPlayerId==1) println(" in unit.move() debug#2");
+				//if (intUnitPlayerId==1) println(" in unit.move() debug#2");
 				doDropBomb(iUnitListId_, intCellX_, intCellY_);
 				
 			// *********************************************
 			// if destination contains enemy unit, attack it
 			// *********************************************
-			} else if ( oUnitList.isEnemyUnitAt(intPlayerId, intCellX_, intCellY_) ) {
+			} else if ( oUnitList.isEnemyUnitAt(intUnitPlayerId, intCellX_, intCellY_) ) {
 			
-				//if (intPlayerId==1) println(" in unit.move() debug#3");
+				//if (intUnitPlayerId==1) println(" in unit.move() debug#3");
 				doAttackEnemyUnit(iUnitListId_, intCellX_, intCellY_);
 				
 			// *********************************************
 			// if unit is tank and destination location is enemy/unoccupied city, attack it
 			// *********************************************
-			} else if ( isTank() && oCityList.isEnemyOrUnoccupiedCity(intPlayerId, intCellX_, intCellY_) ) {
+			} else if ( isTank() && oCityList.isEnemyOrUnoccupiedCity(intUnitPlayerId, intCellX_, intCellY_) ) {
 			
-				//if (intPlayerId==1) println(" in unit.move() debug#4 attacking enemy/unoccupied city");
+				//if (intUnitPlayerId==1) println(" in unit.move() debug#4 attacking enemy/unoccupied city");
 				doAttackEnemyCity(iUnitListId_, intCellX_, intCellY_);
 			
 			// *********************************************
 			// if unit is tank and destination contains player transport, move into it
 			// *********************************************
-			} else if ( isTank() && oUnitList.isPlayerTransportAtRowCol(intPlayerId, intCellX_, intCellY_) ) {
+			} else if ( isTank() && oUnitList.isPlayerTransportAtRowCol(intUnitPlayerId, intCellX_, intCellY_) ) {
 			
-				//if (intPlayerId==1) println(" in unit.move() debug#5");
+				//if (intUnitPlayerId==1) println(" in unit.move() debug#5");
 				doAddCargo(iUnitListId_, intCellX_, intCellY_);
 			
 			// *********************************************
 			// if unit is fighter and destination contains player carrier, move into it
 			// *********************************************
-			} else if ( isFighter() && oUnitList.isPlayerCarrierAtRowCol(intPlayerId, intCellX_, intCellY_) ) {
+			} else if ( isFighter() && oUnitList.isPlayerCarrierAtRowCol(intUnitPlayerId, intCellX_, intCellY_) ) {
 			
-				//if (intPlayerId==1) println(" in unit.move() debug#6");
+				//if (intUnitPlayerId==1) println(" in unit.move() debug#6");
 				doAddCargo(iUnitListId_, intCellX_, intCellY_);
 			
 			// *********************************************
@@ -1184,7 +1209,7 @@ class cUnit {
 			} else {
 			
 				////println(" in unit.move() debug#7 just do the move");
-				//if (intPlayerId==1 && isTransport() ) println("in unit.move() is tranport getCargoCount()="+getCargoCount() );
+				//if (intUnitPlayerId==1 && isTransport() ) println("in unit.move() is tranport getCargoCount()="+getCargoCount() );
 				
 				//if ( getCargoCount()>0 ) printCargo();
 				//intCellX = intCellX_;
@@ -1211,7 +1236,7 @@ class cUnit {
 				reDrawNearBy();
 				updateMovesLeftToday();
 				if ( oUnitRef[intUnitTypeId].canFly() ) updateFuelLeft(iUnitListId_);
-				//if( intPlayerId==1) reDrawNearBy();
+				//if( intUnitPlayerId==1) reDrawNearBy();
 				updateSelectedUnitPanelInformation();				
 				
 			}
@@ -1246,7 +1271,7 @@ class cUnit {
 		
 	
 		if( intCellX==intCellX_ && intCellY==intCellY_ ) {
-			//if (intPlayerId==1) println("possible invalid move. unit is not moving anywhere.");
+			//if (intUnitPlayerId==1) println("possible invalid move. unit is not moving anywhere.");
 			//ValidMove=false;
 		}
 
@@ -1257,7 +1282,7 @@ class cUnit {
 
 			//setAnimation(false);
 
-			if ( intPlayerId == 1 ) {
+			if ( intUnitPlayerId == 1 ) {
 				oAnimate.clear();
 			} 
 			
@@ -1285,9 +1310,9 @@ class cUnit {
 					//println(" unit destination is sea ");
 					
 					// an exception is a tank can move onto a transport of the same player id
-					if( oUnitList.isPlayerTransportAtRowCol(intPlayerId, intCellX_, intCellY_) ) {
+					if( oUnitList.isPlayerTransportAtRowCol(intUnitPlayerId, intCellX_, intCellY_) ) {
 
-						//if ( intPlayerId==1 ) println(" player transport found at destination location ");
+						//if ( intUnitPlayerId==1 ) println(" player transport found at destination location ");
 						
 						if ( isTank() ) {
 						
@@ -1300,8 +1325,8 @@ class cUnit {
 						
 					} else {
 					
-						if ( intPlayerId==1 ) println("invalid move. unit cannot move on sea. getUnitTypeId()="+getUnitTypeId()+" isCargoOf()="+isCargoOf() );
-						//if ( intPlayerId==1 ) println("current location="+intCellX+","+intCellY+" moveTo="+intCellX_+","+intCellY_ );
+						if ( intUnitPlayerId==1 ) println("invalid move. unit cannot move on sea. getUnitTypeId()="+getUnitTypeId()+" isCargoOf()="+isCargoOf() );
+						//if ( intUnitPlayerId==1 ) println("current location="+intCellX+","+intCellY+" moveTo="+intCellX_+","+intCellY_ );
 						
 						ValidMove=false;
 						setMoveToX(-1);
@@ -1336,7 +1361,7 @@ class cUnit {
 					
 					/*
 					// an exception is a ship cannot move into another cell which is already occupied by a ship of the same player id
-					if( oUnitList.isPlayerSeaVesselAtRowCol(intPlayerId, intCellX_, intCellY_) ) {
+					if( oUnitList.isPlayerSeaVesselAtRowCol(intUnitPlayerId, intCellX_, intCellY_) ) {
 					
 						println("invalid move. two sea vessels of same player cannot occupy the same location.");
 						ValidMove=false;
@@ -1361,9 +1386,9 @@ class cUnit {
 		
 			// if unit is sea vessel and destination cell is an enemy city
 			// which is empty, unit should not be able to move into it
-			if ( oCityList.isEnemyCity(intPlayerId, intCellX_, intCellY_) 
+			if ( oCityList.isEnemyCity(intUnitPlayerId, intCellX_, intCellY_) 
 				&& isSeaVessel() 
-				&& oUnitList.isEnemyUnitAt(intPlayerId, intCellX_, intCellY_)==false ) {
+				&& oUnitList.isEnemyUnitAt(intUnitPlayerId, intCellX_, intCellY_)==false ) {
 				
 				println("invalid move. unit cannot move into empty enemy city.");
 				ValidMove=false;
@@ -1378,8 +1403,8 @@ class cUnit {
 		}
 		
 		if ( getAttacksLeftToday()==0 
-			&& ( oCityList.isEnemyCity(intPlayerId, intCellX_, intCellY_)  
-				|| oUnitList.isEnemyUnitAt(intPlayerId, intCellX_, intCellY_) )
+			&& ( oCityList.isEnemyCity(intUnitPlayerId, intCellX_, intCellY_)  
+				|| oUnitList.isEnemyUnitAt(intUnitPlayerId, intCellX_, intCellY_) )
 			) {
 
 			println("invalid move. unit can only attack twice per day.");
@@ -1420,7 +1445,7 @@ class cUnit {
 	
 	void identifyNextMoveTankAI(int iUnitListId_) {
 
-		if (intPlayerId==1 && isCargoOf() ) println("in unit.identifyNextMoveTankAI, "+intCellX+","+intCellY+" unit status="+getTaskStatus()+", isCargoOf()="+isCargoOf() );
+		if (intUnitPlayerId==1 && isCargoOf() ) println("in unit.identifyNextMoveTankAI, "+intCellX+","+intCellY+" unit status="+getTaskStatus()+", isCargoOf()="+isCargoOf() );
 		
 		switch ( getTaskStatus() ) {
 			
@@ -1428,14 +1453,14 @@ class cUnit {
 
 				// ******************************************************
 				// if transport is nearby which is waiting for units, move towards it
-				if ( oUnitList.IsTransportNearbyWaitingForUnits(intPlayerId, iUnitListId_, intCellX, intCellY)  ) {
+				if ( oUnitList.IsTransportNearbyWaitingForUnits(intUnitPlayerId, iUnitListId_, intCellX, intCellY)  ) {
 
 					// unit has been instructed to move towards waiting transport
 					
 				// ******************************************************
 				// else, move to using basic algorithm
 				} else {
-					if (intPlayerId==1 && isCargoOf() ) println("0=calling identifyNextMoveAI() ");
+					if (intUnitPlayerId==1 && isCargoOf() ) println("0=calling identifyNextMoveAI() ");
 					identifyNextMoveAI(iUnitListId_);				
 				}
 
@@ -1454,7 +1479,7 @@ class cUnit {
 			case 1:
 				// 1=move to waiting transport
 				
-				if (intPlayerId==1 && isCargoOf() ) println("1=move to waiting transport ");
+				if (intUnitPlayerId==1 && isCargoOf() ) println("1=move to waiting transport ");
 				
 				/*
 				if ( getMoveToX()==-1 && getMoveToY()==-1 ) {
@@ -1467,16 +1492,16 @@ class cUnit {
 									
 				if ( isCargoOf() ) {
 					
-					if (intPlayerId==1) println("debug: tank is cargoOf");
+					if (intUnitPlayerId==1) println("debug: tank is cargoOf");
 					setTaskStatus(99);
 					setMovesLeftToday(0);
 					//setMoveToX(-1);
 					//setMoveToY(-1);
 				} else {
-					//if (intPlayerId==1) println("debug: is not cargoOf, moveto="+getMoveToX()+","+getMoveToY() );
+					//if (intUnitPlayerId==1) println("debug: is not cargoOf, moveto="+getMoveToX()+","+getMoveToY() );
 					//identifyNextMoveAI(iUnitListId_);
 					
-					if ( oUnitList.getFirstPlayerTransportUnitIdAt(intPlayerId, getMoveToX(), getMoveToY())==-1 ) {
+					if ( oUnitList.getFirstPlayerTransportUnitIdAt(intUnitPlayerId, getMoveToX(), getMoveToY())==-1 ) {
 						setMoveToX(-1);
 						setMoveToY(-1);
 						setTaskStatus(99);
@@ -1486,7 +1511,7 @@ class cUnit {
 				}
 
 				//} else {
-				//	if (intPlayerId==1) println("note: tank unit possibly unable to move to waiting transport, clearing move to");
+				//	if (intUnitPlayerId==1) println("note: tank unit possibly unable to move to waiting transport, clearing move to");
 				//	setMoveToX(-1);
 				//	setMoveToY(-1);
 				//}
@@ -1496,7 +1521,7 @@ class cUnit {
 			/*
 			case 98:
 				// 98=move to using basic algorithm
-				if (intPlayerId==1 && isCargoOf() ) println("98=identifyNextMoveAI ");
+				if (intUnitPlayerId==1 && isCargoOf() ) println("98=identifyNextMoveAI ");
 				
 				//println("calling identifyNextMoveAI() ");
 				identifyNextMoveAI(iUnitListId_);				
@@ -1505,8 +1530,8 @@ class cUnit {
 			*/
 
 			case 99:
-				if (intPlayerId==1 && isCargoOf() ) println("99=unit sleep ");
-				//if (intPlayerId==1) println("debug: unit is asleep");
+				if (intUnitPlayerId==1 && isCargoOf() ) println("99=unit sleep ");
+				//if (intUnitPlayerId==1) println("debug: unit is asleep");
 				// 99=sleep
 				setMovesLeftToday(0);			
 				break;				
@@ -1562,7 +1587,7 @@ class cUnit {
 					// identify unit move at random
 					for (y=sy;y<=ey;y++) {
 						for (x=sx;x<=ex;x++) {
-							if ( oGrid.isSea(x, y) && oUnitList.isPlayerSeaVesselAtRowCol(intPlayerId, x, y)==false )
+							if ( oGrid.isSea(x, y) && oUnitList.isPlayerSeaVesselAtRowCol(intUnitPlayerId, x, y)==false )
 								possibleMoves.add( new cGridCell(x, y) );
 						}
 					}
@@ -1579,7 +1604,7 @@ class cUnit {
 				int iTargetCargoCount=2;
 
 				// note: I don't think this is the best approach for getting tanks onto a waiting transport
-				//oUnitList.identifyPlayerLandUnitsToMoveTo(intPlayerId, intCellX, intCellY, getCargoCount(), iTargetCargoCount);
+				//oUnitList.identifyPlayerLandUnitsToMoveTo(intUnitPlayerId, intCellX, intCellY, getCargoCount(), iTargetCargoCount);
 				
 				//println("is transport ready to move? getCargoCount()="+getCargoCount());
 				//printCargo();
@@ -1648,7 +1673,7 @@ class cUnit {
 					for (y=sy; y<=ey; y=y+1) {
 						for (x=sx; x<=ex; x=x+1) {
 							if (intCellX!=x && intCellY!=y) {
-								//if ( oCityList.isEnemyOrUnoccupiedCity(intPlayerId, x,y) )
+								//if ( oCityList.isEnemyOrUnoccupiedCity(intUnitPlayerId, x,y) )
 								if ( oGrid.isSea(x,y) )
 									possibleMoves.add( new cGridCell(x, y) );
 							}
@@ -1697,32 +1722,48 @@ class cUnit {
 					
 				}
 
-				
+				// ******************************************************
+				// if transport is away from start location and is next to land, then destination location is found
+				//println("in Unit.identifyNextMoveTransportAI(), debug #1 line 1720");
 				if ( 
 					(( intCellX < (transportCargoLoadLocationX -5)
 					|| intCellX > (transportCargoLoadLocationX +5) )
 					||
 					( intCellY < (transportCargoLoadLocationY -5)
 					|| intCellY > (transportCargoLoadLocationY +5) )) 
-					&& 
-					oGrid.isNextToLand(intCellX, intCellY) 
+
+					&& oGrid.isNextToLand(intCellX, intCellY) 
 					) {
-				
+
+/*
+				println("transport debug 1 at ("+intCellX+","+intCellY+")... transportCargoLoadIslandId="+transportCargoLoadIslandId);
+				if ( 
+					(( intCellX < (transportCargoLoadLocationX -5)
+					|| intCellX > (transportCargoLoadLocationX +5) )
+					||
+					( intCellY < (transportCargoLoadLocationY -5)
+					|| intCellY > (transportCargoLoadLocationY +5) )) 
+
+					&& oGrid.getIslandIdIfIsNextToLand>=0 
+					&& oGrid.getIslandIdIfIsNextToLand!=transportCargoLoadIslandId 
+					) {
+*/				
 						transportCargoDestinationLocationX=intCellX;
 						transportCargoDestinationLocationY=intCellY;
 				
 				
 						//println("************************************************");
-						println("transport is isNextToLand at ("+intCellX+","+intCellY+")");
+						//println("transport is isNextToLand at ("+intCellX+","+intCellY+")");
 						//println("************************************************");
 						setMoveToX(-1);
 						setMoveToY(-1);
-						updateMovesLeftToday()
-						println("getCargoCount()="+getCargoCount() );
+						updateMovesLeftToday();
+						//println("getCargoCount()="+getCargoCount() );
 						if ( getCargoCount()>0 ) wakeCargo();					
 						setTaskStatus(3);				
 				
 				}
+				//println("transport debug 2 at ("+intCellX+","+intCellY+")");
 				break;
 			case 3:
 				// 3=unload cargo
@@ -1794,7 +1835,7 @@ class cUnit {
 			// else if fighter is near a player city, move onto it
 			//...
 			
-			oCityList.moveUnitToNearestCity(intPlayerId, iUnitListId_, intCellX, intCellY, fuel);
+			oCityList.moveUnitToNearestCity(intUnitPlayerId, iUnitListId_, intCellX, intCellY, fuel);
 			
 		} else {
 
@@ -1831,7 +1872,7 @@ class cUnit {
 			for (y=sy;y<=ey;y++) {
 				for (x=sx;x<=ex;x++) {
 					if (intCellX!=x && intCellY!=y) {
-						if ( oUnitList.isEnemyUnitAt(intPlayerId, x, y) )
+						if ( oUnitList.isEnemyUnitAt(intUnitPlayerId, x, y) )
 							possibleMoves.add( new cGridCell(x, y) );
 					}
 				}
@@ -1893,7 +1934,7 @@ class cUnit {
 			// else if bomber is near a player city, move onto it
 			//...
 			
-			oCityList.moveUnitToNearestCity(intPlayerId, iUnitListId_, intCellX, intCellY, fuel);
+			oCityList.moveUnitToNearestCity(intUnitPlayerId, iUnitListId_, intCellX, intCellY, fuel);
 			
 		} else {
 
@@ -1930,7 +1971,7 @@ class cUnit {
 				for (y=sy;y<=ey;y++) {
 					for (x=sx;x<=ex;x++) {
 						if (intCellX!=x && intCellY!=y) {
-							if ( oGrid.isLand(x, y) && oCityList.isEnemyOrUnoccupiedCity(intPlayerId, x, y) )
+							if ( oGrid.isLand(x, y) && oCityList.isEnemyOrUnoccupiedCity(intUnitPlayerId, x, y) )
 								possibleMoves.add( new cGridCell(x, y) );
 						}
 					}
@@ -1942,7 +1983,7 @@ class cUnit {
 				for (y=sy;y<=ey;y++) {
 					for (x=sx;x<=ex;x++) {
 						if (intCellX!=x && intCellY!=y) {
-							if ( oUnitList.isEnemyUnitAt(intPlayerId, x, y) )
+							if ( oUnitList.isEnemyUnitAt(intUnitPlayerId, x, y) )
 								possibleMoves.add( new cGridCell(x, y) );
 						}
 					}
@@ -1996,8 +2037,8 @@ class cUnit {
 
 	void identifyNextMoveAI(int iUnitListId_) {
 
-		if (intPlayerId==1 && isCargoOf() ) println(" begin unit.identifyNextMoveAI, strUnitName="+strUnitName+", movesLeftToday="+movesLeftToday);
-		if (intPlayerId==1 && isCargoOf() ) println(" intCellX="+intCellX+", intCellY="+intCellY);
+		if (intUnitPlayerId==1 && isCargoOf() ) println(" begin unit.identifyNextMoveAI, strUnitName="+strUnitName+", movesLeftToday="+movesLeftToday);
+		if (intUnitPlayerId==1 && isCargoOf() ) println(" intCellX="+intCellX+", intCellY="+intCellY);
 
 		int x, y;
 		int sx, sy;
@@ -2034,7 +2075,7 @@ class cUnit {
 			for (y=sy;y<=ey;y++) {
 				for (x=sx;x<=ex;x++) {
 					if (intCellX!=x && intCellY!=y) {
-						if ( oGrid.isLand(x, y) && oUnitList.isEnemyUnitAt(intPlayerId, x, y) )
+						if ( oGrid.isLand(x, y) && oUnitList.isEnemyUnitAt(intUnitPlayerId, x, y) )
 							possibleMoves.add( new cGridCell(x, y) );
 					}
 				}
@@ -2046,7 +2087,7 @@ class cUnit {
 				for (y=sy;y<=ey;y++) {
 					for (x=sx;x<=ex;x++) {
 						if (intCellX!=x && intCellY!=y) {
-							if ( oGrid.isLand(x, y) && oCityList.isEnemyOrUnoccupiedCity(intPlayerId, x, y) )
+							if ( oGrid.isLand(x, y) && oCityList.isEnemyOrUnoccupiedCity(intUnitPlayerId, x, y) )
 								possibleMoves.add( new cGridCell(x, y) );
 						}
 					}
@@ -2091,7 +2132,7 @@ class cUnit {
 			// can unit attack a enemy unit?
 			for (y=sy;y<=ey;y++) {
 				for (x=sx;x<=ex;x++) {
-					if ( oGrid.isSea(x, y) && oUnitList.isEnemyUnitAt(intPlayerId, x, y) )
+					if ( oGrid.isSea(x, y) && oUnitList.isEnemyUnitAt(intUnitPlayerId, x, y) )
 						possibleMoves.add( new cGridCell(x, y) );
 				}
 			}
@@ -2109,7 +2150,7 @@ class cUnit {
 				for (y=sy;y<=ey;y++) {
 					for (x=sx;x<=ex;x++) {
 						if (intCellX!=x && intCellY!=y) {
-							if ( oGrid.isLand(x, y) && oCityList.isEnemyOrUnoccupiedCity(intPlayerId, x, y) )
+							if ( oGrid.isLand(x, y) && oCityList.isEnemyOrUnoccupiedCity(intUnitPlayerId, x, y) )
 								possibleMoves.add( new cGridCell(x, y) );
 						}
 					}
@@ -2122,7 +2163,7 @@ class cUnit {
 				for (y=sy;y<=ey;y++) {
 					for (x=sx;x<=ex;x++) {
 						if (intCellX!=x && intCellY!=y) {
-							if ( oGrid.isSea(x, y) && oGrid.isFogOfWar(x, y) && oUnitList.isPlayerSeaVesselAtRowCol(intPlayerId, x, y)==false )
+							if ( oGrid.isSea(x, y) && oGrid.isFogOfWar(x, y) && oUnitList.isPlayerSeaVesselAtRowCol(intUnitPlayerId, x, y)==false )
 								possibleMoves.add( new cGridCell(x, y) );
 						}
 					}
@@ -2134,7 +2175,7 @@ class cUnit {
 				for (y=sy;y<=ey;y++) {
 					for (x=sx;x<=ex;x++) {
 						if (intCellX!=x && intCellY!=y) {
-							if ( oGrid.isSea(x, y) && oUnitList.isPlayerSeaVesselAtRowCol(intPlayerId, x, y)==false )
+							if ( oGrid.isSea(x, y) && oUnitList.isPlayerSeaVesselAtRowCol(intUnitPlayerId, x, y)==false )
 								possibleMoves.add( new cGridCell(x, y) );
 						}
 					}
@@ -2145,7 +2186,7 @@ class cUnit {
 		}	
 		
 
-		if (intPlayerId==1 && isCargoOf() ) println("possibleMoves.size()="+possibleMoves.size() );
+		if (intUnitPlayerId==1 && isCargoOf() ) println("possibleMoves.size()="+possibleMoves.size() );
 
 		if( possibleMoves.size()>0 ) {
 			//println("unit AI move #1");
@@ -2172,7 +2213,7 @@ class cUnit {
 
 	void Draw() {
 
-		//println("drawing unit, intPlayerId="+intPlayerId+", intUnitTypeId=" + intUnitTypeId + ", strUnitName=" + strUnitName);
+		//println("drawing unit, intUnitPlayerId="+intUnitPlayerId+", intUnitTypeId=" + intUnitTypeId + ", strUnitName=" + strUnitName);
 		//println("oViewport.isCellWithinViewport(intCellX, intCellY)="+oViewport.isCellWithinViewport(intCellX, intCellY) );
 		int countOfPlayerUnits;
 		
@@ -2187,19 +2228,19 @@ class cUnit {
 			
 			if ( oGrid.isFogOfWar(intCellX, intCellY)==false ) { // for testing purposes
 			
-				if ( intPlayerId==1 || ( intPlayerId==2 && oUnitList.getCountEnemyUnitNearby(intPlayerId, intCellX, intCellY)>=1 ) )  {
+				if ( intUnitPlayerId==1 || ( intUnitPlayerId==2 && oUnitList.getCountEnemyUnitNearby(intUnitPlayerId, intCellX, intCellY)>=1 ) )  {
 			
 					switch(intUnitTypeId) {
 						case 0:
-							//println("drawing Tank, player="+intPlayerId);
-							if (intPlayerId==1) {
+							//println("drawing Tank, player="+intUnitPlayerId);
+							if (intUnitPlayerId==1) {
 								//println("player 1");
 								//if ( !isCargoOf() && oGameGrid.XXX() ) {
 
 									image( imgTank1, DisplayX, DisplayY );
 
 									// show player Tank count at X,Y on unit image, if more than 1
-									countOfPlayerUnits = oUnitList.getCountOfPlayerTankUnitsAt(intPlayerId, intCellX, intCellY);
+									countOfPlayerUnits = oUnitList.getCountOfPlayerTankUnitsAt(intUnitPlayerId, intCellX, intCellY);
 									if ( countOfPlayerUnits > 1 && oGrid.isLand(intCellX, intCellY) ) {
 										fill(255);
 										rect(DisplayX+iNumberIndent,DisplayY+iNumberIndent,iNumberTextSize,iNumberTextSize+1);
@@ -2214,29 +2255,29 @@ class cUnit {
 								//println("player 2");
 								if (!isCargoOf()) image( imgTank2,DisplayX, DisplayY );
 							}
-							//println("DONE drawing Tank, player="+intPlayerId);
+							//println("DONE drawing Tank, player="+intUnitPlayerId);
 							break;
 						case 1:
 							//println("drawing Fighter");
-							if (intPlayerId==1) image( imgFighter1, DisplayX, DisplayY );
+							if (intUnitPlayerId==1) image( imgFighter1, DisplayX, DisplayY );
 							else image( imgFighter2, DisplayX, DisplayY );
 							break;
 						case 2:
 							//println("drawing Battleship");
-							if (intPlayerId==1) image( imgBattleship1, DisplayX, DisplayY );
+							if (intUnitPlayerId==1) image( imgBattleship1, DisplayX, DisplayY );
 							else image( imgBattleship2, DisplayX, DisplayY );
 							break;	
 						case 3:
 							//println("drawing Bomber");
-							if (intPlayerId==1) image( imgBomber1, DisplayX, DisplayY );
+							if (intUnitPlayerId==1) image( imgBomber1, DisplayX, DisplayY );
 							else image( imgBomber2, DisplayX, DisplayY );
 							break;	
 						case 4:
 							//println("drawing Carrier");
-							if (intPlayerId==1) image( imgCarrier1, DisplayX, DisplayY );
+							if (intUnitPlayerId==1) image( imgCarrier1, DisplayX, DisplayY );
 							else image( imgCarrier2, DisplayX, DisplayY );
 
-							if( intPlayerId==1 && getCargoCount() > 0 ) {
+							if( intUnitPlayerId==1 && getCargoCount() > 0 ) {
 								// show cargo count on unit image
 								fill(255);
 								rect(DisplayX+iNumberIndent,DisplayY+iNumberIndent,iNumberTextSize,iNumberTextSize+1);
@@ -2249,15 +2290,15 @@ class cUnit {
 							break;	
 						case 5:
 							//println("drawing Destroyer");
-							if (intPlayerId==1) image( imgDestroyer1, DisplayX, DisplayY );
+							if (intUnitPlayerId==1) image( imgDestroyer1, DisplayX, DisplayY );
 							else image( imgDestroyer2, DisplayX, DisplayY );
 							break;
 						case 6:
 							//println("drawing Transport");
-							if (intPlayerId==1) image( imgTransport1, DisplayX, DisplayY );
+							if (intUnitPlayerId==1) image( imgTransport1, DisplayX, DisplayY );
 							else image( imgTransport2, DisplayX, DisplayY );
 
-							if( intPlayerId==1 && getCargoCount() > 0 ) {
+							if( intUnitPlayerId==1 && getCargoCount() > 0 ) {
 								// show cargo count on unit image
 								fill(255);
 								rect(DisplayX+iNumberIndent,DisplayY+iNumberIndent,iNumberTextSize,iNumberTextSize+1);
@@ -2271,7 +2312,7 @@ class cUnit {
 
 						case 7:
 							//println("drawing Submarine");
-							if (intPlayerId==1) image( imgSubmarine1, DisplayX, DisplayY );
+							if (intUnitPlayerId==1) image( imgSubmarine1, DisplayX, DisplayY );
 							else image( imgSubmarine2, DisplayX, DisplayY );						
 							break;						
 					}

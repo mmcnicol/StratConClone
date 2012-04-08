@@ -11,10 +11,10 @@ class cUnitList {
 		return listUnit.size()-1;
 	}
 
-	void AddUnit(int intUnitTypeId_, int intPlayerId_, int intcellX_, int intcellY_) {
+	void AddUnit(int intUnitTypeId_, int intPlayerId_, int intcellX_, int intcellY_, int iIslandListId_) {
 	
 		//println( "add unit for player " + intPlayerId_ + ", intUnitTypeId_=" + intUnitTypeId_);
-		listUnit.add( new cUnit(intUnitTypeId_, intPlayerId_, intcellX_, intcellY_) );  
+		listUnit.add( new cUnit(intUnitTypeId_, intPlayerId_, intcellX_, intcellY_, iIslandListId_) );  
 		//println( "unit list debug#1");
 	}
 
@@ -441,6 +441,8 @@ class cUnitList {
 		//listUnit.remove(iUnitListId_);
 		//println("debug#9");
 		
+		//listUnit.remove(iUnitListId_);
+
 		//println("leaving unitList.deleteUnit()...");
 	}
 	
@@ -790,7 +792,7 @@ class cUnitList {
 		
 		unit.updateSelectedUnitPanelInformation();
 		
-		oViewport.scrollIfAppropriate(unit.getX(), unit.getY());
+		if ( oGameEngine.getCurrentPlayerId()==1 ) oViewport.scrollIfAppropriate(unit.getX(), unit.getY());
 
 		switch( iAnimateSwitch_ ) {
 			case 0:

@@ -114,6 +114,10 @@ class cGameEngine {
 		//oPanelIslandList.show();
 
 		oIslandList.updateIslandStatus();
+		//oPanelCityList.show();
+
+		//oPanelPlayer1UnitCounts.show();
+		//oPanelPlayer2UnitCounts.show();
 	}
 
 

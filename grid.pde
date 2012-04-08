@@ -50,6 +50,18 @@ class cGrid {
 
 	void init() {
 
+		for (y=1; y<=120; y=y+1) {
+			for (x=1; x<=100; x=x+1) {
+
+				intGridCellType[x][y]=-1;
+				intGridIslands[x][y]=-4; // Nothing
+
+				//if (ShowFogOfWar==true) intGridCellFog[x][y]=true;
+				//else intGridCellFog[x][y]=false;
+				intGridCellFog[x][y]=false;
+			}
+		}
+
 		//println("debug: in grid.Init()");
 		// default all GridCellType as Sea (code 0)
 		for (y=1; y<=countY; y=y+1) {
@@ -138,6 +150,8 @@ class cGrid {
 
 	bool isNextToLand(int x_, int y_) {
 
+		//println("in oGrid.isNextToLand("+x_+","+y_+")");
+
 		bool result=false;
 		
 		if (x_-1>=1) 
@@ -174,6 +188,46 @@ class cGrid {
 	}
 
 
+	bool getIslandIdIfIsNextToLand(int x_, int y_) {
+
+		println("in oGrid.getIslandIdIfIsNextToLand("+x_+","+y_+")");
+
+		bool result=-1;
+		
+		if (x_-1>=1) 
+			if( intGridCellType[x_-1][y_]==LAND ) result=intGridIslands[x_-1][y_];
+
+		if (x_+1<=countX) 
+			if( intGridCellType[x_+1][y_]==LAND ) result=intGridIslands[x_+1][y_];		
+		
+
+		if (y_-1>=1) 
+			if( intGridCellType[x_][y_-1]==LAND ) result=intGridIslands[x_][y_-1];
+
+		if (y_+1<=countY) 
+			if( intGridCellType[x_][y_+1]==LAND ) result=intGridIslands[x_][y_+1];
+
+
+
+		if (x_-1>=1 && y_-1>=1) 
+			if( intGridCellType[x_-1][y_-1]==LAND ) result=intGridIslands[x_-1][y_-1];
+
+		if (x_+1<=countX && y_+1<=countY) 
+			if( intGridCellType[x_+1][y_+1]==LAND ) result=intGridIslands[x_+1][y_+1];			
+		
+
+		if (x_-1>=1 && y_+1<=countY) 
+			if( intGridCellType[x_-1][y_+1]==LAND ) result=intGridIslands[x_-1][y_+1];
+
+		if (x_+1<=countX && y_-1>=1)
+			if( intGridCellType[x_+1][y_-1]==LAND ) result=intGridIslands[x_+1][y_-1];	
+		
+		println("in grid.getIslandIdIfIsNextToLand("+x_+","+y_+"), result="+result);
+		
+		//println("leaving oGrid.getIslandIdIfIsNextToLand()");
+
+		return result;
+	}
 
 	
 	// ******************************************************
@@ -298,7 +352,7 @@ class cGrid {
 				if ( intGridIslands[x][y]==islandListId_ ) {
 
 					//println("debug#6, "+islandListId_);
-					if ( ((int)random(1,1000)%3==0) && cityCount<maxCityPerIsland ) {
+					if ( ((int)random(1,1000)%7==0) && cityCount<maxCityPerIsland ) {
 						//println("debug#7, add city?");
 						// game rule: cities should not be immediately next to each other
 						if ( oCityList.getCountCityNearby(1, x, y)==0 && oCityList.getCountCityNearby(2, x, y)==0) {
@@ -605,10 +659,10 @@ class cGrid {
 						if ((int)random(1,1000)%3==0) defineIslandAsRandomPoly(-1, cellWidth*(int)random(i-5,i+5), cellHeight*(int)random(j-5,j+5), cellWidth*(int)random(3,6), cellHeight*(int)random(3,6) );
 						break;
 					case 3:
-						if ((int)random(1,1000)%2==0) defineIslandAsRandomPoly(-1, cellWidth*(int)random(i-5,i+5), cellHeight*(int)random(j-5,j+5), cellWidth*(int)random(6,9), cellHeight*(int)random(7,14) );
+						if ((int)random(1,1000)%2==0) defineIslandAsRandomPoly(-1, cellWidth*(int)random(i-5,i+5), cellHeight*(int)random(j-5,j+5), cellWidth*(int)random(4,7), cellHeight*(int)random(5,8) );
 						break;
 					case 4:
-						if ((int)random(1,1000)%2==0) defineIslandAsRandomPoly(-1, cellWidth*(int)random(i-5,i+5), cellHeight*(int)random(j-5,j+5), cellWidth*(int)random(9,12), cellHeight*(int)random(13,26) );
+						if ((int)random(1,1000)%2==0) defineIslandAsRandomPoly(-1, cellWidth*(int)random(i-5,i+5), cellHeight*(int)random(j-5,j+5), cellWidth*(int)random(5,8), cellHeight*(int)random(7,9) );
 						break;
 				} 					
 			}

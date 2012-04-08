@@ -29,6 +29,8 @@ cPanelSelectedCity oPanelSelectedCity;
 cPanelMap oPanelMap;
 cPanelCityList oPanelCityList;
 cPanelIslandList oPanelIslandList;
+cPanelPlayerUnitCounts oPanelPlayer1UnitCounts;
+cPanelPlayerUnitCounts oPanelPlayer2UnitCounts;
 cDialogueStartup oDialogueStartup;
 cDialogueCityProduction oDialogueCityProduction;
 cGameEngine oGameEngine; 
@@ -47,6 +49,8 @@ int iMapSize=2; // 1=Small (45x25), 2=large (90x50)
 int iNumberTextSize=6;
 int iStringTextSize=11;
 bool ShowFogOfWar=true;
+
+int iNumberOfUnitTypes=9;
 
 void setup() {
 	
@@ -95,7 +99,7 @@ void draw() {
 			
 			oPanel1.update();
 			oAnimate.do();
-			oPanelCityList.show();
+			//oPanelCityList.show();
 
 			//oViewport.printWidth();
 
@@ -160,6 +164,9 @@ void draw() {
 			
 			oPanelIslandList = new cPanelIslandList(650,500);
 			oPanelCityList = new cPanelCityList(1200,790);
+
+			oPanelPlayer1UnitCounts = new cPanelPlayerUnitCounts(570, 650,190,1);
+			oPanelPlayer2UnitCounts = new cPanelPlayerUnitCounts(790, 650,190,2);
 
 			oGameEngine = new cGameEngine(); 
 			
@@ -378,6 +385,7 @@ class cGridCell {
 	int getX() { return x; }
 	int getY() { return y; }
 }
+
 
 
 /************************************************************************

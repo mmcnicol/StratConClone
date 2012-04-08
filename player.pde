@@ -3,6 +3,7 @@ class cPlayer {
 
 	int iPlayerId;
 	bool iIsAI;
+	int[] unitCounts = new int[iNumberOfUnitTypes];
 	
 	cPlayer(int iPlayerId_, bool isAI_) {
 	
@@ -10,6 +11,9 @@ class cPlayer {
 		iPlayerId = iPlayerId_;
 		iIsAI = isAI_;
 		//println("debug#1.2");
+
+		// initialise player unit counts
+		for (int i=0; i<iNumberOfUnitTypes; i++) unitCounts[i]=0;
 	}
 
 	void setIsAI(bool value_) { iIsAI=value_; }
@@ -21,6 +25,32 @@ class cPlayer {
 		return iIsAI; 
 	}
 	
+	void increaseUnitTypeCount(int iUnitType_) { unitCounts[iUnitType_]=unitCounts[iUnitType_]+1; }
+	void decreaseUnitTypeCount(int iUnitType_) { unitCounts[iUnitType_]=unitCounts[iUnitType_]-1; }
+
+	int getUnitTypeCount(int iUnitType_) { return unitCounts[iUnitType_]; }
+
+	void printUnitTypeCountsToPanel() {
+		
+		//println(" in cPlayer.printUnitTypeCountsToPanel()");
+
+		string strUnitName="";
+		string strUnitTypeCount="";
+
+		for (int i = 0; i < iNumberOfUnitTypes; i++) { 
+			
+			strUnitName = LPAD(""+oUnitRef[i].getUnitName(),10);
+
+			strUnitTypeCount=LPAD(""+getUnitTypeCount(i),5);
+			
+			if (iPlayerId==1) oPanelPlayer1UnitCounts.addLine("   " + strUnitName + " | " + strUnitTypeCount + " ");
+			else if (iPlayerId==2) oPanelPlayer2UnitCounts.addLine("   " + strUnitName + " | " + strUnitTypeCount + " ");
+		}   
+
+		//println(" leaving cPlayer.printUnitTypeCountsToPanel()");
+
+	}
+
 }
 
 
