@@ -2115,12 +2115,20 @@ class cUnit {
 			}
 
 
-			// TODO: if ship finds land, try to follow (explore) coast line.
-			// ...
-			
-			
+			// if ship finds land, follow (explore) coast line & clear fog.
+			if( possibleMoves.size()==0 ) {
+				for (y=sy;y<=ey;y++) {
+					for (x=sx;x<=ex;x++) {
+						if (intCellX!=x && intCellY!=y) {
+							if ( oGrid.isSeaNextToIsland(x, y) && oGrid.isFogOfWar(x, y) && oUnitList.isPlayerSeaVesselAtRowCol(intUnitPlayerId, x, y)==false )
+								possibleMoves.add( new cGridCell(x, y) );
+						}
+					}
+				}
+			}
+
 			// can unit attack a city?
-			// TODO: ship could attack city, omly to try to kill any enemy units
+			// TODO: ship could attack city, only to try to kill any enemy units
 			// ...
 			/*
 			if( possibleMoves.size()==0 ) {

@@ -17,7 +17,16 @@ class cGrid {
 	//final static int GRIDY=100;
 
 	int intGridCellType[][] = new int[121][101]; // use for land or sea
+
 	int intGridIslands[][] = new int[121][101]; // use for find islands algorithm
+	/*
+		-4 = nothing
+		-3 = island, but we don't know which island number yet
+		-2 = Sea next to an Island
+		-1 = Sea
+		0... = islandListId
+	*/
+
 	bool intGridCellFog[][] = new bool[121][101];
 
 	ArrayList listNeighbour;
@@ -33,7 +42,6 @@ class cGrid {
 		listNeighbour = new ArrayList();  // Create an empty ArrayList
 
 		init();
-
 	}
 
 
@@ -45,53 +53,30 @@ class cGrid {
 		showFromY = showFromY_;
 		
 		init();
-
 	}
 
 	void init() {
 
+		// init whole array
 		for (y=1; y<=120; y=y+1) {
 			for (x=1; x<=100; x=x+1) {
 
 				intGridCellType[x][y]=-1;
 				intGridIslands[x][y]=-4; // Nothing
 
-				//if (ShowFogOfWar==true) intGridCellFog[x][y]=true;
-				//else intGridCellFog[x][y]=false;
 				intGridCellFog[x][y]=false;
 			}
 		}
 
-		//println("debug: in grid.Init()");
 		// default all GridCellType as Sea (code 0)
 		for (y=1; y<=countY; y=y+1) {
 			for (x=1; x<=countX; x=x+1) {
 
-				//int yy=round(intX/cellWidth);
-				//int yyy=round(intY/cellHeight);
-				//println( "y=" + y + ", x=" + x );
-				//image( imgSea, x, y ); 
-				
 				intGridCellType[x][y]=SEA;
 				intGridIslands[x][y]=-4; // Nothing
 
 				if (ShowFogOfWar==true) intGridCellFog[x][y]=true;
 				else intGridCellFog[x][y]=false;
-				
-				/*
-				//switch( oWorld.getScenario() ) {
-					case 0:
-						intGridCellType[x][y]=SEA;
-						intGridCellFog[x][y]=true;
-						break;
-					case 1:
-						intGridCellType[x][y]=SEA;
-						intGridCellFog[x][y]=true; 
-						break;
-
-				}
-				*/		
-		
 			}
 		}
 		
@@ -100,6 +85,7 @@ class cGrid {
 
 	int getGridCellType(int cellX_, int cellY_) { return intGridCellType[cellX_][cellY_]; }
 	
+
 	bool isLand(int cellX_, int cellY_) {
 		
 		if (cellX_>0 && cellY_>0) {
@@ -108,14 +94,24 @@ class cGrid {
 				return true;
 			}
 		}
-		//println("isLand("+cellX_+","+cellY_+")=false");			
+		
 		return false;
 	}
+
 
 	bool isSea(int cellX_, int cellY_) {
 		
 		if (cellX_>0 && cellY_>0)
 			if( intGridCellType[cellX_][cellY_]==SEA ) return true;
+			
+		return false;
+	}
+
+
+	bool isSeaNextToIsland(int cellX_, int cellY_) {
+		
+		if (cellX_>0 && cellY_>0)
+			if( intGridIslands[cellX_][cellY_]==-2 ) return true;
 			
 		return false;
 	}

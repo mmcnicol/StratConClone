@@ -394,17 +394,15 @@ class cCity {
 				case 7:
 					productionUnitTypeId= oUnitRef[0].getUnitTypeId(); // tank
 					productionDaysLeft = oUnitRef[0].getDaysToProduce();
-					break;	
 					//productionUnitTypeId= oUnitRef[6].getUnitTypeId(); // transport
 					//productionDaysLeft = oUnitRef[6].getDaysToProduce();
-					//break;				
+					break;				
 				case 8:
-					productionUnitTypeId= oUnitRef[0].getUnitTypeId(); // tank
-					productionDaysLeft = oUnitRef[0].getDaysToProduce();
-					break;
-					//productionUnitTypeId= oUnitRef[5].getUnitTypeId(); // destroyer
-					//productionDaysLeft = oUnitRef[5].getDaysToProduce();
-					//break;						
+					//productionUnitTypeId= oUnitRef[0].getUnitTypeId(); // tank
+					//productionDaysLeft = oUnitRef[0].getDaysToProduce();
+					productionUnitTypeId= oUnitRef[5].getUnitTypeId(); // destroyer
+					productionDaysLeft = oUnitRef[5].getDaysToProduce();
+					break;						
 			} 			
 
 		// ******************************************************
