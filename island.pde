@@ -6,12 +6,18 @@ class cIsland {
 	int P2CityCount;
 	int UnoccupiedCityCount;
 
+	int[] IslandUnitCountsP1 = new int[iNumberOfUnitTypes];
+	int[] IslandUnitCountsP2 = new int[iNumberOfUnitTypes];
+
 	cIsland(int iPlayerId_) {
 
 		iPlayerId=iPlayerId_;
 		P1CityCount=0;
 		P2CityCount=0;
 		UnoccupiedCityCount=0;
+
+		// initialise player unit counts
+		for (int i=0; i<iNumberOfUnitTypes; i++) { IslandUnitCountsP1[i]=0; IslandUnitCountsP1[i]=0; }
 	}
 
 	int getPlayerId() { return iPlayerId; }
@@ -67,6 +73,29 @@ class cIsland {
 
 		return strStatus;
 	}
+
+
+
+	// ***********************************************************
+	// ISLAND PLAYER 1 UNIT COUNTS
+	// ***********************************************************
+
+	void increaseIslandUnitTypeCountP1(int iUnitType_) { IslandUnitCountsP1[iUnitType_]=IslandUnitCountsP1[iUnitType_]+1; }
+	void decreaseIslandUnitTypeCountP1(int iUnitType_) { IslandUnitCountsP1[iUnitType_]=IslandUnitCountsP1[iUnitType_]-1; }
+
+	int getUnitTypeCountP1(int iUnitType_) { return IslandUnitCountsP1[iUnitType_]; }
+
+
+
+	// ***********************************************************
+	// ISLAND PLAYER 2 UNIT COUNTS
+	// ***********************************************************
+
+	void increaseIslandUnitTypeCountP2(int iUnitType_) { IslandUnitCountsP2[iUnitType_]=IslandUnitCountsP2[iUnitType_]+1; }
+	void decreaseIslandUnitTypeCountP2(int iUnitType_) { IslandUnitCountsP2[iUnitType_]=IslandUnitCountsP2[iUnitType_]-1; }
+
+	int getUnitTypeCountP2(int iUnitType_) { return IslandUnitCountsP2[iUnitType_]; }
+
 
 }
 

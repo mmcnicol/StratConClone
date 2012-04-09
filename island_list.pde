@@ -30,6 +30,8 @@ class cIslandList {
 		return island.getPlayerId();
 	}
 
+
+
 	void increaseUnoccupiedCityCount(int iIslandListId_) {
 
 		cIsland island = (cIsland) listIsland.get( iIslandListId_ );
@@ -66,6 +68,28 @@ class cIslandList {
 		return oCityList.getCountIslandPlayerCity(iIslandId_, iPlayerId_);
 	}
 	*/
+
+
+
+	void increaseIslandUnitTypeCount(int iUnitType_, int iIslandListId_, int iPlayerId_) { 
+
+		cIsland island = (cIsland) listIsland.get( iIslandListId_ ); 
+
+		if ( iPlayerId_==1 ) island.increaseIslandUnitTypeCountP1(iUnitType_);
+		else if ( iPlayerId_==2 ) island.increaseIslandUnitTypeCountP2(iUnitType_);
+	}
+
+	void decreaseIslandUnitTypeCount(int iUnitType_, int iIslandListId_, int iPlayerId_) { 
+
+		cIsland island = (cIsland) listIsland.get( iIslandListId_ ); 
+
+		if ( iPlayerId_==1 ) island.decreaseIslandUnitTypeCountP1(iUnitType_);
+		else if ( iPlayerId_==2 ) island.decreaseIslandUnitTypeCountP2(iUnitType_);
+	}
+
+
+
+
 
 	void updateIslandStatus() {
 

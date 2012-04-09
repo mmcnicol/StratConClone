@@ -25,8 +25,17 @@ class cPlayer {
 		return iIsAI; 
 	}
 	
-	void increaseUnitTypeCount(int iUnitType_) { unitCounts[iUnitType_]=unitCounts[iUnitType_]+1; }
-	void decreaseUnitTypeCount(int iUnitType_) { unitCounts[iUnitType_]=unitCounts[iUnitType_]-1; }
+	void increaseUnitTypeCount(int iUnitType_, int iIslandListId_) { 
+
+		unitCounts[iUnitType_]=unitCounts[iUnitType_]+1; 
+		oIslandList.increaseIslandUnitTypeCount(iUnitType_, iIslandListId_, getPlayerId() );
+	}
+
+	void decreaseUnitTypeCount(int iUnitType_, int iIslandListId_) {  
+
+		unitCounts[iUnitType_]=unitCounts[iUnitType_]-1; 
+		oIslandList.decreaseIslandUnitTypeCount(iUnitType_, iIslandListId_, getPlayerId() );
+	}
 
 	int getUnitTypeCount(int iUnitType_) { return unitCounts[iUnitType_]; }
 

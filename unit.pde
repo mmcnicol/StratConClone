@@ -3,6 +3,7 @@ class cUnit {
 
 	int intUnitTypeId;
 	int intUnitPlayerId;
+	int iIslandListId;
 	int intCellX, intCellY;
 	int iMoveToCellX, iMoveToCellY;
 	int iDayBuilt;
@@ -57,8 +58,9 @@ class cUnit {
 
 		if( intUnitTypeId_!=-1 ) {
 			
-			intUnitTypeId=intUnitTypeId_;
-			intUnitPlayerId=intUnitPlayerId_;
+			intUnitTypeId = intUnitTypeId_;
+			intUnitPlayerId = intUnitPlayerId_;
+			iIslandListId = iIslandListId_;
 
 			intCellX=intCellX_;
 			intCellY=intCellY_;
@@ -113,8 +115,8 @@ class cUnit {
 	
 			transportCargoLoadIslandId=iIslandListId_;
 
-			if (intUnitPlayerId==1) oPlayer1.increaseUnitTypeCount(intUnitTypeId_);
-			else if (intUnitPlayerId==2) oPlayer2.increaseUnitTypeCount(intUnitTypeId_);
+			if (intUnitPlayerId==1) oPlayer1.increaseUnitTypeCount(intUnitTypeId_, iIslandListId_);
+			else if (intUnitPlayerId==2) oPlayer2.increaseUnitTypeCount(intUnitTypeId_, iIslandListId_);
 
 		} else {
 			println( "error: cannot add unit for unit type " + intUnitTypeId_ );
@@ -717,8 +719,8 @@ class cUnit {
 		thisUnitIsCargoOfUnitId=-1;
 
 
-		if (intUnitPlayerId==1) oPlayer1.decreaseUnitTypeCount(intUnitTypeId);
-		else if (intUnitPlayerId==2) oPlayer2.decreaseUnitTypeCount(intUnitTypeId);
+		if (intUnitPlayerId==1) oPlayer1.decreaseUnitTypeCount(intUnitTypeId, iIslandListId);
+		else if (intUnitPlayerId==2) oPlayer2.decreaseUnitTypeCount(intUnitTypeId, iIslandListId);
 
 		// hide unit
 		////////oGrid.DrawCell(intCellX, intCellY, false);
