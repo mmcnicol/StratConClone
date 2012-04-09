@@ -115,10 +115,6 @@ class cUnitList {
 	
 	
 	bool isPlayerSeaVesselAtRowCol(int iPlayerId_, int x_, int y_) {
-	
-		//println("debug: in unlitlist.isPlayerSeaVesselAtRowCol() ");
-		
-		//bool result = false;
 
 		for (int i = 0; i < listUnit.size(); i++) { 
 		
@@ -127,10 +123,6 @@ class cUnitList {
 			if( unit.getPlayerId()==iPlayerId_ && unit.isAt(x_, y_) && unit.isSeaVessel() && unit.isAlive() ) {
 
 				return true;
-				//result = true;
-				
-				// exit loop;
-				//i = listUnit.size();
 			}
 		}  
 		
@@ -141,7 +133,6 @@ class cUnitList {
 
 	void isFighter(int iUnitListId_) {
 
-		//println("in unitlist.isFighter iUnitListId_="+iUnitListId_);
 		if ( iUnitListId_>=0 ) {
 			cUnit unit = (cUnit) listUnit.get(iUnitListId_);
 			return unit.isFighter();
@@ -199,32 +190,21 @@ class cUnitList {
 
 	bool isPlayerTransportAtRowCol(int iPlayerId_, int x_, int y_) {
 	
-		//println("debug: in unlitlist.isPlayerTransportAtRowCol() ");
-		
-		//bool result = false;
-
 		for (int i = 0; i < listUnit.size(); i++) { 
 		
 			cUnit unit = (cUnit) listUnit.get(i);
 
 			if( unit.getPlayerId()==iPlayerId_ && unit.isAt(x_, y_) && unit.isTransport() && unit.isAlive() ) {
 
-				//println("debug: in unlitlist.isPlayerTransportAtRowCol() ...yes");
 				return true;
-				
-				// exit loop;
-				//i = listUnit.size();
 			}
 		}  
 		
 		return false;
 	}	
 
+
 	bool isEnemyTransportAtRowCol(int iPlayerId_, int x_, int y_) {
-	
-		//println("debug: in unlitlist.isPlayerTransportAtRowCol() ");
-		
-		//bool result = false;
 
 		for (int i = 0; i < listUnit.size(); i++) { 
 		
@@ -232,16 +212,14 @@ class cUnitList {
 
 			if( unit.getPlayerId()!=iPlayerId_ && unit.isAt(x_, y_) && unit.isTransport() && unit.isAlive() ) {
 
-				//println("debug: in unlitlist.isPlayerTransportAtRowCol() ...yes");
 				return true;
 				
-				// exit loop;
-				//i = listUnit.size();
 			}
 		}  
 		
 		return false;
 	}	
+
 
 	bool IsTransportNearbyWaitingForUnits(int iPlayerId_, int iUnitListId_, int iCellX_, int iCellY_) {
 
@@ -269,6 +247,7 @@ class cUnitList {
 		return false;
 	}
 
+
 	int getTransportUnitNumberNearbyWhichIsWaitingForTanks(int iPlayerId_, int x_, int y_) {
 		int temp=-1;
 		for (int i = 0; i < listUnit.size(); i++) { 
@@ -280,6 +259,21 @@ class cUnitList {
 		return temp;	
 	}
 
+
+	bool isPlayerTransportFullAtRowCol(int iPlayerId_, int x_, int y_) {
+	
+		for (int i = 0; i < listUnit.size(); i++) { 
+		
+			cUnit unit = (cUnit) listUnit.get(i);
+
+			if( unit.getPlayerId()==iPlayerId_ && unit.isAt(x_, y_) && unit.isTransport() && unit.isAlive() && unit.getCargoCount()==6 ) {
+
+				return true;
+			}
+		}  
+		
+		return false;
+	}	
 
 
 	
@@ -598,20 +592,28 @@ class cUnitList {
 
 
 	int getCountUnitsWithMovesLeftToday(int intPlayerId_) {
-		int TempCount=0;
+		
 		//println("in getCountUnitsWithMovesLeftToday()");
+
+		int TempCount=0;
+
 		for (int i = 0; i < listUnit.size(); i++) { 
 			cUnit unit = (cUnit) listUnit.get(i);
 			if( unit.getPlayerId()==intPlayerId_ && unit.isAsleep()==false && unit.getMovesLeftToday() >0 && unit.isAlive() ) {
 				TempCount=TempCount + 1;
 			}
 		}  
+
 		//println("getCountUnitsWithMovesLeftToday=" + TempCount);
+
 		return TempCount;	
 	}
 	
+
 	void moveNextUnitWithMovesLeftToday(int intPlayerId_) {
+
 		//println("in moveNextUnitWithMovesLeftToday()...");
+
 		for (int i = 0; i < listUnit.size(); i++) { 
 			cUnit unit = (cUnit) listUnit.get(i);
 			if( unit.getPlayerId()==intPlayerId_ && unit.getMovesLeftToday() >0 && unit.isAsleep()==false && unit.isAlive() ) {
@@ -623,7 +625,6 @@ class cUnitList {
 				i=listUnit.size();
 			}
 		}  
-
 	}
 
 
@@ -753,12 +754,15 @@ class cUnitList {
 		}  	
 	}
 
+
 	// ****************************************************************
 	// HIGHLIGHT / SELECT / ANIMATE
 	// ****************************************************************
 
 	void highlightNextUnitWithMovesLeftToday(int intPlayerId_) {
+
 		//println("in highlightNextUnitWithMovesLeftToday()...");
+
 		for (int i = 0; i < listUnit.size(); i++) { 
 			cUnit unit = (cUnit) listUnit.get(i);
 			if( unit.getPlayerId()==intPlayerId_ && unit.getMovesLeftToday() >0 && unit.isAlive() ) {
@@ -775,15 +779,13 @@ class cUnitList {
 				
 				// if testing, comment out this section so that player 1 is moved by computer
 				//if (intPlayerId_==1) 
-					unit.moveToIfSpecified(i);
+				unit.moveToIfSpecified(i);
 				
 				// exit loop
 				i=listUnit.size();
 			}
 		}  
-
 	}
-
 
 
 	void updateDisplay(int iUnitListId_, int iAnimateSwitch_) {
@@ -832,7 +834,6 @@ class cUnitList {
 		}		
 		
 		oPanelSelectedUnit.clear(255);
-
 	}
 	
 
@@ -850,14 +851,13 @@ class cUnitList {
 			
 			unit.setMovesLeftToday(0);
 			unit.setTaskStatus(99);
-			println("... unit found, set to sleep, at "+unit.getX()+","+unit.getY() );
+			//println("... unit found, set to sleep, at "+unit.getX()+","+unit.getY() );
 			unit.Draw();
 			
 			if ( oUnitRef[ unit.getUnitTypeId() ].canFly() ) unit.updateFuelLeft(iUnitListId);			
 		}
 		
 		oPanelSelectedUnit.clear(255);
-
 	}
 
 
@@ -868,15 +868,12 @@ class cUnitList {
 		if ( iUnitListId != -1 ) {
 		
 			cUnit unit = (cUnit) listUnit.get(iUnitListId);
-			
 			oAnimate.clear();
-			
 			unit.moveAI(iUnitListId);
 			
 		}		
 		
 		oPanelSelectedUnit.clear(255);
-
 	}
 
 
@@ -886,8 +883,6 @@ class cUnitList {
 	// ****************************************************************
 
 	int getCountOfPlayerUnits(int iPlayerId_) {
-	
-		//println("in unit_list.getCountOfPlayerUnits() ");
 	
 		int counter=0;
 		for (int i = 0; i < listUnit.size(); i++) { 
@@ -905,7 +900,6 @@ class cUnitList {
 	// PRODUCTION
 	// ****************************************************************
 
-
 	int getCountOfPlayerUnitsByUnitType(int iPlayerId_, int iUnitType_) {
 		int counter=0;
 		for (int i = 0; i < listUnit.size(); i++) { 
@@ -917,8 +911,5 @@ class cUnitList {
 		return counter;	
 	}	
 }
-
-
-
 
 

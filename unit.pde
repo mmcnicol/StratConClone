@@ -37,6 +37,7 @@ class cUnit {
 	1=accept cargo
 	2=cargo loaded, move to enemy island (or player island which is under attack)
 	3=unload cargo
+	4=return to cargo load location
 	
 	if isTank()
 	0=move to using basic algorithm
@@ -1208,20 +1209,6 @@ class cUnit {
 			// *********************************************
 			} else {
 			
-				////println(" in unit.move() debug#7 just do the move");
-				//if (intUnitPlayerId==1 && isTransport() ) println("in unit.move() is tranport getCargoCount()="+getCargoCount() );
-				
-				//if ( getCargoCount()>0 ) printCargo();
-				//intCellX = intCellX_;
-				//intCellY = intCellY_;
-				
-				//if( isTransport() || isCarrier() ) {
-				//	moveCargo(intCellX_, intCellY_);
-				//}
-								
-				//Draw();
-				
-				
 				// if unit just stepped off a transport
 				if( isCargoOf() ) {
 					println("in unit.move, tank might just have stepped off a transport, clear unit from transport");
@@ -1240,18 +1227,8 @@ class cUnit {
 				updateSelectedUnitPanelInformation();				
 				
 			}
-
-			//println(" in unit.move() debug#8");
-			
 			
 		}
-		
-		//if (getPlayerId()==1) 
-		////clearFogOfWar();
-		////reDrawNearBy();
-		
-		
-		
 		
 	}
 
@@ -1267,8 +1244,6 @@ class cUnit {
 		//println("in unit.checkPreMoveValidationRules() ");
 		
 		bool ValidMove=true;
-	
-		
 	
 		if( intCellX==intCellX_ && intCellY==intCellY_ ) {
 			//if (intUnitPlayerId==1) println("possible invalid move. unit is not moving anywhere.");
@@ -1316,11 +1291,12 @@ class cUnit {
 						
 						if ( isTank() ) {
 						
-							//println(" unit is a tank ");
-						
-							//TODO: an exception is that if the transport is full, unit cannot move into it
-							//...
-						
+							// an exception is that if the transport is full, unit cannot move into it
+							if ( oUnitList.isPlayerTransportFullAtRowCol(intUnitPlayerId, intCellX_, intCellY_)==true ) {
+								ValidMove=false;
+								setMoveToX(-1);
+								setMoveToY(-1);
+							}
 						}
 						
 					} else {
@@ -1419,12 +1395,19 @@ class cUnit {
 	
 
 
+
+
+	// *********************************************
+	// MOVE AI
+	// *********************************************	
+
 	void moveAI(int iUnitListId_) {
 
 		if ( isAsleep()==false ) {
-			// if is Fighter, move so that unit does not run out of fuel!
+
 			if ( isFighter() ) {
 				identifyNextMoveFighterAI(iUnitListId_);
+
 			} else if ( isBomber() ) {
 				identifyNextMoveBomberAI(iUnitListId_);
 				
@@ -1432,7 +1415,8 @@ class cUnit {
 				identifyNextMoveTransportAI(iUnitListId_);
 
 			} else if ( isTank() ) {
-				identifyNextMoveTankAI(iUnitListId_);			
+				identifyNextMoveTankAI(iUnitListId_);
+
 			} else {
 				identifyNextMoveAI(iUnitListId_);
 
@@ -1775,10 +1759,18 @@ class cUnit {
 				if ( getCargoCount()>0 ) wakeCargo();
 				
 				if ( getCargoCount() <=1 ) {
+
+					// ***************************
+					// note: temporarily for AI testing purposes, don't instruct transport to move back to cargo load location
+					// ***************************
+					/*
 					println(" transport setMoveTo "+transportCargoLoadLocationX+","+transportCargoLoadLocationY+"");
 					setMoveToX(transportCargoLoadLocationX);
 					setMoveToY(transportCargoLoadLocationY);
 					setTaskStatus(4);
+					*/
+					setTaskStatus(99);
+
 					//identifyNextMoveAI(iUnitListId_);
 					
 					
@@ -1789,8 +1781,8 @@ class cUnit {
 				//moveToIfSpecified(iUnitListId_);
 				//identifyNextMoveAI(iUnitListId_);
 				
-				println("transport - move to back to cargo load location "+intCellX+","+intCellY+"");
-				printCargo();
+				//println("transport - move to back to cargo load location "+intCellX+","+intCellY+"");
+				//printCargo();
 				
 				if ( intCellX==transportCargoLoadLocationX && intCellY==transportCargoLoadLocationY ) {
 					setTaskStatus(1);
@@ -1828,6 +1820,9 @@ class cUnit {
 	
 	void identifyNextMoveFighterAI(int iUnitListId_) {
 
+		// *****************************
+		// if is Fighter, move so that unit does not run out of fuel!
+		// *****************************
 		if ( fuel<13 ) {
 			//println("is fighter and fuel < 13");
 			

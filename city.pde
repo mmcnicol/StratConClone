@@ -303,6 +303,9 @@ class cCity {
 		int numDestroyer=0;
 		int numTransport=0;
 
+		// ***************************
+		// note: temporarily for AI testing purposes, don't build any: fighters, carrier, submarine, battleship, etc.
+		// ***************************
 
 		//numTank = oUnitList.getCountOfPlayerUnitsByUnitType(iPlayerId_, 0);
 		if (iPlayerId_==1) numTank = oPlayer1.getUnitTypeCount(0);
@@ -357,12 +360,16 @@ class cCity {
 		} else if ( isPort() ) {
 			switch( (int)random(1,8) ) {
 				case 1:
-					productionUnitTypeId= oUnitRef[4].getUnitTypeId(); // carrier
-					productionDaysLeft = oUnitRef[4].getDaysToProduce();
+					//productionUnitTypeId= oUnitRef[4].getUnitTypeId(); // carrier
+					//productionDaysLeft = oUnitRef[4].getDaysToProduce();
+					productionUnitTypeId= oUnitRef[0].getUnitTypeId(); // tank
+					productionDaysLeft = oUnitRef[0].getDaysToProduce();
 					break;	
 				case 2:
-					productionUnitTypeId= oUnitRef[1].getUnitTypeId(); // fighter
-					productionDaysLeft = oUnitRef[1].getDaysToProduce();
+					//productionUnitTypeId= oUnitRef[1].getUnitTypeId(); // fighter
+					//productionDaysLeft = oUnitRef[1].getDaysToProduce();
+					productionUnitTypeId= oUnitRef[0].getUnitTypeId(); // tank
+					productionDaysLeft = oUnitRef[0].getDaysToProduce();
 					break;
 				case 3:
 					productionUnitTypeId= oUnitRef[3].getUnitTypeId(); // bomber
@@ -373,12 +380,16 @@ class cCity {
 					productionDaysLeft = oUnitRef[0].getDaysToProduce();
 					break;	
 				case 5:
-					productionUnitTypeId= oUnitRef[7].getUnitTypeId(); // submarine
-					productionDaysLeft = oUnitRef[7].getDaysToProduce();
+					//productionUnitTypeId= oUnitRef[7].getUnitTypeId(); // submarine
+					//productionDaysLeft = oUnitRef[7].getDaysToProduce();
+					productionUnitTypeId= oUnitRef[0].getUnitTypeId(); // tank
+					productionDaysLeft = oUnitRef[0].getDaysToProduce();
 					break;
 				case 6:
-					productionUnitTypeId= oUnitRef[2].getUnitTypeId(); // battleship
-					productionDaysLeft = oUnitRef[2].getDaysToProduce();
+					//productionUnitTypeId= oUnitRef[2].getUnitTypeId(); // battleship
+					//productionDaysLeft = oUnitRef[2].getDaysToProduce();
+					productionUnitTypeId= oUnitRef[0].getUnitTypeId(); // tank
+					productionDaysLeft = oUnitRef[0].getDaysToProduce();
 					break;	
 				case 7:
 					productionUnitTypeId= oUnitRef[0].getUnitTypeId(); // tank
@@ -405,16 +416,20 @@ class cCity {
 					productionDaysLeft = oUnitRef[0].getDaysToProduce();
 					break;
 				case 2:
-					productionUnitTypeId= oUnitRef[1].getUnitTypeId(); // fighter
-					productionDaysLeft = oUnitRef[1].getDaysToProduce();
+					//productionUnitTypeId= oUnitRef[1].getUnitTypeId(); // fighter
+					//productionDaysLeft = oUnitRef[1].getDaysToProduce();
+					productionUnitTypeId= oUnitRef[0].getUnitTypeId(); // tank
+					productionDaysLeft = oUnitRef[0].getDaysToProduce();
 					break;
 				case 3:
 					productionUnitTypeId= oUnitRef[0].getUnitTypeId(); // tank
 					productionDaysLeft = oUnitRef[0].getDaysToProduce();
 					break;						
 				case 4:
-					productionUnitTypeId= oUnitRef[3].getUnitTypeId(); // bomber
-					productionDaysLeft = oUnitRef[3].getDaysToProduce();
+					//productionUnitTypeId= oUnitRef[3].getUnitTypeId(); // bomber
+					//productionDaysLeft = oUnitRef[3].getDaysToProduce();
+					productionUnitTypeId= oUnitRef[0].getUnitTypeId(); // tank
+					productionDaysLeft = oUnitRef[0].getDaysToProduce();
 					break;
 			} 			
 		}
