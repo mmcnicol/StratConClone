@@ -1107,7 +1107,7 @@ class cUnit {
 
 		if( checkPreMoveValidationRules(iUnitListId_, intCellX_, intCellY_)==false) {
 		
-			println("in unit.move() pre move validation failed. getUnitTypeId()="+getUnitTypeId() +" getMoveToX()="+getMoveToX()+", getMoveToY()="+getMoveToY());
+			//println("in unit.move() pre move validation failed. getUnitTypeId()="+getUnitTypeId() +" getMoveToX()="+getMoveToX()+", getMoveToY()="+getMoveToY());
 			//println("intCellX_="+intCellX_+", intCellY_="+intCellY_);
 			setMoveToX(-1);
 			setMoveToY(-1);
@@ -1240,8 +1240,6 @@ class cUnit {
 	// PRE-MOVE VALIDATION RULES
 	// *********************************************	
 	private bool checkPreMoveValidationRules(int iUnitListId_, int intCellX_, int intCellY_) {
-	
-		//println("in unit.checkPreMoveValidationRules() ");
 		
 		bool ValidMove=true;
 	
@@ -1251,6 +1249,7 @@ class cUnit {
 		}
 
 		if( movesLeftToday<=0 ) {
+
 			println("invalid move. unit has no more moves left today.");
 			
 			ValidMove=false;
@@ -1271,23 +1270,16 @@ class cUnit {
 			
 		}
 		
+		// ***********************************
 		// if destination cell is NOT a city
 		if( oCityList.isCity(intCellX_, intCellY_)==false ) {
-		
-			//println(" destination cell is NOT a city ");
 			
 			if( movesOnLand==true && movesOnWater==false) {
-			
-				//println(" unit moves on land but not on sea ");
 				
 				if( oGrid.isSea(intCellX_, intCellY_)==true ) {
-				
-					//println(" unit destination is sea ");
 					
 					// an exception is a tank can move onto a transport of the same player id
 					if( oUnitList.isPlayerTransportAtRowCol(intUnitPlayerId, intCellX_, intCellY_) ) {
-
-						//if ( intUnitPlayerId==1 ) println(" player transport found at destination location ");
 						
 						if ( isTank() ) {
 						
@@ -1301,8 +1293,7 @@ class cUnit {
 						
 					} else {
 					
-						if ( intUnitPlayerId==1 ) println("invalid move. unit cannot move on sea. getUnitTypeId()="+getUnitTypeId()+" isCargoOf()="+isCargoOf() );
-						//if ( intUnitPlayerId==1 ) println("current location="+intCellX+","+intCellY+" moveTo="+intCellX_+","+intCellY_ );
+						//if ( intUnitPlayerId==1 ) println("invalid move. unit cannot move on sea. getUnitTypeId()="+getUnitTypeId()+" isCargoOf()="+isCargoOf() );
 						
 						ValidMove=false;
 						setMoveToX(-1);
@@ -1312,8 +1303,6 @@ class cUnit {
 			}
 			
 			if( movesOnLand==false && movesOnWater==true) {
-			
-				//println(" unit moves on water but not on land ");
 				
 				if( oGrid.isLand(intCellX_, intCellY_)==true ) {
 				
@@ -1333,9 +1322,6 @@ class cUnit {
 				} else {
 					// destination cell is Sea
 					
-					//println(" destination cell is Sea ");
-					
-					/*
 					// an exception is a ship cannot move into another cell which is already occupied by a ship of the same player id
 					if( oUnitList.isPlayerSeaVesselAtRowCol(intUnitPlayerId, intCellX_, intCellY_) ) {
 					
@@ -1348,15 +1334,11 @@ class cUnit {
 							setTaskStatus(99);
 						}
 					}
-					*/
 				}
 			}
 			
-			//TODO: if destination cell is an enemy unit, player unit can only 
-			// attack a maximum of 2 times per turn
-			//...
-			
-			
+
+		// ***********************************	
 		// if destination cell is a city
 		} else {
 		
