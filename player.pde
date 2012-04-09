@@ -16,14 +16,18 @@ class cPlayer {
 		for (int i=0; i<iNumberOfUnitTypes; i++) unitCounts[i]=0;
 	}
 
+
 	void setIsAI(bool value_) { iIsAI=value_; }
+
 
 	int getPlayerId() { return iPlayerId; }
 	
+
 	bool getIsAI() { 
 		//println("debug#1.3 iIsAI="+iIsAI);
 		return iIsAI; 
 	}
+
 	
 	void increaseUnitTypeCount(int iUnitType_, int iIslandListId_) { 
 
@@ -31,13 +35,16 @@ class cPlayer {
 		oIslandList.increaseIslandUnitTypeCount(iUnitType_, iIslandListId_, getPlayerId() );
 	}
 
+
 	void decreaseUnitTypeCount(int iUnitType_, int iIslandListId_) {  
 
 		unitCounts[iUnitType_]=unitCounts[iUnitType_]-1; 
 		oIslandList.decreaseIslandUnitTypeCount(iUnitType_, iIslandListId_, getPlayerId() );
 	}
 
+
 	int getUnitTypeCount(int iUnitType_) { return unitCounts[iUnitType_]; }
+
 
 	void printUnitTypeCountsToPanel() {
 		

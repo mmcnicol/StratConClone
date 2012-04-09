@@ -300,6 +300,9 @@ class cCity {
 
 	void doNextUnitProductionAI(int iPlayerId_) {
 
+		//println("in city.doNextUnitProductionAI(" + iPlayerId_ + "), getIslandId()=" + getIslandId() );
+		//println(">>>>>>>>>>>>>>>>>>="+ oIslandList.getIslandUnitTypeCount( getIslandId(), iPlayerId_, 0 ) );
+
 		int numTanks=0;
 		int numDestroyer=0;
 		int numTransport=0;
@@ -328,6 +331,15 @@ class cCity {
 			productionUnitTypeId= oUnitRef[0].getUnitTypeId(); 
 			productionDaysLeft = oUnitRef[0].getDaysToProduce();
 
+
+/* TODO: the following code causes an unexpected error which I have not been able to resolve yet.
+		// ******************************************************
+		// if is port city and island has too many tanks, build more transports
+		if ( isPort() && ( oIslandList.getIslandUnitTypeCount( getIslandId(), iPlayerId_, 0 )>15)  ) {
+
+			productionUnitTypeId= oUnitRef[6].getUnitTypeId(); 
+			productionDaysLeft = oUnitRef[6].getDaysToProduce();
+*/
 
 		// ******************************************************
 		// else, player needs a minimum number of tanks
@@ -369,8 +381,10 @@ class cCity {
 				case 2:
 					//productionUnitTypeId= oUnitRef[1].getUnitTypeId(); // fighter
 					//productionDaysLeft = oUnitRef[1].getDaysToProduce();
-					productionUnitTypeId= oUnitRef[0].getUnitTypeId(); // tank
-					productionDaysLeft = oUnitRef[0].getDaysToProduce();
+					//productionUnitTypeId= oUnitRef[0].getUnitTypeId(); // tank
+					//productionDaysLeft = oUnitRef[0].getDaysToProduce();
+					productionUnitTypeId= oUnitRef[6].getUnitTypeId(); // transport
+					productionDaysLeft = oUnitRef[6].getDaysToProduce();
 					break;
 				case 3:
 					productionUnitTypeId= oUnitRef[3].getUnitTypeId(); // bomber
@@ -381,22 +395,22 @@ class cCity {
 					productionDaysLeft = oUnitRef[0].getDaysToProduce();
 					break;	
 				case 5:
-					//productionUnitTypeId= oUnitRef[7].getUnitTypeId(); // submarine
-					//productionDaysLeft = oUnitRef[7].getDaysToProduce();
-					productionUnitTypeId= oUnitRef[0].getUnitTypeId(); // tank
-					productionDaysLeft = oUnitRef[0].getDaysToProduce();
+					productionUnitTypeId= oUnitRef[7].getUnitTypeId(); // submarine
+					productionDaysLeft = oUnitRef[7].getDaysToProduce();
+					//productionUnitTypeId= oUnitRef[0].getUnitTypeId(); // tank
+					//productionDaysLeft = oUnitRef[0].getDaysToProduce();
 					break;
 				case 6:
-					//productionUnitTypeId= oUnitRef[2].getUnitTypeId(); // battleship
-					//productionDaysLeft = oUnitRef[2].getDaysToProduce();
-					productionUnitTypeId= oUnitRef[0].getUnitTypeId(); // tank
-					productionDaysLeft = oUnitRef[0].getDaysToProduce();
+					productionUnitTypeId= oUnitRef[2].getUnitTypeId(); // battleship
+					productionDaysLeft = oUnitRef[2].getDaysToProduce();
+					//productionUnitTypeId= oUnitRef[0].getUnitTypeId(); // tank
+					//productionDaysLeft = oUnitRef[0].getDaysToProduce();
 					break;	
 				case 7:
-					productionUnitTypeId= oUnitRef[0].getUnitTypeId(); // tank
-					productionDaysLeft = oUnitRef[0].getDaysToProduce();
-					//productionUnitTypeId= oUnitRef[6].getUnitTypeId(); // transport
-					//productionDaysLeft = oUnitRef[6].getDaysToProduce();
+					//productionUnitTypeId= oUnitRef[0].getUnitTypeId(); // tank
+					//productionDaysLeft = oUnitRef[0].getDaysToProduce();
+					productionUnitTypeId= oUnitRef[6].getUnitTypeId(); // transport
+					productionDaysLeft = oUnitRef[6].getDaysToProduce();
 					break;				
 				case 8:
 					//productionUnitTypeId= oUnitRef[0].getUnitTypeId(); // tank
@@ -425,10 +439,10 @@ class cCity {
 					productionDaysLeft = oUnitRef[0].getDaysToProduce();
 					break;						
 				case 4:
-					//productionUnitTypeId= oUnitRef[3].getUnitTypeId(); // bomber
-					//productionDaysLeft = oUnitRef[3].getDaysToProduce();
-					productionUnitTypeId= oUnitRef[0].getUnitTypeId(); // tank
-					productionDaysLeft = oUnitRef[0].getDaysToProduce();
+					productionUnitTypeId= oUnitRef[3].getUnitTypeId(); // bomber
+					productionDaysLeft = oUnitRef[3].getDaysToProduce();
+					//productionUnitTypeId= oUnitRef[0].getUnitTypeId(); // tank
+					//productionDaysLeft = oUnitRef[0].getDaysToProduce();
 					break;
 			} 			
 		}

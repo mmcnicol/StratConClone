@@ -79,6 +79,7 @@ class cIslandList {
 		else if ( iPlayerId_==2 ) island.increaseIslandUnitTypeCountP2(iUnitType_);
 	}
 
+
 	void decreaseIslandUnitTypeCount(int iUnitType_, int iIslandListId_, int iPlayerId_) { 
 
 		cIsland island = (cIsland) listIsland.get( iIslandListId_ ); 
@@ -88,6 +89,16 @@ class cIslandList {
 	}
 
 
+	int getIslandUnitTypeCount(int IslandListId_, int iPlayerId_, int iUnitType_) { 
+
+		//cIsland island = (cIsland) listIsland.get( iIslandListId_ ); 
+
+		//if ( iPlayerId_==1 ) return island.getUnitTypeCountP1(iUnitType_);
+		//else if ( iPlayerId_==2 ) return island.getUnitTypeCountP2(iUnitType_);
+
+		return 0;
+
+	}
 
 
 
@@ -112,6 +123,29 @@ class cIslandList {
 		}   
 
 	}
+
+
+	bool isEnemyOrUnoccupiedIsland(int iPlayerId_, int IslandListId_) {
+
+		int enemyPlayerId=-1;
+
+		if (iPlayerId_==1) enemyPlayerId=2;
+		else enemyPlayerId=1;
+
+		cIsland island = (cIsland) listIsland.get(IslandListId_);
+
+		if ( island.getPlayerId()!=iPlayerId_ && 
+				( 
+					island.getUnoccupiedCityCount(iPlayerId_)>0 
+					|| island.getPlayerCityCount(enemyPlayerId)>0 )  
+				) {
+
+			return true;
+		}
+
+		return false;
+	}
+
 
 	void printIslandListToPanelIslandList() {
 		

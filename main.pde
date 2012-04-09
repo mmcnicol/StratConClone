@@ -264,7 +264,7 @@ class cWorld {
   
 	void setupUnitRefs() {
 
-		println("debug: in setupunitrefs ");
+		//println("debug: in setupunitrefs ");
 		
 		// UnitTypeId, UnitName, daysToProduce, strength, attackRange, caputuresCity, movesOnLand, movesOnWater, movesPerTurn, maxFuel
 

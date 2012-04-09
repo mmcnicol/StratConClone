@@ -476,7 +476,7 @@ class cUnitList {
 		unit.reduceStrength();
 		if ( unit.getStrength()==0 ) {
 			if ( unit.getPlayerId()==1 ) {
-				println("Unit destroyed!");
+				println("Player "+ oGameEngine.getCurrentPlayerId() + " Unit destroyed!");
 				println("");
 			}
 			unit.kill();

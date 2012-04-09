@@ -194,7 +194,7 @@ class cGrid {
 
 	bool getIslandIdIfIsNextToLand(int x_, int y_) {
 
-		println("in oGrid.getIslandIdIfIsNextToLand("+x_+","+y_+")");
+		//println("in oGrid.getIslandIdIfIsNextToLand("+x_+","+y_+")");
 
 		bool result=-1;
 		
@@ -226,14 +226,27 @@ class cGrid {
 		if (x_+1<=countX && y_-1>=1)
 			if( intGridCellType[x_+1][y_-1]==LAND ) result=intGridIslands[x_+1][y_-1];	
 		
-		println("in grid.getIslandIdIfIsNextToLand("+x_+","+y_+"), result="+result);
+		//println("in grid.getIslandIdIfIsNextToLand("+x_+","+y_+"), result="+result);
 		
 		//println("leaving oGrid.getIslandIdIfIsNextToLand()");
 
 		return result;
 	}
 
+
+
+	bool isEnemyOrUnoccupiedIsland(int iPlayerId_, int x_, int y_) {
+
+		if ( intGridCellType[x_][y_]==LAND && intGridIslands[x_][y_]>=0 )
+			return oIslandList.isEnemyOrUnoccupiedIsland(iPlayerId_, intGridIslands[x_][y_]);
+		else return false;
+
+		//return false;
+	}
 	
+
+
+
 	// ******************************************************
 	// GRID ISLANDS
 	// ******************************************************
@@ -280,7 +293,7 @@ class cGrid {
 		}
 		
 
-		println("debug: leaving grid.UpdateGridIslands(), iIslandListId="+iIslandListId);
+		//println("debug: leaving grid.UpdateGridIslands(), iIslandListId="+iIslandListId);
 	}
 
 
@@ -329,7 +342,7 @@ class cGrid {
 		// for each island
 		int i=0;
 		for (i=1; i<=oIslandList.getCount(); i=i+1) {
-			println("islandListId="+i);
+			//println("islandListId="+i);
 			AddCitiesToIslandListId(i);
 			//println("islandListId="+i);
 		}
@@ -383,7 +396,7 @@ class cGrid {
 	
 	void SelectPlayerStartIsland(int PlayerId_) {
 
-		println("in cGrid.SelectPlayerStartIsland("+PlayerId_+") ");
+		//println("in cGrid.SelectPlayerStartIsland("+PlayerId_+") ");
 
 		int playerListIslandId=0;
 		int RandomIslandCityId=-1;
@@ -420,7 +433,8 @@ class cGrid {
 		//println("counter="+counter);
 
 		if ( counter>=oIslandList.getCount() ) {
-			println("algorithm did not work!!... assigning player a random city");
+			//println("algorithm did not work!!");
+			println("assigning player a random city");
 			RandomIslandCityId=round(random(2, oCityList.getCount() ));
 			oCityList.setCityPlayerId(RandomIslandCityId, PlayerId_);
 			//oIslandList.setPlayerId(playerListIslandId, PlayerId_);			
