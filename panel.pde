@@ -247,18 +247,48 @@ class cPanelSelectedCity extends cPanel {
 */
 class cPanelMap extends cPanel {
 
-	cPanelMap(int panelStartY_, int panelHeight_) {
+	int iMapPlayerId=-1;
+
+	cPanelMap(int panelStartY_, int panelHeight_, int panelStartX_, int iMapPlayerId_) {
 		super(panelStartY_, panelHeight_);
 		
-		panelStartX = oViewport.getWidth()+25;
+		iMapPlayerId=iMapPlayerId_;
+		//panelStartX = oViewport.getWidth()+25;
+		panelStartX = panelStartX_;
 	}
 	
 	void show() {
 		
-		//clear();
-		oGrid.drawMap(panelStartX, panelStartY);
+		oGrid.drawMap(panelStartX, panelStartY, iMapPlayerId);
 	}
 }
+
+
+
+
+/* ====================================================================================
+   this panel displays a small map of the generated world
+*/
+class cPanelMapPlayer2 extends cPanel {
+
+	int iMapPlayerId=-1;
+
+	cPanelMapPlayer2(int panelStartY_, int panelHeight_, int panelStartX_, int iMapPlayerId_) {
+		super(panelStartY_, panelHeight_);
+		
+		iMapPlayerId=iMapPlayerId_;
+		//panelStartX = oViewport.getWidth()+25;
+		panelStartX = panelStartX_;
+	}
+	
+	void show() {
+		
+		oGrid.drawMap(panelStartX, panelStartY, iMapPlayerId);
+	}
+}
+
+
+
 
 
 

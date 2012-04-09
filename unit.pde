@@ -59,7 +59,7 @@ class cUnit {
 			
 			intUnitTypeId=intUnitTypeId_;
 			intUnitPlayerId=intUnitPlayerId_;
-			//if (intUnitPlayerId==1) println( "in cUnit constructor begin for player " + intUnitPlayerId ", intUnitTypeId_"+intUnitTypeId_);
+
 			intCellX=intCellX_;
 			intCellY=intCellY_;
 					
@@ -74,13 +74,9 @@ class cUnit {
 			attacksLeftToday = 2;
 			fuel = oUnitRef[intUnitTypeId_].getMaxFuel();
 			
-			
-			
 			if (intUnitTypeId_==3) {
-				//println(" calling calculateBombBlastRadius() ");
 				iBombBlastRadius=oUnitRef[3].calculateBombBlastRadius();
 			} else iBombBlastRadius=-1;
-			//println(" iBombBlastRadius="+iBombBlastRadius);
 
 			
 			//listCargo = new ArrayList();  // Create an empty ArrayList
@@ -93,9 +89,7 @@ class cUnit {
 			cargoUnitListId[5]=-1;
 			
 			iIsCargoOfUnitListId=-1;
-			
-			//if (intUnitPlayerId==1) printCargo();
-			
+					
 			bAnimate=false;
 			iAnimateSwitch=0;
 			
@@ -122,8 +116,6 @@ class cUnit {
 			if (intUnitPlayerId==1) oPlayer1.increaseUnitTypeCount(intUnitTypeId_);
 			else if (intUnitPlayerId==2) oPlayer2.increaseUnitTypeCount(intUnitTypeId_);
 
-			//println( "in cUnit constructor ");
-			//exit();
 		} else {
 			println( "error: cannot add unit for unit type " + intUnitTypeId_ );
 			//exit();
@@ -132,34 +124,16 @@ class cUnit {
 
 	
 	void setXY(int intCellX_, int intCellY_) {
-	
-		//if (intUnitPlayerId==1) println("in unit.setXY("+intCellX_+","+intCellY_+") ");
 		
 		intCellX=intCellX_;
 		intCellY=intCellY_;
 		
-		//if (intUnitPlayerId==1) println("in unit.setXY() updating any associated cargo");
 		// if this unit has cargo, update their XY values also
 		if( isTransport() || isCarrier() ) {
 		
 			moveCargo(intCellX_, intCellY_);
-
-			/*
-			for (int i=0; i<6; i++)
-				if ( cargoUnitListId[i] != -1 ) {
-					//if (intUnitPlayerId==1) println("in unit.setXY() updating any associated cargo for cargoUnitListId[i]="+cargoUnitListId[i]);
-					oUnitList.moveCargo(cargoUnitListId[i], intCellX_, intCellY_);
-				}
-			*/
-		}			
-		/*
-		for (int i = 0; i < listCargo.size(); i++) { 
-			cUnit unit = (cUnit) listCargo.get(i);
-			unit.setXY(intCellX_, intCellY_);
-		}  
-		*/
-	
-	};
+		}
+	}
 
 	int getCellRow() { return intCellX; }
 	int getCellCol() { return intCellY; }
@@ -180,14 +154,15 @@ class cUnit {
 	void setAttacksLeftToday(int value_) { attacksLeftToday=value_; }
 	int getAttacksLeftToday() { return attacksLeftToday; }
 
+
 	void reduceAttacksLeftToday() {
+
 		if (attacksLeftToday>0) {
 			attacksLeftToday=attacksLeftToday-1; 
-			//println("intUnitPlayerId#"+intUnitPlayerId+" attacksLeftToday="+attacksLeftToday);
-			
 		} 				
 	}
 	
+
 	int getPlayerId() { return intUnitPlayerId; }
 	
 	int getUnitTypeId() { return intUnitTypeId; }
@@ -722,16 +697,13 @@ class cUnit {
 	
 	void doBombLocation(int x_, int y_) {
 	
-		//println("debug#1.1");
 		oUnitList.killUnitsAt(x_, y_);
-		//println("debug#1.2");
 
 		// if City, change to unoccupied
 		if ( oCityList.isEnemyCity(intUnitPlayerId, x_, y_) ) {
 			//println("debug#1.3");
 			oCityList.CityBombed( oCityList.getCityId(x_, y_) );
 		}
-		//println("debug#1.4");
 	}
 	
 	
@@ -740,7 +712,6 @@ class cUnit {
 		
 	void kill() { 
 	
-		//println("in unit.kill()");
 		setTaskStatus(999);
 		movesLeftToday=0; 
 		thisUnitIsCargoOfUnitId=-1;
@@ -751,7 +722,6 @@ class cUnit {
 
 		// hide unit
 		////////oGrid.DrawCell(intCellX, intCellY, false);
-		//println("leaving unit.kill()");
 	}
 	
 	
@@ -782,8 +752,8 @@ class cUnit {
 	}
 
 	void printCargo() {
+
 		//println("in printCargo()");
-		
 		
 		for (int i=0; i<6; i++)
 			if ( cargoUnitListId[i] != -1 ) println("cargo["+i+"]="+cargoUnitListId[i]);
@@ -791,10 +761,10 @@ class cUnit {
 	}
 	
 	void wakeCargo() {
+
 		println("in wakeCargo()");
 		
 		//oUnitList.commandWakePlayerUnitsAt(intUnitPlayerId, getX(), getY() );
-		
 		
 		for (int i=0; i<6; i++)
 			if ( cargoUnitListId[i] != -1 ) {
@@ -804,6 +774,7 @@ class cUnit {
 	}
 
 	void moveCargo(int x_, int y_) {
+
 		//println("in moveCargo()");
 		
 		for (int i=0; i<6; i++)
@@ -930,6 +901,7 @@ class cUnit {
 		return true;
 	}
 	
+
 
 	// ***********************************************************
 	// MOVE
@@ -2314,7 +2286,8 @@ class cUnit {
 		for (y=sy;y<=ey;y++) {
 			for (x=sx;x<=ex;x++) {
 			
-				if (getPlayerId()==1) oGrid.clearFogOfWar(x,y);
+				if ( getPlayerId()==1 ) oGrid.clearFogOfWar(x,y);
+				else if ( getPlayerId()==2 ) oGrid.clearFogOfWarP2(x,y);
 				
 				//if ( oViewport.isCellWithinViewport(x,y) ) { 
 					if (oGrid.isFogOfWar(x,y)==false) oGrid.DrawCell(x,y,true);
@@ -2348,6 +2321,7 @@ class cUnit {
 			for (x=sx;x<=ex;x++) {
 			
 				if (getPlayerId()==1) oGrid.clearFogOfWar(x,y);
+				else if (getPlayerId()==2) oGrid.clearFogOfWarP2(x,y);
 				
 				if ( oViewport.isCellWithinViewport(x,y) ) { 	
 					if (oGrid.isFogOfWar(x,y)==false) oGrid.DrawCell(x,y,true);

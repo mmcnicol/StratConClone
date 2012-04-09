@@ -284,9 +284,7 @@ class cCityList {
 
 	void CityConquered(int iCityListId_, int iPlayerId_) {
 	
-		//println("debug#2.1, iCityListId_="+iCityListId_+", iPlayerId_="+iPlayerId_);
 		cCity city = (cCity) listCity.get(iCityListId_);
-		//println("debug#2.2");
 
 		oIslandList.updateIslandPlayerCityCount(city.getIslandId(), city.getPlayerId(), iPlayerId_);
 	
@@ -297,7 +295,7 @@ class cCityList {
 		if ( city.getProductionUnitTypeId()==-1 )
 			city.setProductionUnitTypeId( oUnitRef[0].getUnitTypeId() );
 		
-		if ( iPlayerId_==1 ) city.clearFogOfWar();
+		city.clearFogOfWar();
 		
 		city.Draw();
 		
@@ -317,17 +315,14 @@ class cCityList {
 
 	void CityBombed(int iCityListId_) {
 	
-		//println("in citylist.CityBombed() ");
 		cCity city = (cCity) listCity.get(iCityListId_);
 		
-		if ( city.getPlayerId==1 ) city.clearFogOfWar();
+		city.clearFogOfWar();
 		
 		city.setPlayerId(-1);
 		city.setProductionUnitTypeId( -1 );
 						
 		city.Draw();	
-		
-		//println("leaving citylist.CityBombed() ");
 	}
 	
 	
@@ -337,7 +332,7 @@ class cCityList {
 	// ******************************************************
 
 	void Draw() {
-		//println("cCityList.Draw()");
+
 		for (int i = 0; i < listCity.size(); i++) { 
 			cCity city = (cCity) listCity.get(i);
 			city.Draw();
@@ -345,7 +340,7 @@ class cCityList {
 	}
 
 	void Draw(int cellRow_, int cellCol_) {
-		//println("cCityList.Draw(row,col)");
+
 		for (int i = 0; i < listCity.size(); i++) { 
 			cCity city = (cCity) listCity.get(i);
 			if( city.isAt(cellRow_, cellCol_)==true) {
@@ -359,8 +354,6 @@ class cCityList {
 	}
 
 	void clearFogOfWar(int iCityListId_) {
-	
-		//println(" in cityList.clearFogOfWar("+iCityListId_+") ");
 		
 		cCity city = (cCity) listCity.get(iCityListId_);
 		city.clearFogOfWar();	
@@ -376,6 +369,8 @@ class cCityList {
 			}
 		}  
 	}
+
+
 
 	// ****************************************************************
 	// GAVE OVER?
@@ -405,8 +400,6 @@ class cCityList {
 
 	void setCityProductionUnitTypeId(int iCityListId_, int iProductionUnitTypeId_) {
 
-		//println("in citylist.setCityProductionUnitTypeId UnitTypeId="+iProductionUnitTypeId_);
-		
 		cCity city = (cCity) listCity.get(iCityListId_);
 		return city.setProductionUnitTypeId(iProductionUnitTypeId_);	
 	}
@@ -419,17 +412,16 @@ class cCityList {
 	}
 	
 	void manageProduction() {
+
 		for (int i = 0; i < listCity.size(); i++) { 
 			cCity city = (cCity) listCity.get(i);
-			//println("calling manageProduction for city " +i);
+
 			city.manageProduction(i);
 		}  
 	}
 
 	int getCountPlayerCityProducingUnit(int iPlayerId_, int iUnitTypeId_) {
 
-		//println("in city_list.getCountPlayerCityProducingUnit() ");
-		
 		int counter=0;
 		
 		for (int i = 0; i < listCity.size(); i++) { 
@@ -438,7 +430,7 @@ class cCityList {
 				counter=counter+1;
 
 		}  
-		//println("in city_list.getCountPlayerCityProducingUnit() counter="+counter);
+
 		return counter;	
 	}	
 	

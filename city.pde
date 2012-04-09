@@ -201,7 +201,8 @@ class cCity {
 		
 		for (y=sy;y<=ey;y++) {
 			for (x=sx;x<=ex;x++) {
-				if (intCityPlayerId==1) oGrid.clearFogOfWar(x,y);
+				if ( getPlayerId()==1 ) oGrid.clearFogOfWar(x,y);
+				else if ( getPlayerId()==2 ) oGrid.clearFogOfWarP2(x,y);
 			}
 		}
 	}

@@ -98,9 +98,11 @@ class cViewport {
 		oPanelPlayer1UnitCounts.show();
 		oPanelPlayer2UnitCounts.show();
 
+		// GameState code 4=play
 		if ( GameState==4 ) {
 
 			oPanelMap.show();
+			oPanelMapPlayer2.show();
 		}
 		
 		//oPanel2.show();

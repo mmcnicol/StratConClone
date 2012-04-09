@@ -28,6 +28,7 @@ class cGrid {
 	*/
 
 	bool intGridCellFog[][] = new bool[121][101];
+	bool intGridCellFogP2[][] = new bool[121][101];
 
 	ArrayList listNeighbour;
 	
@@ -65,6 +66,7 @@ class cGrid {
 				intGridIslands[x][y]=-4; // Nothing
 
 				intGridCellFog[x][y]=false;
+				intGridCellFogP2[x][y]=false;
 			}
 		}
 
@@ -77,6 +79,8 @@ class cGrid {
 
 				if (ShowFogOfWar==true) intGridCellFog[x][y]=true;
 				else intGridCellFog[x][y]=false;
+
+				intGridCellFogP2[x][y]=true;
 			}
 		}
 		
@@ -137,11 +141,15 @@ class cGrid {
 	int getCellCountY() { return countY; }	
 	void setCellCountY(int value) { countY=value; }
 	
-	bool isFogOfWar(int x_, int y_) {
-		return intGridCellFog[x_][y_];
-	}
+
+	bool isFogOfWar(int x_, int y_) { return intGridCellFog[x_][y_]; }
+
+	bool isFogOfWarP2(int x_, int y_) { return intGridCellFogP2[x_][y_]; }
 	
+
 	void clearFogOfWar(int x_, int y_) { intGridCellFog[x_][y_]=false;}
+	
+	void clearFogOfWarP2(int x_, int y_) { intGridCellFogP2[x_][y_]=false;}
 
 
 	bool isNextToLand(int x_, int y_) {
@@ -488,39 +496,26 @@ class cGrid {
 
 
 
-	void drawMap(int sx, int sy) {
-		//println("debug: in grid.drawMap()");
+	void drawMap(int sx, int sy, int iMapPlayerId_) {
 		
 		fill(0);
 		rect(sx, sy, countX+1, countY+1);
 		
 		int DisplayX, DisplayY;
-		//println("showFromY="+showFromY+", countY="+countY+  ", showFromX="+showFromX+", countX="+countX);
-
-		//int showToX = showFromX + oViewport.getViewportCellCountX()-1;
-		//int showToY = showFromY + oViewport.getViewportCellCountY()-1;
 
 		color colSea = color(0, 0, 200);
 		color colLand = color(0, 200, 0);
 		
-		//set(10, 10, color(0, 0, 200));
-		//set(10, 10, colour(100));
-		//set(10, 10, 100);
-		//Point(10,10);
-		
 		int x,y;
 		for (y=1; y<countY; y=y+1) {
-			//println("y="+y);
+
 			for (x=1; x<countX; x=x+1) {
-				//println("x="+x+", y="+y);
-				
 				
 				DisplayY=sy+y; //(((y-showFromY)+1)*16)-15;
 				DisplayX=sx+x; //(((x-showFromX)+1)*16)-(15);
 				
 				// for testing purposes
-				if (intGridCellFog[x][y]==false) {
-					
+				if ( iMapPlayerId_==1 && intGridCellFog[x][y]==false ) {
 					
 					if ( isSea(x,y) ) stroke(180);	
 					else stroke(120);
@@ -528,27 +523,25 @@ class cGrid {
 					if( oCityList.isCity(x,y) ) stroke(0);
 					
 					point(DisplayX, DisplayY);
+
+				} else if ( iMapPlayerId_==2 && intGridCellFogP2[x][y]==false ) {
 					
+					if ( isSea(x,y) ) stroke(180);	
+					else stroke(120);
 					
+					if( oCityList.isCity(x,y) ) stroke(0);
 					
-					/*
-					if ( isSea(x,y) ) {
-						//set(DisplayX, DisplayY, color(100));
-						oWorld.setpix(DisplayX, DisplayY, colSea );
-					} else {
-						//set(DisplayX, DisplayY, color(255));
-					}
-					*/
-				}				
-			
+					point(DisplayX, DisplayY);
+				}	
 			}
 		}
 		
 		// draw a rectangle around area viewable within viewport
-		noFill();
-		stroke(250);
-		rect(sx+showFromX, sy+showFromY, oViewport.getViewportCellCountX()-1, oViewport.getViewportCellCountY()-1);
-		
+		if ( iMapPlayerId_==1 ) { 
+			noFill();
+			stroke(250);
+			rect(sx+showFromX, sy+showFromY, oViewport.getViewportCellCountX()-1, oViewport.getViewportCellCountY()-1);
+		}
 	}
 	
 	

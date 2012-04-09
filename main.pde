@@ -27,6 +27,7 @@ cPanel2 oPanel2;
 cPanelSelectedUnit oPanelSelectedUnit;
 cPanelSelectedCity oPanelSelectedCity;
 cPanelMap oPanelMap;
+cPanelMapPlayer2 oPanelMapPlayer2;
 cPanelCityList oPanelCityList;
 cPanelIslandList oPanelIslandList;
 cPanelPlayerUnitCounts oPanelPlayer1UnitCounts;
@@ -160,7 +161,8 @@ void draw() {
 			//oPanelSelectedUnit = new cPanelSelectedUnit(height-30,20);
 			oPanelSelectedUnit = new cPanelSelectedUnit(590,20);
 			
-			oPanelMap = new cPanelMap(70,102);
+			oPanelMap = new cPanelMap(70 ,102, oViewport.getWidth()+25, 1);
+			oPanelMapPlayer2 = new cPanelMapPlayer2(70, 102, oViewport.getWidth()+125, 2);
 			
 			oPanelIslandList = new cPanelIslandList(650,500);
 			oPanelCityList = new cPanelCityList(1200,790);
@@ -205,19 +207,17 @@ void draw() {
 
 			oGrid.generate();
 			
-			//println("debug#3");
 			// show the city production panel for the human player 1 first city
 			int iCityListId = oCityList.getPlayerFirstCityListId(1);
-			//oCityList.clearFogOfWar(iCityListId);
+
 			oCityList.clearFogOfWarByPlayerId(1);
 			
-			//println("debug#4");
 			if ( oPlayer1.getIsAI() ) {
-				//println("debug#5");
+			
 				oCityList.clearFogOfWar(iCityListId);
 				oCityList.setCityProductionUnitTypeId(iCityListId, 0);
 				oViewport.draw();
-				//println("debug#6");
+			
 				GameState=4;
 				
 			} else {
