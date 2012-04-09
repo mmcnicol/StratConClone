@@ -2120,7 +2120,7 @@ class cUnit {
 			
 			
 			// can unit attack a city?
-			// TODO: ship could attack city to try to kill any enemy units
+			// TODO: ship could attack city, omly to try to kill any enemy units
 			// ...
 			/*
 			if( possibleMoves.size()==0 ) {
@@ -2166,13 +2166,11 @@ class cUnit {
 		if (intUnitPlayerId==1 && isCargoOf() ) println("possibleMoves.size()="+possibleMoves.size() );
 
 		if( possibleMoves.size()>0 ) {
-			//println("unit AI move #1");
+
 			int possibleMoveIndex = int( random(possibleMoves.size() ) );
-			//println("unit AI move #2");
 			cGridCell cell = (cGridCell) possibleMoves.get(possibleMoveIndex);
-			//println("unit AI move #3");
 			moveTo(iUnitListId_, cell.getX(), cell.getY() );
-			//println("unit AI move #4");
+
 		} else {
 			println("note: move AI has not identified a move for unit at "+x+","+y+".");
 			setMovesLeftToday(0);
@@ -2190,16 +2188,10 @@ class cUnit {
 
 	void Draw() {
 
-		//println("drawing unit, intUnitPlayerId="+intUnitPlayerId+", intUnitTypeId=" + intUnitTypeId + ", strUnitName=" + strUnitName);
-		//println("oViewport.isCellWithinViewport(intCellX, intCellY)="+oViewport.isCellWithinViewport(intCellX, intCellY) );
 		int countOfPlayerUnits;
 		
-		//if ( intCellX >= oGrid.getShowFromCellX() && intCellX <= (oGrid.getShowFromCellX()+oGrid.getCellCountX())   &&   intCellY >= oGrid.getShowFromCellY() && intCellY <= (oGrid.getShowFromCellY()+oGrid.getCellCountY()) )  {
 		if ( oViewport.isCellWithinViewport(intCellX, intCellY) ) { 
-		
-			//int DisplayY=(intCellX*16)-15;
-			//int DisplayX=(intCellY*16)-15;
-			
+					
 			int DisplayX=((intCellX-oGrid.getShowFromCellX()+1)*cellWidth)-(cellWidth-1);
 			int DisplayY=((intCellY-oGrid.getShowFromCellY()+1)*cellHeight)-(cellHeight-1);
 			
@@ -2209,7 +2201,6 @@ class cUnit {
 			
 					switch(intUnitTypeId) {
 						case 0:
-							//println("drawing Tank, player="+intUnitPlayerId);
 							if (intUnitPlayerId==1) {
 								//println("player 1");
 								//if ( !isCargoOf() && oGameGrid.XXX() ) {
@@ -2220,7 +2211,8 @@ class cUnit {
 									countOfPlayerUnits = oUnitList.getCountOfPlayerTankUnitsAt(intUnitPlayerId, intCellX, intCellY);
 									if ( countOfPlayerUnits > 1 && oGrid.isLand(intCellX, intCellY) ) {
 										fill(255);
-										rect(DisplayX+iNumberIndent,DisplayY+iNumberIndent,iNumberTextSize,iNumberTextSize+1);
+										if ( countOfPlayerUnits>9 ) rect(DisplayX+iNumberIndent, DisplayY+iNumberIndent, iNumberTextSize+iNumberTextSize, iNumberTextSize+1);
+										else rect(DisplayX+iNumberIndent, DisplayY+iNumberIndent, iNumberTextSize, iNumberTextSize+1);
 										fill(0);
 										textSize(8);
 										text(countOfPlayerUnits, DisplayX+iNumberIndent+1, DisplayY+iNumberTextSize+1 );
@@ -2232,25 +2224,20 @@ class cUnit {
 								//println("player 2");
 								if (!isCargoOf()) image( imgTank2,DisplayX, DisplayY );
 							}
-							//println("DONE drawing Tank, player="+intUnitPlayerId);
 							break;
 						case 1:
-							//println("drawing Fighter");
 							if (intUnitPlayerId==1) image( imgFighter1, DisplayX, DisplayY );
 							else image( imgFighter2, DisplayX, DisplayY );
 							break;
 						case 2:
-							//println("drawing Battleship");
 							if (intUnitPlayerId==1) image( imgBattleship1, DisplayX, DisplayY );
 							else image( imgBattleship2, DisplayX, DisplayY );
 							break;	
 						case 3:
-							//println("drawing Bomber");
 							if (intUnitPlayerId==1) image( imgBomber1, DisplayX, DisplayY );
 							else image( imgBomber2, DisplayX, DisplayY );
 							break;	
 						case 4:
-							//println("drawing Carrier");
 							if (intUnitPlayerId==1) image( imgCarrier1, DisplayX, DisplayY );
 							else image( imgCarrier2, DisplayX, DisplayY );
 
@@ -2266,16 +2253,15 @@ class cUnit {
 
 							break;	
 						case 5:
-							//println("drawing Destroyer");
 							if (intUnitPlayerId==1) image( imgDestroyer1, DisplayX, DisplayY );
 							else image( imgDestroyer2, DisplayX, DisplayY );
 							break;
 						case 6:
-							//println("drawing Transport");
 							if (intUnitPlayerId==1) image( imgTransport1, DisplayX, DisplayY );
 							else image( imgTransport2, DisplayX, DisplayY );
 
 							if( intUnitPlayerId==1 && getCargoCount() > 0 ) {
+
 								// show cargo count on unit image
 								fill(255);
 								rect(DisplayX+iNumberIndent,DisplayY+iNumberIndent,iNumberTextSize,iNumberTextSize+1);
@@ -2288,22 +2274,12 @@ class cUnit {
 							break;
 
 						case 7:
-							//println("drawing Submarine");
 							if (intUnitPlayerId==1) image( imgSubmarine1, DisplayX, DisplayY );
 							else image( imgSubmarine2, DisplayX, DisplayY );						
 							break;						
 					}
 				}
 			}	
-			
-			/*
-			if ( oGrid.isFogOfWar(intCellX, intCellY)==true ) { // for testing purposes
-				fill(0);
-				textSize(8);
-				text("F", DisplayX+iNumberIndent+1, DisplayY+12 );
-				textSize(11);
-			}
-			*/
 			
 		}
 	}
