@@ -178,6 +178,10 @@ class cUnitList {
 		unit.setMoveToX(-1);
 		unit.setMoveToY(-1);
 		unit.setMovesLeftToday( unit.getMovesPerDay() );
+		unit.setDaysSinceLastClearedFogOfWar(0);
+		oIslandList.decreaseIslandUnitTypeCount(unit.getUnitTypeId(), unit.getIslandListId(), unit.getPlayerId() );
+		unit.setIslandListId( oGrid.getIslandIdIfIsNextToLand() );
+		oIslandList.increaseIslandUnitTypeCount(unit.getUnitTypeId(), unit.getIslandListId(), unit.getPlayerId() );
 		
 	}
 	
@@ -221,12 +225,14 @@ class cUnitList {
 	}	
 
 
-	bool IsTransportNearbyWaitingForUnits(int iPlayerId_, int iUnitListId_, int iCellX_, int iCellY_) {
+	//bool IsTransportNearbyWaitingForUnits(int iPlayerId_, int iUnitListId_, int iCellX_, int iCellY_) {
+	bool IsTransportNearbyWaitingForUnits(int iPlayerId_, int iUnitListId_, int iIslandId_) {
 
 		//println( "unit list debug#1: in IsTransportNearbyWaitingForUnits() ");
 		int temp=-1;
 
-		temp = getTransportUnitNumberNearbyWhichIsWaitingForTanks(iPlayerId_, iCellX_, iCellY_);
+		//temp = getTransportUnitNumberNearbyWhichIsWaitingForTanks(iPlayerId_, iCellX_, iCellY_);
+		temp = getTransportUnitNumberNearbyWhichIsWaitingForTanks(iPlayerId_, iIslandId_);
 
 		//println( "unit list debug#1: temp= "+temp);
 		if ( temp != -1 && iUnitListId_ != -1 ) {
@@ -248,11 +254,14 @@ class cUnitList {
 	}
 
 
-	int getTransportUnitNumberNearbyWhichIsWaitingForTanks(int iPlayerId_, int x_, int y_) {
+	//int getTransportUnitNumberNearbyWhichIsWaitingForTanks(int iPlayerId_, int x_, int y_) {
+	int getTransportUnitNumberNearbyWhichIsWaitingForTanks(int iPlayerId_, int iIslandId_) {
+
 		int temp=-1;
 		for (int i = 0; i < listUnit.size(); i++) { 
 			cUnit unit = (cUnit) listUnit.get(i);
-			if( unit.getPlayerId()==iPlayerId_ && unit.isNearby(x_, y_,6)==true && unit.getTaskStatus()==1 && unit.isAlive() ) {
+			//if( unit.getPlayerId()==iPlayerId_ && unit.isNearby(x_, y_,6)==true && unit.getTaskStatus()==1 && unit.isAlive() ) {
+			if( unit.getPlayerId()==iPlayerId_ && unit.getIslandListId()==iIslandId_ && unit.getTaskStatus()==1 && unit.isAlive() ) {
 				return i;
 			}
 		}  
@@ -599,7 +608,8 @@ class cUnitList {
 
 		for (int i = 0; i < listUnit.size(); i++) { 
 			cUnit unit = (cUnit) listUnit.get(i);
-			if( unit.getPlayerId()==intPlayerId_ && unit.isAsleep()==false && unit.getMovesLeftToday() >0 && unit.isAlive() ) {
+			if( unit.getPlayerId()==intPlayerId_ && unit.isAlive() && unit.getMovesLeftToday() >0 ) {
+					// unit.getMovesLeftToday() >0 && unit.isAsleep()==false &&
 				TempCount=TempCount + 1;
 			}
 		}  
@@ -616,7 +626,8 @@ class cUnitList {
 
 		for (int i = 0; i < listUnit.size(); i++) { 
 			cUnit unit = (cUnit) listUnit.get(i);
-			if( unit.getPlayerId()==intPlayerId_ && unit.getMovesLeftToday() >0 && unit.isAsleep()==false && unit.isAlive() ) {
+			if( unit.getPlayerId()==intPlayerId_ && unit.isAlive() && unit.getMovesLeftToday() >0 ) {
+					// unit.isAsleep()==false && 
 				
 				//unit.moveAI(i);
 				unit.moveToIfSpecified(i);
@@ -680,16 +691,19 @@ class cUnitList {
 	}
 	
 	void resetMovesLeftToday() {
+
 		for (int i = 0; i < listUnit.size(); i++) { 
 			cUnit unit = (cUnit) listUnit.get(i);
 			
 			
 			//if ( unit.getTaskStatus()!=99 && unit.isAlive() ) { // if unit is not asleep
-			if ( unit.isAsleep()==false && unit.isAlive() ) { // if unit is not asleep
+			if ( unit.isAlive() ) { // if unit is not asleep
+					// unit.isAsleep()==false && 
 				unit.resetMovesLeftToday();
 				unit.setAttacksLeftToday(2);
 			} 
-			
+
+			unit.setDaysSinceLastClearedFogOfWar( unit.getDaysSinceLastClearedFogOfWar()+1 );
 		} 
 	}
 

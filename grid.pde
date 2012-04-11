@@ -414,7 +414,7 @@ class cGrid {
 				//println("island is unoccupied");
 
 				// does island have a port city?
-				//if ( oCityList.IslandHasPortCity(playerListIslandId)==true ) {
+				if ( oCityList.IslandHasPortCity(playerListIslandId)==true ) {
 					//println("island has a port city");
 
 					// if so, pick a random city on this island
@@ -425,7 +425,7 @@ class cGrid {
 						//oIslandList.setPlayerId(playerListIslandId, PlayerId_);
 						done=true;
 					}
-				//} //else println("island does not have a port city");
+				} //else println("island does not have a port city");
 			} //else println("island is occupied");
 			counter=counter+1;
 		}

@@ -94,14 +94,14 @@ class cCity {
 	
 		bool result=false;
 		
-		if (      oGrid.isSea(intCellX-1, intCellY-1) ) result=true;
-		else if ( oGrid.isSea(intCellX-1, intCellY) ) result=true;
+		if (      oGrid.isSea(intCellX-1, intCellY-1) && intCellX-1>=1 && intCellY-1>=1) result=true;
+		else if ( oGrid.isSea(intCellX-1, intCellY) && intCellX-1>=1 ) result=true;
 		else if ( oGrid.isSea(intCellX-1, intCellY+1) ) result=true;
 		
-		else if ( oGrid.isSea(intCellX, intCellY-1) ) result=true;
+		else if ( oGrid.isSea(intCellX, intCellY-1) && intCellY-1>=1 ) result=true;
 		else if ( oGrid.isSea(intCellX, intCellY+1) ) result=true;
 		
-		else if ( oGrid.isSea(intCellX+1, intCellY-1) ) result=true;
+		else if ( oGrid.isSea(intCellX+1, intCellY-1) && intCellY-1>=1 ) result=true;
 		else if ( oGrid.isSea(intCellX+1, intCellY) ) result=true;
 		else if ( oGrid.isSea(intCellX+1, intCellY+1) ) result=true;
 		
@@ -326,7 +326,8 @@ class cCity {
 
 		// ******************************************************
 		// if player transport is nearby waiting for tanks, build more tanks
-		if ( oUnitList.IsTransportNearbyWaitingForUnits( getPlayerId(), -1, getCellX(), getCellY() ) ) {
+		//if ( oUnitList.IsTransportNearbyWaitingForUnits( getPlayerId(), -1, getCellX(), getCellY() ) ) {
+		if ( oUnitList.IsTransportNearbyWaitingForUnits( getPlayerId(), -1, iIslandListId ) ) {
 
 			productionUnitTypeId= oUnitRef[0].getUnitTypeId(); 
 			productionDaysLeft = oUnitRef[0].getDaysToProduce();

@@ -46,22 +46,20 @@ class cGameEngine {
 
 		// payer 1, human, moves first
 		if( oUnitList.getCountUnitsWithMovesLeftToday(1)!=0 ) {
-
 			
 			//println("in game engine.doPlayerMove(), player 1 has units to move");
 
 			iCurrentPlayerId=1;
 			oPanel2.show();
 			//oGameEngine.setCommand(-1);
-			
-			oUnitList.highlightNextUnitWithMovesLeftToday(1);
-			
+						
 			//println("debug#3");
 			if ( oPlayer1.getIsAI() ) {
 				//println("moveNextUnitWithMovesLeftToday...");
 				oUnitList.moveNextUnitWithMovesLeftToday(1);
+			} else {
+				oUnitList.highlightNextUnitWithMovesLeftToday(1);
 			}
-		
 
 
 		// payer 2, computer, moves second		
@@ -84,7 +82,6 @@ class cGameEngine {
 			}
 			
 			
-
 		} else {
 		
 			// if payer 1 and player 2 have no units to be moved, progress to next day
@@ -104,7 +101,7 @@ class cGameEngine {
 	void nextDay() {
 		dayNumber++;
 		//println("Day " + dayNumber);
-		//println("");
+		println("");
 		oUnitList.resetMovesLeftToday();
 		oCityList.manageProduction();
 		//oCityList.Draw();
