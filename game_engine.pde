@@ -53,9 +53,10 @@ class cGameEngine {
 			oPanel2.show();
 			//oGameEngine.setCommand(-1);
 						
-			//println("debug#3");
 			if ( oPlayer1.getIsAI() ) {
 				//println("moveNextUnitWithMovesLeftToday...");
+				//oUnitList.highlightNextUnitWithMovesLeftToday(1);
+
 				oUnitList.moveNextUnitWithMovesLeftToday(1);
 			} else {
 				oUnitList.highlightNextUnitWithMovesLeftToday(1);

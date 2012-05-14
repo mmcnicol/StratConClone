@@ -7,31 +7,33 @@ class cCityList {
 		listCity = new ArrayList();  // Create an empty ArrayList
 	}
 
-	void AddCity(int intPlayerId_, int intCellRow_, int intCellCol_, int iIslandListId_) {
+	void AddCity(int intPlayerId_, int intCellRow_, int intCellCol_, int iCityIslandListId_) {
 		
 		//if ( intPlayerId_ != 0 )
 			//println("add city for player " + intPlayerId_ +" at row="+intCellRow_+" col="+ intCellCol_);
 			
-		listCity.add( new cCity(intPlayerId_, intCellRow_, intCellCol_, iIslandListId_) );  
-		//if ( intPlayerId_ != 0 ) oIslandList.setPlayerId(iIslandListId_, intPlayerId_);
+		if (debugCityAdd) println("  debug: in cCityList.AddCity(), iCityIslandListId_ = " + iCityIslandListId_ );
+
+		listCity.add( new cCity(intPlayerId_, intCellRow_, intCellCol_, iCityIslandListId_) );  
+		//if ( intPlayerId_ != 0 ) oIslandList.setPlayerId(iCityIslandListId_, intPlayerId_);
 
 		//println("in cCityList, AddCity for player id="+intPlayerId_);
 
-		//if ( intPlayerId_ == -1 ) oIslandList.increaseUnoccupiedCityCount(iIslandListId_);
+		//if ( intPlayerId_ == -1 ) oIslandList.increaseUnoccupiedCityCount(iCityIslandListId_);
 	}
 	
 	
 	void printHumanCityLocations() {
 		for (int i = 0; i < listCity.size(); i++) { 
 			cCity city = (cCity) listCity.get(i);
-			if ( city.getPlayerId()==1 ) city.printRowCol();
+			if ( city.getCityPlayerId()==1 ) city.printRowCol();
 		}  
 	}
 
 	void printIslandCityLocations() {
 		for (int i = 0; i < listCity.size(); i++) { 
 			cCity city = (cCity) listCity.get(i);
-			println("city "+city.getCellX()+","+city.getCellY()+" PlayerId="+city.getPlayerId()+", IslandId="+city.getIslandId() );
+			println("city "+city.getCellX()+","+city.getCellY()+" PlayerId="+city.getCityPlayerId()+", IslandId="+city.getCityIslandListId() );
 		}  
 	}
 
@@ -43,7 +45,7 @@ class cCityList {
 
 		for (int i = 0; i < listCity.size(); i++) { 
 			cCity city = (cCity) listCity.get(i);
-			if ( city.getIslandId()==iIslandId_ && city.getPlayerId()==iPlayerId_ ) 
+			if ( city.getCityIslandListId()==iIslandId_ && city.getCityPlayerId()==iPlayerId_ ) 
 				counter=counter+1;
 
 		}  
@@ -67,12 +69,12 @@ class cCityList {
 			strCityId = " " + LPAD(""+i,4);
 			strStatus = RPAD(""+city.getStatus(),10);	
 			strLocation = LPAD(""+city.getCellX(),4) + "," + RPAD(""+city.getCellY(),3);
-			strIslandId = "     " + LPAD(""+city.getIslandId(),3);
+			strIslandId = "     " + LPAD(""+city.getCityIslandListId(),3);
 			strIsPort = RPAD(""+city.isPort(),6);
 			strCurrentProduction = city.getProductionUnitTypeName();
 
-			//oPanelCityList.addLine("IslandId="+city.getIslandId() + ", PlayerId="+city.getPlayerId() + ", city "+city.getCellX()+","+city.getCellY() );
-			//oPanelCityList.addLine("CityId=" + i + ", Status="+city.getStatus() + ", Location="+city.getCellX()+","+city.getCellY() + ", IslandId="+city.getIslandId() );
+			//oPanelCityList.addLine("IslandId="+city.getCityIslandListId() + ", PlayerId="+city.getCityPlayerId() + ", city "+city.getCellX()+","+city.getCellY() );
+			//oPanelCityList.addLine("CityId=" + i + ", Status="+city.getStatus() + ", Location="+city.getCellX()+","+city.getCellY() + ", IslandId="+city.getCityIslandListId() );
 			oPanelCityList.addLine(" " + strCityId + " | " + strStatus + " | " + strLocation + " | " + strIslandId + " | " + strIsPort + " | " + strCurrentProduction );
 		}  
 	}
@@ -80,7 +82,7 @@ class cCityList {
 	int getPlayerFirstCityListId(int iPlayerId_) {
 		for (int i = 0; i < listCity.size(); i++) { 
 			cCity city = (cCity) listCity.get(i);
-			if ( city.getPlayerId()==iPlayerId_ ) return i;
+			if ( city.getCityPlayerId()==iPlayerId_ ) return i;
 		}  
 		return -1;
 	}
@@ -132,7 +134,7 @@ class cCityList {
 
 		for (int i = 0; i < listCity.size(); i++) { 
 			cCity city = (cCity) listCity.get(i);
-			if ( city.getIslandId()==IslandListId_ && city.isPort()==true ) return true;
+			if ( city.getCityIslandListId()==IslandListId_ && city.isPort()==true ) return true;
 		}  
 		return false;
 	}
@@ -147,7 +149,7 @@ class cCityList {
 
 		for (i=0; i < listCity.size(); i++) { 
 			cCity city = (cCity) listCity.get(i);
-			if ( city.getIslandId()==IslandListId_ ) IslandCityCount=IslandCityCount+1;
+			if ( city.getCityIslandListId()==IslandListId_ ) IslandCityCount=IslandCityCount+1;
 		}  
 
 		//println("IslandCityCount="+IslandCityCount);
@@ -156,7 +158,7 @@ class cCityList {
 
 		for (i=0; i < listCity.size(); i++) { 
 			cCity city = (cCity) listCity.get(i);
-			if ( city.getIslandId()==IslandListId_ && randomIslandCitySeqNumber==i) return i;
+			if ( city.getCityIslandListId()==IslandListId_ && randomIslandCitySeqNumber==i) return i;
 		}  
 
 		return -1;
@@ -177,17 +179,17 @@ class cCityList {
 	int getCityPlayerId(int iCityListId_) {
 
 		cCity city = (cCity) listCity.get(iCityListId_);
-		return city.getPlayerId();	
+		return city.getCityPlayerId();	
 	}
 
 	void setCityPlayerId(int iCityListId_, int iPlayerId_) {
 	
 		cCity city = (cCity) listCity.get(iCityListId_);
 
-		oIslandList.setPlayerId(city.getIslandId(), iPlayerId_);			
-		oIslandList.updateIslandPlayerCityCount(city.getIslandId(), city.getPlayerId(), iPlayerId_);
+		oIslandList.setPlayerId(city.getCityIslandListId(), iPlayerId_);			
+		oIslandList.updateIslandPlayerCityCount(city.getCityIslandListId(), city.getCityPlayerId(), iPlayerId_);
 
-		city.setPlayerId(iPlayerId_);
+		city.setCityPlayerId(iPlayerId_);
 		city.setProductionUnitTypeId(0);
 	}
 
@@ -202,7 +204,7 @@ class cCityList {
 		if (iCityListId_!=-1) {
 			cCity city = (cCity) listCity.get(iCityListId_);
 
-			int iCityPlayerId = city.getPlayerId();
+			int iCityPlayerId = city.getCityPlayerId();
 			if (iCityPlayerId==1) {
 
 				oPanelSelectedCity.show( city.getLocation(), city.getProductionUnitTypeName(), city.getProductionDaysLeft(), oUnitList.getCountOfPlayerUnitsAt(1, city.getCellX(), city.getCellY()) );
@@ -220,7 +222,7 @@ class cCityList {
 
 		for (int i = 0; i < listCity.size(); i++) { 
 			cCity city = (cCity) listCity.get(i);
-			if( city.getPlayerId()==iPlayerId_ && city.isWithin(iFuelLeft, cellX_, cellY_) ) {
+			if( city.getCityPlayerId()==iPlayerId_ && city.isWithin(iFuelLeft, cellX_, cellY_) ) {
 				//println("adding possible destination to list ");
 				possibleDestinationCity.add( new cGridCell(city.getCellX(), city.getCellY()) );
 				//println("possibleDestinationCity.size()-1="+possibleDestinationCity.size()-1);
@@ -254,7 +256,7 @@ class cCityList {
 		
 		for (int i = 0; i < listCity.size(); i++) { 
 			cCity city = (cCity) listCity.get(i);
-			if ( city.getPlayerId()==-1 && city.isAt(cellRow_, cellCol_) ) return true;
+			if ( city.getCityPlayerId()==-1 && city.isAt(cellRow_, cellCol_) ) return true;
 		}  
 		return false;	
 	}
@@ -265,8 +267,8 @@ class cCityList {
 		
 		for (int i = 0; i < listCity.size(); i++) { 
 			cCity city = (cCity) listCity.get(i);
-			if ( city.getPlayerId()!=iPlayerId_ && city.isAt(cellRow_, cellCol_) ) return true;
-			// removed: && city.getPlayerId()!=-1 
+			if ( city.getCityPlayerId()!=iPlayerId_ && city.isAt(cellRow_, cellCol_) ) return true;
+			// removed: && city.getCityPlayerId()!=-1 
 		}  
 		return false;	
 	}
@@ -277,7 +279,7 @@ class cCityList {
 		
 		for (int i = 0; i < listCity.size(); i++) { 
 			cCity city = (cCity) listCity.get(i);
-			if ( (city.getPlayerId()!=iPlayerId_ || city.getPlayerId()==-1) && city.isAt(cellRow_, cellCol_) ) return true;
+			if ( (city.getCityPlayerId()!=iPlayerId_ || city.getCityPlayerId()==-1) && city.isAt(cellRow_, cellCol_) ) return true;
 		}  
 		return false;	
 	}
@@ -286,9 +288,9 @@ class cCityList {
 	
 		cCity city = (cCity) listCity.get(iCityListId_);
 
-		oIslandList.updateIslandPlayerCityCount(city.getIslandId(), city.getPlayerId(), iPlayerId_);
+		oIslandList.updateIslandPlayerCityCount(city.getCityIslandListId(), city.getCityPlayerId(), iPlayerId_);
 	
-		city.setPlayerId(iPlayerId_);
+		city.setCityPlayerId(iPlayerId_);
 		
 		// continue building unit type, else 
 		// game rule: default initial production to Tank (if city was unoccupied)
@@ -319,7 +321,7 @@ class cCityList {
 		
 		city.clearFogOfWar();
 		
-		city.setPlayerId(-1);
+		city.setCityPlayerId(-1);
 		city.setProductionUnitTypeId( -1 );
 						
 		city.Draw();	
@@ -357,14 +359,14 @@ class cCityList {
 		
 		cCity city = (cCity) listCity.get(iCityListId_);
 		city.clearFogOfWar();	
-		if ( city.getPlayerId()==1 ) oViewport.scrollIfAppropriate(city.getCellX(), city.getCellY());
+		if ( city.getCityPlayerId()==1 ) oViewport.scrollIfAppropriate(city.getCellX(), city.getCellY());
 	}
 
 	void clearFogOfWarByPlayerId(int iPlayerId_) {
 
 		for (int i = 0; i < listCity.size(); i++) { 
 			cCity city = (cCity) listCity.get(i);
-			if( city.getPlayerId()==iPlayerId_) {
+			if( city.getCityPlayerId()==iPlayerId_) {
 				city.clearFogOfWar();	
 			}
 		}  
@@ -384,7 +386,7 @@ class cCityList {
 		
 		for (int i = 0; i < listCity.size(); i++) { 
 			cCity city = (cCity) listCity.get(i);
-			if ( city.getPlayerId()==iPlayerId_ ) 
+			if ( city.getCityPlayerId()==iPlayerId_ ) 
 				counter=counter+1;
 
 		}  
@@ -426,7 +428,7 @@ class cCityList {
 		
 		for (int i = 0; i < listCity.size(); i++) { 
 			cCity city = (cCity) listCity.get(i);
-			if ( city.getPlayerId()==iPlayerId_ && city.getProductionUnitTypeId()==iUnitTypeId_ ) 
+			if ( city.getCityPlayerId()==iPlayerId_ && city.getProductionUnitTypeId()==iUnitTypeId_ ) 
 				counter=counter+1;
 
 		}  

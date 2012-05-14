@@ -11,10 +11,11 @@ class cUnitList {
 		return listUnit.size()-1;
 	}
 
-	void AddUnit(int intUnitTypeId_, int intPlayerId_, int intcellX_, int intcellY_, int iIslandListId_) {
+	void AddUnit(int intUnitTypeId_, int intUnitPlayerId_, int intcellX_, int intcellY_, int iUnitIslandListId_) {
 	
-		//println( "add unit for player " + intPlayerId_ + ", intUnitTypeId_=" + intUnitTypeId_);
-		listUnit.add( new cUnit(intUnitTypeId_, intPlayerId_, intcellX_, intcellY_, iIslandListId_) );  
+		if (intUnitPlayerId_==1 && debugCityProduction) println( "debug: cUnitList.AddUnit()  iUnitIslandListId_=" + iUnitIslandListId_);
+
+		listUnit.add( new cUnit(intUnitTypeId_, intUnitPlayerId_, intcellX_, intcellY_, iUnitIslandListId_) );  
 		//println( "unit list debug#1");
 	}
 
@@ -22,7 +23,7 @@ class cUnitList {
 	void printPlayerUnitLocations(int iPlayerId_) {
 		for (int i = 0; i < listUnit.size(); i++) { 
 			cUnit unit = (cUnit) listUnit.get(i);
-			if ( unit.getPlayerId()==iPlayerId_ ) unit.printRowCol();
+			if ( unit.getUnitPlayerId()==iPlayerId_ ) unit.printRowCol();
 		}  
 	}
 	*/
@@ -40,7 +41,7 @@ class cUnitList {
 		
 		for (int i = 0; i < listUnit.size(); i++) { 
 			cUnit unit = (cUnit) listUnit.get(i);
-			if ( unit.getPlayerId()==iEnemyPlayerId && unit.isNearby(intRow_, intCol_,1)==true && unit.isAlive() ) TempCount++;
+			if ( unit.getUnitPlayerId()==iEnemyPlayerId && unit.isNearby(intRow_, intCol_,1)==true && unit.isAlive() ) TempCount++;
 		}  
 		return TempCount;	
 	}
@@ -50,7 +51,7 @@ class cUnitList {
 		int counter=0;
 		for (int i = 0; i < listUnit.size(); i++) { 
 			cUnit unit = (cUnit) listUnit.get(i);
-			if( unit.getPlayerId()==iPlayerId_ && unit.isAt(x_, y_)==true && unit.isAlive() ) {
+			if( unit.getUnitPlayerId()==iPlayerId_ && unit.isAt(x_, y_)==true && unit.isAlive() ) {
 				counter++;
 			}
 		}  
@@ -63,7 +64,7 @@ class cUnitList {
 		int counter=0;
 		for (int i = 0; i < listUnit.size(); i++) { 
 			cUnit unit = (cUnit) listUnit.get(i);
-			if( unit.getPlayerId()==iPlayerId_ && unit.isAt(x_, y_)==true && unit.isTank() && unit.isAlive() ) {
+			if( unit.getUnitPlayerId()==iPlayerId_ && unit.isAt(x_, y_)==true && unit.isTank() && unit.isAlive() ) {
 				counter++;
 			}
 		}  
@@ -75,7 +76,7 @@ class cUnitList {
 		int temp=-1;
 		for (int i = 0; i < listUnit.size(); i++) { 
 			cUnit unit = (cUnit) listUnit.get(i);
-			if( unit.getPlayerId()==iPlayerId_ && unit.isAt(x_, y_)==true && unit.getMovesLeftToday() > 0 && unit.isAlive() ) {
+			if( unit.getUnitPlayerId()==iPlayerId_ && unit.isAt(x_, y_)==true && unit.getMovesLeftToday() > 0 && unit.isAlive() ) {
 				return i;
 			}
 		}  
@@ -89,7 +90,7 @@ class cUnitList {
 		for (int i = 0; i < listUnit.size(); i++) { 
 			cUnit unit = (cUnit) listUnit.get(i);
 			//unit.printRowCol();
-			if( unit.getPlayerId()==1 && unit.isAtXY(x_, y_) && unit.isAlive() ) {
+			if( unit.getUnitPlayerId()==1 && unit.isAtXY(x_, y_) && unit.isAlive() ) {
 				println("in getHumanUnitNumberAtXY, return i="+i);
 				return i;
 			}
@@ -104,7 +105,7 @@ class cUnitList {
 		
 		for (int i = 0; i < listUnit.size(); i++) { 
 			cUnit unit = (cUnit) listUnit.get(i);
-			//if( unit.getPlayerId()==1 && unit.isAt(cellX_, cellY_)==true && unit.isAlive() ) {
+			//if( unit.getUnitPlayerId()==1 && unit.isAt(cellX_, cellY_)==true && unit.isAlive() ) {
 			if( unit.isAt(cellX_, cellY_)==true ) {
 				return true;	
 			}
@@ -120,7 +121,7 @@ class cUnitList {
 		
 			cUnit unit = (cUnit) listUnit.get(i);
 
-			if( unit.getPlayerId()==iPlayerId_ && unit.isAt(x_, y_) && unit.isSeaVessel() && unit.isAlive() ) {
+			if( unit.getUnitPlayerId()==iPlayerId_ && unit.isAt(x_, y_) && unit.isSeaVessel() && unit.isAlive() ) {
 
 				return true;
 			}
@@ -156,7 +157,7 @@ class cUnitList {
 
 		for (int i = 0; i < listUnit.size(); i++) { 
 			cUnit unit = (cUnit) listUnit.get(i);
-			if( unit.getPlayerId()==iPlayerId_ && unit.isAt(x_, y_)==true && unit.isAlive() ) {
+			if( unit.getUnitPlayerId()==iPlayerId_ && unit.isAt(x_, y_)==true && unit.isAlive() ) {
 			
 				unit.setTaskStatus(0);
 				unit.setMoveToX(-1);
@@ -179,9 +180,10 @@ class cUnitList {
 		unit.setMoveToY(-1);
 		unit.setMovesLeftToday( unit.getMovesPerDay() );
 		unit.setDaysSinceLastClearedFogOfWar(0);
-		oIslandList.decreaseIslandUnitTypeCount(unit.getUnitTypeId(), unit.getIslandListId(), unit.getPlayerId() );
-		unit.setIslandListId( oGrid.getIslandIdIfIsNextToLand() );
-		oIslandList.increaseIslandUnitTypeCount(unit.getUnitTypeId(), unit.getIslandListId(), unit.getPlayerId() );
+		oIslandList.decreaseIslandUnitTypeCount(unit.getUnitTypeId(), unit.getUnitIslandListId(), unit.getUnitPlayerId() );
+		//println("in oUnitList.wake(), oGrid.getIslandIdIfIsNextToLand()=" + oGrid.getIslandIdIfIsNextToLand() );
+		unit.setUnitIslandListId( oGrid.getIslandIdIfIsNextToLand() );
+		oIslandList.increaseIslandUnitTypeCount(unit.getUnitTypeId(), unit.getUnitIslandListId(), unit.getUnitPlayerId() );
 		
 	}
 	
@@ -198,7 +200,7 @@ class cUnitList {
 		
 			cUnit unit = (cUnit) listUnit.get(i);
 
-			if( unit.getPlayerId()==iPlayerId_ && unit.isAt(x_, y_) && unit.isTransport() && unit.isAlive() ) {
+			if( unit.getUnitPlayerId()==iPlayerId_ && unit.isAt(x_, y_) && unit.isTransport() && unit.isAlive() ) {
 
 				return true;
 			}
@@ -214,7 +216,7 @@ class cUnitList {
 		
 			cUnit unit = (cUnit) listUnit.get(i);
 
-			if( unit.getPlayerId()!=iPlayerId_ && unit.isAt(x_, y_) && unit.isTransport() && unit.isAlive() ) {
+			if( unit.getUnitPlayerId()!=iPlayerId_ && unit.isAt(x_, y_) && unit.isTransport() && unit.isAlive() ) {
 
 				return true;
 				
@@ -225,16 +227,38 @@ class cUnitList {
 	}	
 
 
-	//bool IsTransportNearbyWaitingForUnits(int iPlayerId_, int iUnitListId_, int iCellX_, int iCellY_) {
-	bool IsTransportNearbyWaitingForUnits(int iPlayerId_, int iUnitListId_, int iIslandId_) {
 
-		//println( "unit list debug#1: in IsTransportNearbyWaitingForUnits() ");
+	void identifyPlayerLandUnitsToLoadTransport(int iPlayerId_, int iUnitIslandId_) {
+
+		int temp=-1;
+
+		for (int i = 0; i < listUnit.size(); i++) { 
+		
+			cUnit unit = (cUnit) listUnit.get(i);
+
+			if ( unit.getUnitPlayerId()==iPlayerId_ && unit.getUnitIslandListId()==iUnitIslandId_ && unit.isTank() && unit.isAsleep() ) {
+
+				temp = IsTransportNearbyWaitingForUnits(iPlayerId_, i, iUnitIslandId_);
+				
+			}
+		}  
+	}
+
+
+
+
+	//bool IsTransportNearbyWaitingForUnits(int iPlayerId_, int iUnitListId_, int iCellX_, int iCellY_) {
+	bool IsTransportNearbyWaitingForUnits(int iPlayerId_, int iUnitListId_, int iUnitIslandId_) {
+
+		//if (debugTransport) println( "debug: in cUnitList.IsTransportNearbyWaitingForUnits() ");
+
 		int temp=-1;
 
 		//temp = getTransportUnitNumberNearbyWhichIsWaitingForTanks(iPlayerId_, iCellX_, iCellY_);
-		temp = getTransportUnitNumberNearbyWhichIsWaitingForTanks(iPlayerId_, iIslandId_);
+		temp = getTransportUnitNumberNearbyWhichIsWaitingForTanks(iPlayerId_, iUnitIslandId_);
 
-		//println( "unit list debug#1: temp= "+temp);
+		//if (debugTransport) println( "debug: getTransportUnitNumberNearbyWhichIsWaitingForTanks = "+temp);
+
 		if ( temp != -1 && iUnitListId_ != -1 ) {
 
 			// set AvailableUnit movetoXY to WaitingTransportXY
@@ -243,6 +267,10 @@ class cUnitList {
 			cUnit AvailableUnit = (cUnit) listUnit.get(iUnitListId_);
 			AvailableUnit.setMoveToX( WaitingTransport.getX() );
 			AvailableUnit.setMoveToY( WaitingTransport.getY() );
+			AvailableUnit.setTaskStatus(1); 
+			//AvailableUnit.resetMovesLeftToday(); 
+
+			if (iPlayerId_==1 && debugTransport) println( "debug: tank at ("+AvailableUnit.getX()+","+AvailableUnit.getY()+") set move to =("+AvailableUnit.getMoveToX()+","+AvailableUnit.getMoveToY()+") ");
 
 			//println( "unit list debug#1: in IsTransportNearbyWaitingForUnits() return true ");
 			return true;
@@ -255,13 +283,13 @@ class cUnitList {
 
 
 	//int getTransportUnitNumberNearbyWhichIsWaitingForTanks(int iPlayerId_, int x_, int y_) {
-	int getTransportUnitNumberNearbyWhichIsWaitingForTanks(int iPlayerId_, int iIslandId_) {
+	int getTransportUnitNumberNearbyWhichIsWaitingForTanks(int iPlayerId_, int iUnitIslandId_) {
 
 		int temp=-1;
 		for (int i = 0; i < listUnit.size(); i++) { 
 			cUnit unit = (cUnit) listUnit.get(i);
-			//if( unit.getPlayerId()==iPlayerId_ && unit.isNearby(x_, y_,6)==true && unit.getTaskStatus()==1 && unit.isAlive() ) {
-			if( unit.getPlayerId()==iPlayerId_ && unit.getIslandListId()==iIslandId_ && unit.getTaskStatus()==1 && unit.isAlive() ) {
+			//if( unit.getUnitPlayerId()==iPlayerId_ && unit.isNearby(x_, y_,6)==true && unit.getTaskStatus()==1 && unit.isAlive() ) {
+			if( unit.getUnitPlayerId()==iPlayerId_ && unit.getUnitIslandListId()==iUnitIslandId_ && unit.isTransport() && unit.getTaskStatus()==1 && unit.isAlive() ) {
 				return i;
 			}
 		}  
@@ -275,7 +303,7 @@ class cUnitList {
 		
 			cUnit unit = (cUnit) listUnit.get(i);
 
-			if( unit.getPlayerId()==iPlayerId_ && unit.isAt(x_, y_) && unit.isTransport() && unit.isAlive() && unit.getCargoCount()==6 ) {
+			if( unit.getUnitPlayerId()==iPlayerId_ && unit.isAt(x_, y_) && unit.isTransport() && unit.isAlive() && unit.getCargoCount()==6 ) {
 
 				return true;
 			}
@@ -300,7 +328,7 @@ class cUnitList {
 		
 			cUnit unit = (cUnit) listUnit.get(i);
 
-			if( unit.getPlayerId()==iPlayerId_ && unit.isAt(x_, y_) && unit.isCarrier() && unit.isAlive() ) {
+			if( unit.getUnitPlayerId()==iPlayerId_ && unit.isAt(x_, y_) && unit.isCarrier() && unit.isAlive() ) {
 
 				//println("debug: in unlitlist.isPlayerCarrierAtRowCol() ...yes");
 				return true;
@@ -346,13 +374,29 @@ class cUnitList {
 	
 
 	void clearUnitFromCargoOf(int UnitListId_, int CargoUnitListId_) {
-		//println("in clearUnitFromCargoOf("+UnitListId_+","+CargoUnitListId_+")");
+		println("in clearUnitFromCargoOf("+UnitListId_+","+CargoUnitListId_+")");
 		cUnit unit = (cUnit) listUnit.get(UnitListId_);
 		unit.clearCargoUnit(CargoUnitListId_);
-		//println("end clearUnitFromCargoOf("+UnitListId_+","+CargoUnitListId_+")");
+		println("end clearUnitFromCargoOf("+UnitListId_+","+CargoUnitListId_+")");
 	}
 
 
+
+	void clearMoveToTransport( int iUnitPlayerId_, int iUnitIslandListId_) {
+
+		for (int i = 0; i < listUnit.size(); i++) { 
+		
+			cUnit unit = (cUnit) listUnit.get(i);
+
+			if( unit.getUnitPlayerId()==iUnitPlayerId_ && unit.isTank() && unit.getUnitIslandListId()==iUnitIslandListId_ && unit.isAsleep()==false && unit.isAlive() ) {
+
+				unit.setTaskStatus(0);
+				unit.setMoveToX(-1);
+				unit.setMoveToY(-1);
+			}
+
+		}  	
+	}
 
 
 	
@@ -364,7 +408,7 @@ class cUnitList {
 
 		for (int i = 0; i < listUnit.size(); i++) { 
 			cUnit unit = (cUnit) listUnit.get(i);
-			if( unit.getPlayerId()!=iPlayerId_ && unit.isAt(cellX_, cellY_) && unit.isAlive() ) {
+			if( unit.getUnitPlayerId()!=iPlayerId_ && unit.isAt(cellX_, cellY_) && unit.isAlive() ) {
 				return true;
 			}
 		}  
@@ -376,7 +420,7 @@ class cUnitList {
 
 		for (int i = 0; i < listUnit.size(); i++) { 
 			cUnit unit = (cUnit) listUnit.get(i);
-			if( unit.getPlayerId()!=iPlayerId_ && unit.isAt(cellX_, cellY_) && unit.isAlive() ) {
+			if( unit.getUnitPlayerId()!=iPlayerId_ && unit.isAt(cellX_, cellY_) && unit.isAlive() ) {
 				return i;
 			}
 		}  
@@ -387,7 +431,7 @@ class cUnitList {
 
 		for (int i = 0; i < listUnit.size(); i++) { 
 			cUnit unit = (cUnit) listUnit.get(i);
-			if( unit.getPlayerId()==iPlayerId_ && unit.isAt(cellX_, cellY_) && unit.isTransport() && unit.isAlive() ) {
+			if( unit.getUnitPlayerId()==iPlayerId_ && unit.isAt(cellX_, cellY_) && unit.isTransport() && unit.isAlive() ) {
 				return i;
 			}
 		}  
@@ -398,7 +442,7 @@ class cUnitList {
 
 		for (int i = 0; i < listUnit.size(); i++) { 
 			cUnit unit = (cUnit) listUnit.get(i);
-			if( unit.getPlayerId()!=iPlayerId_ && unit.isAt(cellX_, cellY_) && unit.isTransport() && unit.isAlive() ) {
+			if( unit.getUnitPlayerId()!=iPlayerId_ && unit.isAt(cellX_, cellY_) && unit.isTransport() && unit.isAlive() ) {
 				return i;
 			}
 		}  
@@ -409,7 +453,7 @@ class cUnitList {
 	
 		for (int i = 0; i < listUnit.size(); i++) { 
 			cUnit unit = (cUnit) listUnit.get(i);
-			if( unit.getPlayerId()==iPlayerId_ && unit.isAt(cellX_, cellY_) && unit.isCarrier() && unit.isAlive() ) {
+			if( unit.getUnitPlayerId()==iPlayerId_ && unit.isAt(cellX_, cellY_) && unit.isCarrier() && unit.isAlive() ) {
 				return i;
 			}
 		}  
@@ -470,7 +514,7 @@ class cUnitList {
 		//println("in isBombableEnemy()");
 		for (int i = 0; i < listUnit.size(); i++) { 
 			cUnit unit = (cUnit) listUnit.get(i);
-			if ( unit.getPlayerId()!=iPlayerId_  && unit.isAt(intCellX_, intCellY_) && unit.isBombable() && unit.isAlive() ) return true;
+			if ( unit.getUnitPlayerId()!=iPlayerId_  && unit.isAt(intCellX_, intCellY_) && unit.isBombable() && unit.isAlive() ) return true;
 		}  
 		return false;
 	}
@@ -484,7 +528,7 @@ class cUnitList {
 		cUnit unit = (cUnit) listUnit.get(iUnitListId_);
 		unit.reduceStrength();
 		if ( unit.getStrength()==0 ) {
-			if ( unit.getPlayerId()==1 ) {
+			if ( unit.getUnitPlayerId()==1 ) {
 				println("Player "+ oGameEngine.getCurrentPlayerId() + " Unit destroyed!");
 				println("");
 			}
@@ -530,7 +574,7 @@ class cUnitList {
 			
 			//if (iPlayerId_==1) println("can tank at "+unit.getX()+","+unit.getY()+" be moved onto transport at "+x_+","+y_+"?");
 			
-			if( unit.getPlayerId()==iPlayerId_ 
+			if( unit.getUnitPlayerId()==iPlayerId_ 
 				&& unit.isTank() 
 				&& unit.isCargoOf()==false 
 				&& unit.isAlive()
@@ -576,7 +620,7 @@ class cUnitList {
 		for (i = 0; i < listUnit.size() && counter<6; i++) { 
 			cUnit unit = (cUnit) listUnit.get(i);
 			
-			if( unit.getPlayerId()==iPlayerId_ 
+			if( unit.getUnitPlayerId()==iPlayerId_ 
 				&& unit.isTank() 
 				&& unit.isAlive()
 				&& unit.getMoveToX()==x_
@@ -608,9 +652,16 @@ class cUnitList {
 
 		for (int i = 0; i < listUnit.size(); i++) { 
 			cUnit unit = (cUnit) listUnit.get(i);
-			if( unit.getPlayerId()==intPlayerId_ && unit.isAlive() && unit.getMovesLeftToday() >0 ) {
+			if( unit.getUnitPlayerId()==intPlayerId_ && unit.isAlive() && unit.isAsleep()==false && unit.getMovesLeftToday() >0 ) {
 					// unit.getMovesLeftToday() >0 && unit.isAsleep()==false &&
-				TempCount=TempCount + 1;
+
+				if (intPlayerId_==1 && oPlayer1.getIsAI()==true && unit.isAsleep()==true) {
+
+					// do nothing
+
+				} else {				
+					TempCount=TempCount + 1;
+				}
 			}
 		}  
 
@@ -626,14 +677,32 @@ class cUnitList {
 
 		for (int i = 0; i < listUnit.size(); i++) { 
 			cUnit unit = (cUnit) listUnit.get(i);
-			if( unit.getPlayerId()==intPlayerId_ && unit.isAlive() && unit.getMovesLeftToday() >0 ) {
-					// unit.isAsleep()==false && 
+			if( unit.getUnitPlayerId()==intPlayerId_ && unit.isAlive() &&  unit.isAsleep()==false && unit.getMovesLeftToday() >0 ) {
+
 				
-				//unit.moveAI(i);
-				unit.moveToIfSpecified(i);
-				
-				// exit loop
-				i=listUnit.size();
+				if (intPlayerId_==1 && oPlayer1.getIsAI()==false ) {
+					
+					if( unit.isAsleep()==true ) { 
+						unit.setMovesLeftToday(0); 
+					} else { 
+						highlightNextUnitWithMovesLeftToday(1); 
+					}
+
+					
+
+				} else {	
+			
+					if ( intPlayerId_==1 && oPlayer1.getIsAI()==true) 
+						oViewport.scrollIfAppropriate(unit.getX(), unit.getY());
+
+
+					//unit.moveAI(i);
+					unit.moveToIfSpecified(i);
+					
+					// exit loop
+					i=listUnit.size();
+				}
+
 			}
 		}  
 	}
@@ -695,10 +764,8 @@ class cUnitList {
 		for (int i = 0; i < listUnit.size(); i++) { 
 			cUnit unit = (cUnit) listUnit.get(i);
 			
-			
-			//if ( unit.getTaskStatus()!=99 && unit.isAlive() ) { // if unit is not asleep
-			if ( unit.isAlive() ) { // if unit is not asleep
-					// unit.isAsleep()==false && 
+			if ( unit.isAlive() ) { 
+				// && unit.isAsleep()==false
 				unit.resetMovesLeftToday();
 				unit.setAttacksLeftToday(2);
 			} 
@@ -713,7 +780,7 @@ class cUnitList {
 
 		for (int i = 0; i < listUnit.size(); i++) { 
 			cUnit unit = (cUnit) listUnit.get(i);
-			if( unit.getPlayerId()==iPlayerId_ && unit.isAt(sx_, sy_)==true && unit.isAlive() ) {
+			if( unit.getUnitPlayerId()==iPlayerId_ && unit.isAt(sx_, sy_)==true && unit.isAlive() ) {
 			
 				//unit.setTaskStatus(0);
 				//println("unit.getMovesPerDay() ="+unit.getMovesPerDay() );
@@ -737,7 +804,7 @@ class cUnitList {
 		
 		for (int i = 0; i < listUnit.size(); i++) { 
 			cUnit unit = (cUnit) listUnit.get(i);
-			//if( unit.getPlayerId()==1 && unit.isAt(cellX_, cellY_)==true ) {
+			//if( unit.getUnitPlayerId()==1 && unit.isAt(cellX_, cellY_)==true ) {
 			if( unit.isAt(cellX_, cellY_)==true && unit.isAlive() ) {
 			
 				if ( unit.isCargoOf()==false || oGameEngine.getSelectedUnitListId()==i ) {
@@ -752,7 +819,7 @@ class cUnitList {
 
 		for (int i = 0; i < listUnit.size(); i++) { 
 			cUnit unit = (cUnit) listUnit.get(i);
-			if( unit.getPlayerId()==iPlayerId_ && unit.isTransport() && unit.isAt(cellX_, cellY_)==true && unit.isAlive() ) {
+			if( unit.getUnitPlayerId()==iPlayerId_ && unit.isTransport() && unit.isAt(cellX_, cellY_)==true && unit.isAlive() ) {
 				unit.Draw();
 			}
 		}  	
@@ -762,7 +829,7 @@ class cUnitList {
 
 		for (int i = 0; i < listUnit.size(); i++) { 
 			cUnit unit = (cUnit) listUnit.get(i);
-			if( unit.getPlayerId()==iPlayerId_ && unit.isCarrier() && unit.isAt(cellX_, cellY_)==true && unit.isAlive() ) {
+			if( unit.getUnitPlayerId()==iPlayerId_ && unit.isCarrier() && unit.isAt(cellX_, cellY_)==true && unit.isAlive() ) {
 				unit.Draw();
 			}
 		}  	
@@ -779,7 +846,7 @@ class cUnitList {
 
 		for (int i = 0; i < listUnit.size(); i++) { 
 			cUnit unit = (cUnit) listUnit.get(i);
-			if( unit.getPlayerId()==intPlayerId_ && unit.getMovesLeftToday() >0 && unit.isAlive() ) {
+			if( unit.getUnitPlayerId()==intPlayerId_ && unit.getMovesLeftToday() >0 && unit.isAlive() && unit.isAsleep()==false ) {
 				
 				//println("calling unit.highlight()...");
 				
@@ -819,8 +886,8 @@ class cUnitList {
 				//println("Animating unit HIDE, "+unit.getX()+","+unit.getY());
 				//oGrid.DrawCell(intCellX, intCellY, false);
 				if ( unit.isCargoOf() ) {
-					drawTransportAt(unit.getPlayerId(), unit.getX(), unit.getY() );
-					drawCarrierAt(unit.getPlayerId(), unit.getX(), unit.getY() );
+					drawTransportAt(unit.getUnitPlayerId(), unit.getX(), unit.getY() );
+					drawCarrierAt(unit.getUnitPlayerId(), unit.getX(), unit.getY() );
 				} else {
 					oGrid.DrawCell(unit.getX(), unit.getY(), false);
 				}
@@ -853,8 +920,10 @@ class cUnitList {
 
 	void selectedUnitSleep(int intPlayerId_) {
 		
-		//println("in oUnitList.selectedUnitSleep, playerid="+intPlayerId_+", unitlistid="+oAnimate.getUnitListId());
+		if ( intPlayerId_==1 && debugSleep ) println("debug: in oUnitList.selectedUnitSleep, playerid="+intPlayerId_+", unitlistid="+oAnimate.getUnitListId());
 		
+		if ( intPlayerId_==1 && debugSleep ) println("debug: oAnimate.getUnitListId()="+ oAnimate.getUnitListId() );
+
 		int iUnitListId = oAnimate.getUnitListId();
 		
 		if ( iUnitListId != -1 ) {
@@ -863,7 +932,7 @@ class cUnitList {
 			
 			oAnimate.clear();
 			
-			unit.setMovesLeftToday(0);
+			//unit.setMovesLeftToday(0);
 			unit.setTaskStatus(99);
 			//println("... unit found, set to sleep, at "+unit.getX()+","+unit.getY() );
 			unit.Draw();
@@ -882,6 +951,7 @@ class cUnitList {
 		if ( iUnitListId != -1 ) {
 		
 			cUnit unit = (cUnit) listUnit.get(iUnitListId);
+			if ( intPlayerId_==1 ) oViewport.scrollIfAppropriate(unit.getX(), unit.getY());
 			oAnimate.clear();
 			unit.moveAI(iUnitListId);
 			
@@ -901,7 +971,7 @@ class cUnitList {
 		int counter=0;
 		for (int i = 0; i < listUnit.size(); i++) { 
 			cUnit unit = (cUnit) listUnit.get(i);
-			if( unit.getPlayerId()==iPlayerId_ && unit.isAlive() ) {
+			if( unit.getUnitPlayerId()==iPlayerId_ && unit.isAlive() ) {
 				counter++;
 			}
 		}  
@@ -918,7 +988,7 @@ class cUnitList {
 		int counter=0;
 		for (int i = 0; i < listUnit.size(); i++) { 
 			cUnit unit = (cUnit) listUnit.get(i);
-			if( unit.getPlayerId()==iPlayerId_ && unit.getUnitTypeId()==iUnitType_ && unit.isAlive() ) {
+			if( unit.getUnitPlayerId()==iPlayerId_ && unit.getUnitTypeId()==iUnitType_ && unit.isAlive() ) {
 				counter++;
 			}
 		}  

@@ -5,9 +5,12 @@ class cPathfindingAstar extends cPathfinding {
 	ArrayList listOpen;
 	ArrayList listClosed;
 
-	cPathfindingAstar() {
+	cPathfindingAstar(int intPlayerId_) {
 		listOpen = new ArrayList();
 		listClosed = new ArrayList();	
+		oGrid.createValidMoveGrid(intPlayerId_);
+		//if ( oGameEngine.getCurrentPlayerId()==1 ) oPanelMapMatrixValidMovesPlayer1.show();
+		//if ( oGameEngine.getCurrentPlayerId()==2 ) oPanelMapMatrixValidMovesPlayer2.show();
 	}
 
 
@@ -281,6 +284,11 @@ class cPathfindingAstar extends cPathfinding {
 
 	int do_astar1(int intPlayerId, int start_x, int start_y, int end_x, int end_y, int x, int y, int parent_x, int parent_y, int g, int h, int cell_type) {
 
+		// cell_type = moves_on
+		// cell_type:
+		// 0 = moves on Sea
+		// 1 = moves on Land
+
 		//// 2 c * If it is not walkable or if it is on the closed list, ignore it. Otherwise do the following.
 
 		int rows, columns, i, j, count, x2, y2, g2, h2, new_g, new_h;
@@ -304,14 +312,21 @@ class cPathfindingAstar extends cPathfinding {
 
 				//println("debug#D3, cell_type="+cell_type);
 
+				// 1 = default to valid move
+				// 2 = valid move on land
+				// 3 = valid move on sea
+				// 4 = valid move on transport
+				// 5 = valid move on carrier  
+
 				if (i>=0 && j>=0)
 				 //if ( oGrid.getGridCellType(i,j)==1 || 
 				 //	(oGrid.getGridCellType(i,j)==0 && oUnitList.isPlayerSeaVesselAtRowCol(intPlayerId, i, j)==false) )
 				  //if ( intGridCellType[i][j]==cell_type) {
-				     if ( oGrid.getGridCellType(i,j)==cell_type 
+				     //if ( oGrid.getGridCellType(i,j)==cell_type
+				     if ( oGrid.getIsValidMove(i, j, cell_type)==true ) {
 				   	//|| 
 				   	//( cell_type==1 && oUnitList.isPlayerTransportAtRowCol(intPlayerId, i, j) ) // tank moving onto transport
-				   	) {
+				   	//) {
 
 					x2=i;
 					y2=j;

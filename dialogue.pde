@@ -146,7 +146,7 @@ class cDialogueCityProduction extends cDialogue {
 		iCityListId = iCityListId_;
 		bActive=true;
 				
-		textSize(11);
+		setTextSizeString();
 		
 		iProductionUnitTypeId = oCityList.getCityProductionUnitTypeId(iCityListId);
 		//println("in cDialogueCityProduction.display() iProductionUnitTypeId="+iProductionUnitTypeId);
@@ -368,7 +368,7 @@ class cDialogueStartup extends cDialogue {
 		
 		bActive=true;
 				
-		textSize(11);
+		setTextSizeString();
 				
 		display();
 	}
@@ -501,7 +501,7 @@ class cDialogueSurrender extends cDialogue {
 		
 		bActive=true;
 				
-		textSize(11);
+		setTextSizeString();
 				
 		display();
 	}

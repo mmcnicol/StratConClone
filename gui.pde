@@ -86,8 +86,10 @@ class cViewport {
 		rect(0,0,viewportWidth-ScrollBarWidth,viewportHeight-ScrollBarWidth);
 		noStroke();
 		
-		oVScrollBar.draw();
-		oHScrollBar.draw();
+		if ( showViewportScrollBars ) {
+			oVScrollBar.draw();
+			oHScrollBar.draw();
+		}
 
 		oGrid.draw();
 		//oCityList.Draw();
@@ -113,10 +115,10 @@ class cViewport {
 	bool isCellWithinViewport(int x_, int y_) {
 	
 		if ( 	x_ >= oGrid.getShowFromCellX() && 
-			x_ <= (oGrid.getShowFromCellX()+getViewportCellCountX()-1)   
+			x_ <= (oGrid.getShowFromCellX()+getViewportCellCountX())   
 			&&   
 			y_ >= oGrid.getShowFromCellY() && 
-			y_ <= (oGrid.getShowFromCellY()+getViewportCellCountY()-1) )  {
+			y_ <= (oGrid.getShowFromCellY()+getViewportCellCountY()) )  {
 			
 			return true;
 		} else 
@@ -130,11 +132,31 @@ class cViewport {
 		int iMargin=4;
 		bool bRedraw=false;
 
-		if ( x_ < oGrid.getShowFromCellX()+iMargin && oGrid.getShowFromCellX()>1 ) { oGrid.setShowFromCellX(oGrid.getShowFromCellX()-iMargin); bRedraw=true; }
-		if ( y_ < oGrid.getShowFromCellY()+iMargin && oGrid.getShowFromCellY()>1  ) { oGrid.setShowFromCellY(oGrid.getShowFromCellY()-iMargin); bRedraw=true; }
 
-		if ( x_ > oGrid.getShowFromCellX()+getViewportCellCountX()-iMargin && oGrid.getShowFromCellX()<41 ) { oGrid.setShowFromCellX(oGrid.getShowFromCellX()+iMargin); bRedraw=true; }
-		if ( y_ > oGrid.getShowFromCellY()+getViewportCellCountY()-iMargin && oGrid.getShowFromCellY()<44  ) { oGrid.setShowFromCellY(oGrid.getShowFromCellY()+iMargin); bRedraw=true; }
+		// 32x32
+		int tempX = x_ - oGrid.getShowFromCellX();
+		if ( tempX > 20 ) { oGrid.setShowFromCellX( x_ - 10 ); bRedraw=true; }
+		else if ( tempX < -20 ) { oGrid.setShowFromCellX( x_ + 10 ); bRedraw=true; }
+
+		int tempY = y_ - oGrid.getShowFromCellY();
+		if ( tempY > 20 ) { oGrid.setShowFromCellY( y_ - 10 ); bRedraw=true; }
+		else if ( tempY < -20 ) { oGrid.setShowFromCellY( y_ + 10 ); bRedraw=true; }
+
+
+		if ( bRedraw==false ) {
+
+			if ( x_ < oGrid.getShowFromCellX()+iMargin && oGrid.getShowFromCellX()>1 ) { oGrid.setShowFromCellX(oGrid.getShowFromCellX()-iMargin); bRedraw=true; }
+			if ( y_ < oGrid.getShowFromCellY()+iMargin && oGrid.getShowFromCellY()>1  ) { oGrid.setShowFromCellY(oGrid.getShowFromCellY()-iMargin); bRedraw=true; }
+
+			// 16x16
+			//if ( x_ > oGrid.getShowFromCellX()+getViewportCellCountX()-iMargin && oGrid.getShowFromCellX()<41 ) { oGrid.setShowFromCellX(oGrid.getShowFromCellX()+iMargin); bRedraw=true; }
+			//if ( y_ > oGrid.getShowFromCellY()+getViewportCellCountY()-iMargin && oGrid.getShowFromCellY()<44  ) { oGrid.setShowFromCellY(oGrid.getShowFromCellY()+iMargin); bRedraw=true; }
+
+			// 32x32
+			if ( x_ > oGrid.getShowFromCellX()+getViewportCellCountX()-iMargin && oGrid.getShowFromCellX()<(99 - getViewportCellCountX()) ) { oGrid.setShowFromCellX(oGrid.getShowFromCellX()+iMargin); bRedraw=true; }
+			if ( y_ > oGrid.getShowFromCellY()+getViewportCellCountY()-iMargin && oGrid.getShowFromCellY()<(99 - getViewportCellCountY())  ) { oGrid.setShowFromCellY(oGrid.getShowFromCellY()+iMargin); bRedraw=true; }
+		}
+
 
 		oHScrollBar.setBlockStartX( (oGrid.getShowFromCellX()*8) );
 		oVScrollBar.setBlockStartY( (oGrid.getShowFromCellY()*8) );

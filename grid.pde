@@ -16,9 +16,11 @@ class cGrid {
 	//final static int GRIDX=150;
 	//final static int GRIDY=100;
 
-	int intGridCellType[][] = new int[121][101]; // use for land or sea
+	int intGridCellType[][] = new int[101][101]; // use for land or sea
 
-	int intGridIslands[][] = new int[121][101]; // use for find islands algorithm
+	int intGridValidMoves[][] = new int[101][101]; // use for next move search algorithm
+
+	int intGridIslands[][] = new int[101][101]; // use for find islands algorithm
 	/*
 		-4 = nothing
 		-3 = island, but we don't know which island number yet
@@ -27,8 +29,8 @@ class cGrid {
 		0... = islandListId
 	*/
 
-	bool intGridCellFog[][] = new bool[121][101];
-	bool intGridCellFogP2[][] = new bool[121][101];
+	bool intGridCellFog[][] = new bool[101][101];
+	bool intGridCellFogP2[][] = new bool[101][101];
 
 	ArrayList listNeighbour;
 	
@@ -59,8 +61,8 @@ class cGrid {
 	void init() {
 
 		// init whole array
-		for (y=1; y<=120; y=y+1) {
-			for (x=1; x<=100; x=x+1) {
+		for (y=0; y<100; y=y+1) {
+			for (x=0; x<100; x=x+1) {
 
 				intGridCellType[x][y]=-1;
 				intGridIslands[x][y]=-4; // Nothing
@@ -86,9 +88,78 @@ class cGrid {
 		
 	}
 
+	void createValidMoveGrid(int intPlayerId_) {
+
+		// init whole array
+		for (y=0; y<100; y=y+1) {
+			for (x=0; x<100; x=x+1) {
+
+				intGridValidMoves[x][y] = 1; // default to valid move 
+
+				// ignore fog of war at the moment
+				// isFogOfWar(int x_, int y_)
+				// isFogOfWarP2(int x_, int y_)
+
+				if ( intPlayerId_==1 ) {
+					if ( intGridCellType[x][y]==LAND && isFogOfWar(x,y)==false ) 
+						intGridValidMoves[x][y] = 2; // valid move on land
+					else if ( intGridCellType[x][y]==SEA && isFogOfWar(x,y)==false ) {
+						intGridValidMoves[x][y] = 3; // valid move on sea
+
+						if ( oUnitList.isPlayerTransportAtRowCol(intPlayerId_, x, y) == true )
+							intGridValidMoves[x][y] = 4; // valid move on transport
+					}
+
+				} else {
+					if ( intGridCellType[x][y]==LAND && isFogOfWarP2(x,y)==false ) 
+						intGridValidMoves[x][y] = 2; // valid move on land
+					else if ( intGridCellType[x][y]==SEA && isFogOfWarP2(x,y)==false ) {
+						intGridValidMoves[x][y] = 3; // valid move on sea
+
+						if ( oUnitList.isPlayerTransportAtRowCol(intPlayerId_, x, y) == true )
+							intGridValidMoves[x][y] = 4; // valid move on transport
+					}
+				}
+
+			}
+		}
+	}
+
+	bool getIsValidMove(int x_, int y_, int cell_type_) {
+
+		bool bReturnValue=false;
+
+		// cell_type:
+		// 0 = moves on Sea
+		// 1 = moves on Land
+
+		// intGridValidMoves[][]:
+		// 1 = default to valid move
+		// 2 = valid move on land
+		// 3 = valid move on sea
+		// 4 = valid move on transport
+		// 5 = valid move on carrier  
+
+		if ( cell_type_ == 0 && ( intGridValidMoves[x_][y_]==1 || 
+					  intGridValidMoves[x_][y_]==3 ) ) {
+			bReturnValue=true;
+
+		} else if ( cell_type_ == 1 && ( intGridValidMoves[x_][y_]==1 || 
+						 intGridValidMoves[x_][y_]==2 ||
+						 intGridValidMoves[x_][y_]==4 ||  
+						 intGridValidMoves[x_][y_]==5 ) ) {
+			bReturnValue=true;
+		}
+
+		//if ( bReturnValue==false) 
+			//println("debug: in oGrid.getIsValidMove() x="+x_+",y="+y_+", cell_type_="+cell_type_+", bReturnValue= "+bReturnValue);
+
+		return bReturnValue;
+	}
 
 	int getGridCellType(int cellX_, int cellY_) { return intGridCellType[cellX_][cellY_]; }
 	
+	int getGridIslandId(int cellX_, int cellY_) { return intGridIslands[cellX_][cellY_]; }
 
 	bool isLand(int cellX_, int cellY_) {
 		
@@ -123,14 +194,14 @@ class cGrid {
 	int getShowFromCellX() { return showFromX; }
 	void setShowFromCellX(int value) { 
 		if (value<=1) showFromX=1; 
-		else if (value>=40) showFromX=41;  
+		else if (value>= (99 - oViewport.getViewportCellCountX())-9 ) showFromX=(99 - oViewport.getViewportCellCountX())-9;
 		else showFromX=value; 
 	}
 
 	int getShowFromCellY() { return showFromY; }	
 	void setShowFromCellY(int value) { 
 		if (value<=1) showFromY=1;
-		else if (value>=45) showFromY=45;  
+		else if (value>= (99 - oViewport.getViewportCellCountY())-9 ) showFromY=(99 - oViewport.getViewportCellCountY())-9;
 		else showFromY=value; 
 	}
 
@@ -337,30 +408,28 @@ class cGrid {
 
 	void AddCitiesToIslands() {
 
-		//println("in cGrid.AddCitiesToIslands() ");
+		if (debugCityAdd) println("in cGrid.AddCitiesToIslands() ");
 
 		// for each island
 		int i=0;
 		for (i=1; i<=oIslandList.getCount(); i=i+1) {
-			//println("islandListId="+i);
+
+			if (debugCityAdd) println("debug in cGrid.AddCitiesToIslands() CityIslandListId="+i);
+
 			AddCitiesToIslandListId(i);
-			//println("islandListId="+i);
 		}
 
-		//println("leaving cGrid.AddCitiesToIslands() ");		
+		if (debugCityAdd) println("leaving cGrid.AddCitiesToIslands() ");		
 	}
 
 	
 	void AddCitiesToIslandListId(int islandListId_) {
 
-		//println("debug#1");
 		int x,y;
 		int maxCityPerIsland=(int)random(3,8);
-		//println("debug#2");
 		//int intRandomNumber = round(random(1,3));
-		//println("debug#4");
 		int cityCount=0;
-		//println("debug#5");
+
 
 		// scan through grid
 		for (y=1; y<=countY; y=y+1) {
@@ -368,15 +437,17 @@ class cGrid {
 
 				if ( intGridIslands[x][y]==islandListId_ ) {
 
-					//println("debug#6, "+islandListId_);
 					if ( ((int)random(1,1000)%7==0) && cityCount<maxCityPerIsland ) {
-						//println("debug#7, add city?");
+
 						// game rule: cities should not be immediately next to each other
 						if ( oCityList.getCountCityNearby(1, x, y)==0 && oCityList.getCountCityNearby(2, x, y)==0) {
 
-							//println("debug#7, add city? yes");
+							if (debugCityAdd) println(" debug in cGrid.AddCitiesToIslandListId() islandListId_="+islandListId_);
+
 							oCityList.AddCity(-1, x, y, islandListId_);
+
 							//oIslandList.setPlayerId(islandListId_, intPlayerId);
+
 							cityCount++;					
 						}
 					}
@@ -528,7 +599,6 @@ class cGrid {
 				DisplayY=sy+y; //(((y-showFromY)+1)*16)-15;
 				DisplayX=sx+x; //(((x-showFromX)+1)*16)-(15);
 				
-				// for testing purposes
 				if ( iMapPlayerId_==1 && intGridCellFog[x][y]==false ) {
 					
 					if ( isSea(x,y) ) stroke(180);	
@@ -557,6 +627,41 @@ class cGrid {
 			rect(sx+showFromX, sy+showFromY, oViewport.getViewportCellCountX()-1, oViewport.getViewportCellCountY()-1);
 		}
 	}
+
+
+
+
+
+
+
+	void drawMapValidMove(int sx, int sy, int iMapPlayerId_) {
+		
+		int DisplayX, DisplayY;
+
+		fill(0);
+		setTextSizeNumber();
+		text( "Viewport Matrix of Valid Moves for Player "+iMapPlayerId_+":" , sx, sy+iNumberTextSize );
+		setTextSizeString();
+		
+		int x,y;
+		for (y=getShowFromCellY(); y<=( getShowFromCellY() + oViewport.getViewportCellCountY() ); y=y+1) {
+
+			for (x=getShowFromCellX(); x<=( getShowFromCellX() + oViewport.getViewportCellCountX() ); x=x+1) {
+				
+				DisplayY=sy+((y-getShowFromCellY())*iNumberTextSize)+iNumberTextSize+iNumberTextSize; //(((y-showFromY)+1)*iNumberTextSize)-iNumberTextSize;
+				DisplayX=sx+((x-getShowFromCellX())*iNumberTextSize); //(((x-showFromX)+1)*iNumberTextSize)-(iNumberTextSize);
+					
+				fill(0);
+				setTextSizeNumber();
+				text(intGridValidMoves[x][y], DisplayX, DisplayY );
+				setTextSizeString();
+			}
+		}
+		
+	}
+	
+
+
 	
 	
 	void DrawCell(int x, int y, bool bDrawAnyUnits) {
@@ -589,9 +694,9 @@ class cGrid {
 						/*
 						// for testing purposes
 						fill(0);
-						textSize(8);
+						setTextSizeNumber();
 						text("S", DisplayX+iNumberIndent, DisplayY+iNumberTextSize );
-						textSize(11);
+						setTextSizeString();
 						*/
 					} else {
 						//println("drawing land... at ("+x+","+y+") "("+DisplayX+","+DisplayY+")");
@@ -601,26 +706,47 @@ class cGrid {
 						/*
 						// for testing purposes
 						fill(0);
-						textSize(8);
+						setTextSizeNumber();
 						text("L", DisplayX+iNumberIndent, DisplayY+iNumberTextSize );
-						textSize(11);
+						setTextSizeString();
 						*/
 					}
+
+					if ( debugShowCellGridLocation ) {
+
+						// clear where we will draw island islandListId
+						//fill(255);
+						//rect(DisplayX+iNumberIndent, DisplayY+iNumberIndent-1, iNumberTextSize+iNumberTextSize+iNumberTextSize, iNumberTextSize);
+
+						// draw island islandListId
+						fill(0);
+						setTextSizeNumber();
+						//text( x+","+y , DisplayX+cellWidth-iNumberTextSize, DisplayY+cellHeight-1 );
+						text( x+","+y , DisplayX+iNumberIndent+1, DisplayY+iNumberTextSize+2 );
+						setTextSizeString();
+
+					}
+
+
+					if ( debugShowIslandIslandListId ) {
+
+						// clear where we will draw island islandListId
+						//fill(255);
+						//rect(DisplayX+cellWidth-iNumberTextSize, DisplayY+cellHeight-(iNumberTextSize), iNumberTextSize, iNumberTextSize );
+
+						// draw island islandListId
+						fill(0);
+						setTextSizeNumber();
+						text( getGridIslandId(x,y) , DisplayX+cellWidth-iNumberTextSize-iNumberTextSize, DisplayY+cellHeight-1 );
+						setTextSizeString();
+					}
+
 					if (bDrawAnyUnits)
 						oUnitList.Draw(x,y);
 				}
 				//redraw();
 			}
 		}
-
-
-		/* // for testing purposes
-		fill(0);
-		textSize(11);
-		text(intGridIslands[x][y], DisplayX+iNumberIndent+8, DisplayY+iNumberTextSize+8 );
-		textSize(11);
-		*/	
-
 
 
 	}

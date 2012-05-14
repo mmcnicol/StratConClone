@@ -55,3 +55,41 @@ class cAnimate {
 	
   
 }
+
+
+
+
+
+class cAnimateAttack extends cAnimate {
+	
+	cAnimateAttack() {
+		super();
+	}
+	
+	void do() {
+	
+		//println("in animate.do() milis()="+millis() );
+		
+		iCurrentTime = millis();
+
+  		// do not animate unit if:
+  		// - no unit is currently selected
+  		// - city production dialogue is active
+  		// - sufficient time has not passed
+		if ( bAnimate && iUnitListId!=-1 && oDialogueCityProduction.isActive()==false && iCurrentTime > iLastTime+200) {
+		
+			//println("bAnimate="+bAnimate+", iUnitListId="+iUnitListId+", iAnimateSwitch="+iAnimateSwitch);
+			
+			oUnitList.updateDisplay(iUnitListId, iAnimateSwitch);
+			
+			if ( iAnimateSwitch==0 ) iAnimateSwitch=1;
+			else iAnimateSwitch=0;
+			
+			iLastTime = iCurrentTime;
+			
+			//println("bAnimate="+bAnimate+", iUnitListId="+iUnitListId+", iAnimateSwitch="+iAnimateSwitch);
+		}
+	}
+	
+  
+}

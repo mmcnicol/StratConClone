@@ -1,7 +1,7 @@
 
 class cIsland {
 
-	int iPlayerId;
+	int iIslandPlayerId;
 	int P1CityCount;
 	int P2CityCount;
 	int UnoccupiedCityCount;
@@ -9,9 +9,9 @@ class cIsland {
 	int[] IslandUnitCountsP1 = new int[iNumberOfUnitTypes];
 	int[] IslandUnitCountsP2 = new int[iNumberOfUnitTypes];
 
-	cIsland(int iPlayerId_) {
+	cIsland(int iIslandPlayerId_) {
 
-		iPlayerId=iPlayerId_;
+		iIslandPlayerId=iIslandPlayerId_;
 		P1CityCount=0;
 		P2CityCount=0;
 		UnoccupiedCityCount=0;
@@ -20,11 +20,11 @@ class cIsland {
 		for (int i=0; i<iNumberOfUnitTypes; i++) { IslandUnitCountsP1[i]=0; IslandUnitCountsP1[i]=0; }
 	}
 
-	int getPlayerId() { return iPlayerId; }
-	int setPlayerId(iPlayerId_) { iPlayerId=iPlayerId_; }
+	int getIslandPlayerId() { return iIslandPlayerId; }
+	int setIslandPlayerId(iIslandPlayerId_) { iIslandPlayerId=iIslandPlayerId_; }
 
-	int getPlayerCityCount(int iPlayerId_) { 
-		if ( iPlayerId_ == 1 ) {
+	int getPlayerCityCount(int iIslandPlayerId_) { 
+		if ( iIslandPlayerId_ == 1 ) {
 			//println("Island.getPlayerCityCount="+P1CityCount);
 			return P1CityCount; 
 		} else {
@@ -33,8 +33,8 @@ class cIsland {
 		}
 	}
 
-	void setPlayerCityCount(int iPlayerId_, int value_) { 
-		if ( iPlayerId_ == 1 ) {
+	void setPlayerCityCount(int iIslandPlayerId_, int value_) { 
+		if ( iIslandPlayerId_ == 1 ) {
 			//println("Island.setPlayerCityCount="+value_);
 			P1CityCount=value_;
 		} else {
@@ -60,7 +60,7 @@ class cIsland {
 
 		string strStatus="Available";
 
-		switch( getPlayerId() ) {
+		switch( getIslandPlayerId() ) {
 
 			case 1: 
 				strStatus="player 1";

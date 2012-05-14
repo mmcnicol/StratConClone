@@ -62,7 +62,7 @@ class cPanel1 extends cPanel {
 		iSpaceHeight=iNumberTextSize+3;
 		iLineNumber=1;
 		
-		textSize(11);
+		setTextSizeString();
 		text("     day: "+ oGameEngine.getDayNumber(), (panelStartX+iLeftTextIndent), panelStartY+(iSpaceHeight*iLineNumber));
 		
 		
@@ -70,23 +70,23 @@ class cPanel1 extends cPanel {
 		if ( mouseX > 0 && mouseY > 0 && mouseX < oViewport.getWidth() && mouseY < oViewport.getHeight() ) {
 			
 			iLineNumber++;
-			//textSize(11);
+			//setTextSizeString();
 			text("    grid: "+ nf(cellX,3) + ","+nf(cellY,3), (panelStartX+iLeftTextIndent), panelStartY+(iSpaceHeight*iLineNumber));
 			
 			iLineNumber++;
-			//textSize(11);
+			//setTextSizeString();
 			text("   coord: "+nf(mouseX,3) + "," + nf(mouseY,3), (panelStartX+iLeftTextIndent), panelStartY+(iSpaceHeight*iLineNumber));
 			
 			int iDistanceInCells=oGeometry.getDistanceInCells();
 			if (iDistanceInCells!=-1) {
 				iLineNumber++;
-				//textSize(11);
+				//setTextSizeString();
 				text("distance: "+iDistanceInCells, (panelStartX+iLeftTextIndent), panelStartY+(iSpaceHeight*iLineNumber));
 			}
 			
 		}
 		
-		//textSize(11);
+		//setTextSizeString();
 		
 		//color c1 = color(255, 120, 0);
 		//set(10, 10, c1);		
@@ -113,7 +113,7 @@ class cPanel2 extends cPanel {
 			//println("in cPanel2.show()");
 			clear(255);
 			fill(50);
-			textSize(11);
+			setTextSizeString();
 			text("Player "+oGameEngine.getCurrentPlayerId()+" turn", panelStartX+2, panelStartY+14);
 		}
 	}
@@ -140,7 +140,7 @@ class cPanelSelectedUnit extends cPanel {
 		
 		fill(0); //fill(255,0,0);
 		
-		textSize(11);
+		setTextSizeString();
 
 		string strMsg = "";
 		
@@ -198,7 +198,7 @@ class cPanelSelectedCity extends cPanel {
 		
 		fill(0); //fill(255,0,0);
 		int iLineNumber=1;
-		textSize(11);
+		setTextSizeString();
 		
 		text("          city", (panelStartX+iLeftTextIndent), panelStartY+(iSpaceHeight*iLineNumber));
 		iLineNumber++;
@@ -255,10 +255,12 @@ class cPanelMap extends cPanel {
 		iMapPlayerId=iMapPlayerId_;
 		//panelStartX = oViewport.getWidth()+25;
 		panelStartX = panelStartX_;
+		panelWidth = 85;
 	}
 	
 	void show() {
 		
+		//clear(255);
 		oGrid.drawMap(panelStartX, panelStartY, iMapPlayerId);
 	}
 }
@@ -279,10 +281,12 @@ class cPanelMapPlayer2 extends cPanel {
 		iMapPlayerId=iMapPlayerId_;
 		//panelStartX = oViewport.getWidth()+25;
 		panelStartX = panelStartX_;
+		panelWidth = 85;
 	}
 	
 	void show() {
 		
+		//clear(255);
 		oGrid.drawMap(panelStartX, panelStartY, iMapPlayerId);
 	}
 }
@@ -290,7 +294,50 @@ class cPanelMapPlayer2 extends cPanel {
 
 
 
+/* ====================================================================================
+   this panel displays a small map of valid player1 moves
+*/
+class cPanelMapMatrixValidMovesPlayer1 extends cPanel {
 
+	int iMapPlayerId=1;
+
+	cPanelMapMatrixValidMovesPlayer1(int panelStartY_, int panelHeight_, int panelStartX_) {
+		super(panelStartY_, panelHeight_);
+		
+		//iMapPlayerId=iMapPlayerId_;
+		panelStartX = panelStartX_;
+		panelWidth = 230;
+	}
+	
+	void show() {
+		
+		clear(255);
+		oGrid.drawMapValidMove(panelStartX, panelStartY, iMapPlayerId);
+	}
+}
+
+
+/* ====================================================================================
+   this panel displays a small map of valid player1 moves
+*/
+class cPanelMapMatrixValidMovesPlayer2 extends cPanel {
+
+	int iMapPlayerId=2;
+
+	cPanelMapMatrixValidMovesPlayer2(int panelStartY_, int panelHeight_, int panelStartX_) {
+		super(panelStartY_, panelHeight_);
+		
+		//iMapPlayerId=iMapPlayerId_;
+		panelStartX = panelStartX_;
+		panelWidth = 230;
+	}
+	
+	void show() {
+		
+		clear(255);
+		oGrid.drawMapValidMove(panelStartX, panelStartY, iMapPlayerId);
+	}
+}
 
 
 
@@ -317,7 +364,7 @@ class cPanelCityList extends cPanel {
 		
 		fill(0); //fill(255,0,0);
 		iLineNumber=1;
-		textSize(11);
+		setTextSizeString();
 
 		//println("oCityList.getCount()...");
 		//println("oCityList.getCount()" + oCityList.getCount() );
@@ -368,7 +415,7 @@ class cPanelIslandList extends cPanel {
 		
 		fill(0); //fill(255,0,0);
 		iLineNumber=1;
-		textSize(11);
+		setTextSizeString();
 		
 		text("Island Count: " + oIslandList.getCount(), (panelStartX+iLeftTextIndent), panelStartY+(iSpaceHeight*iLineNumber));
 		iLineNumber++;
@@ -422,7 +469,7 @@ class cPanelPlayerUnitCounts extends cPanel {
 		
 		fill(0); //fill(255,0,0);
 		iLineNumber=1;
-		textSize(11);
+		setTextSizeString();
 		
 		text("Player "+iPlayerId+" Unit Counts: ", (panelStartX+iLeftTextIndent), panelStartY+(iSpaceHeight*iLineNumber));
 		iLineNumber++;

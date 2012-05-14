@@ -15,7 +15,7 @@ class cPathfinding {
 			next_step.y=CurrentY;
 			
 		} else {
-			oPathfindingAstar = new cPathfindingAstar();
+			oPathfindingAstar = new cPathfindingAstar(intPlayerId);
 			next_step = oPathfindingAstar.returnStepMoveTowardsDestination(intPlayerId, CurrentX, CurrentY, DestinationX, DestinationY, moves_on);
 		}
 		
