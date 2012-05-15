@@ -182,7 +182,7 @@ class cUnitList {
 		unit.setDaysSinceLastClearedFogOfWar(0);
 		oIslandList.decreaseIslandUnitTypeCount(unit.getUnitTypeId(), unit.getUnitIslandListId(), unit.getUnitPlayerId() );
 		//println("in oUnitList.wake(), oGrid.getIslandIdIfIsNextToLand()=" + oGrid.getIslandIdIfIsNextToLand() );
-		unit.setUnitIslandListId( oGrid.getIslandIdIfIsNextToLand() );
+		unit.setUnitIslandListId( oGrid.getIslandIdIfIsNextToLand(unit.getX(), unit.getY() ) );
 		oIslandList.increaseIslandUnitTypeCount(unit.getUnitTypeId(), unit.getUnitIslandListId(), unit.getUnitPlayerId() );
 		
 	}
@@ -374,10 +374,11 @@ class cUnitList {
 	
 
 	void clearUnitFromCargoOf(int UnitListId_, int CargoUnitListId_) {
-		println("in clearUnitFromCargoOf("+UnitListId_+","+CargoUnitListId_+")");
+
+		if ( debugTransport ) println("debug: in clearUnitFromCargoOf("+UnitListId_+","+CargoUnitListId_+")");
 		cUnit unit = (cUnit) listUnit.get(UnitListId_);
 		unit.clearCargoUnit(CargoUnitListId_);
-		println("end clearUnitFromCargoOf("+UnitListId_+","+CargoUnitListId_+")");
+		if ( debugTransport ) println("debug: end clearUnitFromCargoOf("+UnitListId_+","+CargoUnitListId_+")");
 	}
 
 

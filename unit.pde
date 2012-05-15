@@ -926,6 +926,7 @@ class cUnit {
 				updateMovesLeftToday();
 				setMovesLeftToday(0);
 				setTaskStatus(99);
+				setUnitIslandListId(-1);
 			}
 			reDrawNearBy();
 
@@ -1848,8 +1849,9 @@ class cUnit {
 				if ( intCellX==transportCargoLoadLocationX && intCellY==transportCargoLoadLocationY ) {
 					setTaskStatus(1);
 				} else {
-					//moveToIfSpecified(iUnitListId_);
-					moveTo(iUnitListId_, transportCargoLoadLocationX, transportCargoLoadLocationY);
+					////moveToIfSpecified(iUnitListId_);
+					//moveTo(iUnitListId_, transportCargoLoadLocationX, transportCargoLoadLocationY);
+					setTaskStatus(99);
 				}
 				
 				break;					
@@ -2342,7 +2344,7 @@ class cUnit {
 										setTextSizeString();
 									}
 
-									if ( intUnitPlayerId==1 && debugShowUnitMoveTo && getTaskStatus()==1 ) {
+									if ( intUnitPlayerId==1 && oPlayer1.getIsAI() && debugShowUnitMoveTo && getTaskStatus()==1 ) {
 										fill(200);
 										rect(DisplayX+iNumberIndent, DisplayY+iNumberTextSize+iNumberIndent-1, cellWidth-iNumberIndent, iNumberTextSize);
 										fill(0);
@@ -2353,7 +2355,7 @@ class cUnit {
 									}
 
 
-									if ( intUnitPlayerId==1 && debugShowUnitTaskStatus ) {
+									if ( intUnitPlayerId==1 && oPlayer1.getIsAI() && debugShowUnitTaskStatus ) {
 
 										// show task status
 										fill(255);

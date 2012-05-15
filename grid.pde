@@ -194,14 +194,14 @@ class cGrid {
 	int getShowFromCellX() { return showFromX; }
 	void setShowFromCellX(int value) { 
 		if (value<=1) showFromX=1; 
-		else if (value>= (99 - oViewport.getViewportCellCountX())-9 ) showFromX=(99 - oViewport.getViewportCellCountX())-9;
+		else if (value>= (99 - oViewport.getViewportCellCountX()) ) showFromX=(99 - oViewport.getViewportCellCountX());
 		else showFromX=value; 
 	}
 
 	int getShowFromCellY() { return showFromY; }	
 	void setShowFromCellY(int value) { 
 		if (value<=1) showFromY=1;
-		else if (value>= (99 - oViewport.getViewportCellCountY())-9 ) showFromY=(99 - oViewport.getViewportCellCountY())-9;
+		else if (value>= (99 - oViewport.getViewportCellCountY()) ) showFromY=(99 - oViewport.getViewportCellCountY());
 		else showFromY=value; 
 	}
 
@@ -297,7 +297,7 @@ class cGrid {
 		if (x_+1<=countX && y_-1>=1)
 			if( intGridCellType[x_+1][y_-1]==LAND ) result=intGridIslands[x_+1][y_-1];	
 		
-		//println("in grid.getIslandIdIfIsNextToLand("+x_+","+y_+"), result="+result);
+		println("in grid.getIslandIdIfIsNextToLand("+x_+","+y_+"), result="+result);
 		
 		//println("leaving oGrid.getIslandIdIfIsNextToLand()");
 
