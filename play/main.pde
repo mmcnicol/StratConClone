@@ -57,10 +57,10 @@ bool ShowFogOfWar			= true;
 bool showViewportScrollBars		= false;
 
 bool debugShowIslandIslandListId	= false;
+bool debugShowCityIslandListId		= false;
 bool debugShowUnitIslandListId		= false;
 bool debugShowUnitMoveTo		= true;
 bool debugShowUnitTaskStatus		= true;
-bool debugShowCityIslandListId		= false;
 bool debugShowCellGridLocation		= false;
 
 bool debugTransport			= false;
@@ -160,7 +160,7 @@ void draw() {
 
 			////oViewport = new cViewport(90, 50, 45, 25); // 16x16
 			//oViewport = new cViewport(80, 79, 40, 35); // 16x16
-			oViewport = new cViewport(99, 99, 20, 16); // 32x32
+			oViewport = new cViewport(99, 99, 21, 18); // 32x32
 			////oViewport = new cViewport(120, 64, 15, 8); // 48x48
 
 

@@ -115,10 +115,10 @@ class cViewport {
 	bool isCellWithinViewport(int x_, int y_) {
 	
 		if ( 	x_ >= oGrid.getShowFromCellX() && 
-			x_ <= (oGrid.getShowFromCellX()+getViewportCellCountX())   
+			x_ <= (oGrid.getShowFromCellX()+getViewportCellCountX()-1)   
 			&&   
 			y_ >= oGrid.getShowFromCellY() && 
-			y_ <= (oGrid.getShowFromCellY()+getViewportCellCountY()) )  {
+			y_ <= (oGrid.getShowFromCellY()+getViewportCellCountY()-1) )  {
 			
 			return true;
 		} else 
@@ -129,7 +129,7 @@ class cViewport {
 
 		//println("oViewport.scrollIfAppropriate("+x_+","+y_+"), getShowFromCellX()="+oGrid.getShowFromCellX()+", getShowFromCellY()="+oGrid.getShowFromCellY() );
 
-		int iMargin=4;
+		int iMargin=2;
 		bool bRedraw=false;
 
 
@@ -145,16 +145,16 @@ class cViewport {
 
 		if ( bRedraw==false ) {
 
-			if ( x_ < oGrid.getShowFromCellX()+iMargin && oGrid.getShowFromCellX()>1 ) { oGrid.setShowFromCellX(oGrid.getShowFromCellX()-iMargin); bRedraw=true; }
-			if ( y_ < oGrid.getShowFromCellY()+iMargin && oGrid.getShowFromCellY()>1  ) { oGrid.setShowFromCellY(oGrid.getShowFromCellY()-iMargin); bRedraw=true; }
+			if ( x_ < oGrid.getShowFromCellX()+(iMargin*2) && oGrid.getShowFromCellX()>1 ) { oGrid.setShowFromCellX(oGrid.getShowFromCellX()-iMargin); bRedraw=true; }
+			if ( y_ < oGrid.getShowFromCellY()+(iMargin*2) && oGrid.getShowFromCellY()>1  ) { oGrid.setShowFromCellY(oGrid.getShowFromCellY()-iMargin); bRedraw=true; }
 
 			// 16x16
-			//if ( x_ > oGrid.getShowFromCellX()+getViewportCellCountX()-iMargin && oGrid.getShowFromCellX()<41 ) { oGrid.setShowFromCellX(oGrid.getShowFromCellX()+iMargin); bRedraw=true; }
-			//if ( y_ > oGrid.getShowFromCellY()+getViewportCellCountY()-iMargin && oGrid.getShowFromCellY()<44  ) { oGrid.setShowFromCellY(oGrid.getShowFromCellY()+iMargin); bRedraw=true; }
+			//if ( x_ > oGrid.getShowFromCellX()+getViewportCellCountX()-(iMargin*2) && oGrid.getShowFromCellX()<41 ) { oGrid.setShowFromCellX(oGrid.getShowFromCellX()+iMargin); bRedraw=true; }
+			//if ( y_ > oGrid.getShowFromCellY()+getViewportCellCountY()-(iMargin*2) && oGrid.getShowFromCellY()<44  ) { oGrid.setShowFromCellY(oGrid.getShowFromCellY()+iMargin); bRedraw=true; }
 
 			// 32x32
-			if ( x_ > oGrid.getShowFromCellX()+getViewportCellCountX()-iMargin && oGrid.getShowFromCellX()<(99 - getViewportCellCountX()) ) { oGrid.setShowFromCellX(oGrid.getShowFromCellX()+iMargin); bRedraw=true; }
-			if ( y_ > oGrid.getShowFromCellY()+getViewportCellCountY()-iMargin && oGrid.getShowFromCellY()<(99 - getViewportCellCountY())  ) { oGrid.setShowFromCellY(oGrid.getShowFromCellY()+iMargin); bRedraw=true; }
+			if ( x_ > oGrid.getShowFromCellX()+getViewportCellCountX()-(iMargin*2) && oGrid.getShowFromCellX()<(99 - getViewportCellCountX()) ) { oGrid.setShowFromCellX(oGrid.getShowFromCellX()+iMargin); bRedraw=true; }
+			if ( y_ > oGrid.getShowFromCellY()+getViewportCellCountY()-(iMargin*2) && oGrid.getShowFromCellY()<(99 - getViewportCellCountY())  ) { oGrid.setShowFromCellY(oGrid.getShowFromCellY()+iMargin); bRedraw=true; }
 		}
 
 
