@@ -2,9 +2,7 @@
 class cUnit {
 
 
-
-	//*********************************
-	// generic to all units
+	//********* generic to all units
 	int intUnitTypeId;
 	int intUnitPlayerId;
 	int iUnitIslandListId;
@@ -21,14 +19,14 @@ class cUnit {
 	int movesLeftToday;
 	int attacksLeftToday;
 	int fuel; // -1 = N/A
+
+	//********* not really needed?
+	int iDayBuilt;
+
+	//********* specific to: BOMBER
 	int iBombBlastRadius; // -1 = N/A
 
-	bool bAnimate; // whether to highlight/flash so user knows which unit to move next
-	int iAnimateSwitch; // 0=draw, 1=hide
-
-
-	//*********************************
-	// specific to: transports and carriers
+	//********* specific to: TRANSPORT and CARRIER
 	//ArrayList listCargo;
 	//int thisUnitIsCargoOfUnitId; // -1 = N/A
 	int[] cargoUnitListId = new int[6];
@@ -42,34 +40,30 @@ class cUnit {
 
 	int transportCargoLoadIslandId;
 
+	//********* specific to: TANK
+	int iDaysSinceLastClearedFogOfWar; 
 
 	//*********************************
-	// specific to: transports and tanks
+	// TASK STATUS
+	//*********************************
 	int iTaskStatus; // -1=N/A
 	/*
 	999=Dead.
-	
-	if isTransport()
+
+	// specific to: TRANSPORT
 	0=move to position beside player island (not under attack) where unit can accept cargo
 	1=accept cargo
 	2=cargo loaded, move to enemy island (or player island which is under attack)
 	3=unload cargo
 	4=return to cargo load location
+	99=sleep
 	
-	if isTank()
+	// specific to: TANK
 	0=move to using basic algorithm
 	1=move to waiting transport
 	99=sleep
 	*/
 
-	//*********************************
-	// specific to: tanks
-	int iDaysSinceLastClearedFogOfWar; 
-
-
-	//*********************************
-	// not really needed?
-	int iDayBuilt;
 
 
 	//****************************************************************
@@ -115,10 +109,6 @@ class cUnit {
 			cargoUnitListId[5]=-1;
 			
 			iIsCargoOfUnitListId=-1;
-					
-			bAnimate=false;
-			iAnimateSwitch=0;
-			
 
 			iDayBuilt=oGameEngine.getDayNumber();
 			
@@ -143,8 +133,6 @@ class cUnit {
 			else if (intUnitPlayerId==2) oPlayer2.increaseUnitTypeCount(intUnitTypeId_, getUnitIslandListId() );
 
 			iDaysSinceLastClearedFogOfWar=0;
-
-			
 
 		} else {
 			println( "error: cannot add unit for unit type " + intUnitTypeId_ );
@@ -284,10 +272,6 @@ class cUnit {
 				
 	}
 	
-
-	bool isAnimated() { return bAnimate; }
-	
-	
 	bool isSeaVessel() {
 	
 		//println("debug: in unit.isSeaVessel() ");
@@ -384,7 +368,7 @@ class cUnit {
 			oPanelGameMessageLine.show(strMsg);
 		}
 	}
-		
+	
 
 
 
@@ -409,9 +393,8 @@ class cUnit {
 			
 		}	
 		
-		
 			
-		// unit is a fighter or a bomber so can refuel in its own city city
+		// unit is a fighter or a bomber so can refuel in a city occupied by same player
 		if ( oCityList.isCity(intCellX, intCellY)==true ) {
 			int tempCityId = oCityList.getCityId(intCellX, intCellY);
 			if ( oCityList.getCityPlayerId(tempCityId)==intUnitPlayerId ) {
@@ -419,10 +402,11 @@ class cUnit {
 			}
 		}
 
+
 		// TODO unit is a fighter or a bomber so can refuel on player carrier ship
 		// ...
-		
-		
+
+
 		
 		if (fuel==0) {
 		
@@ -478,7 +462,7 @@ class cUnit {
 			//oGrid.DrawCell(intCellX, intCellY, false);
 
 			//reDrawNearBy();
-			clearFogOfWarAt(intCellX_, intCellY_);
+			//clearFogOfWarAt(intCellX_, intCellY_);
 			
 			oCityList.CityConquered(tempCityId, intUnitPlayerId);
 		
@@ -512,7 +496,7 @@ class cUnit {
 				oUnitList.manageUnitStrengthReduction(iUnitListId_);
 			}
 			//reDrawNearBy();
-			clearFogOfWarAt(intCellX_, intCellY_);
+			//clearFogOfWarAt(intCellX_, intCellY_);
 		}
 		
 		oDoNothing.set();
@@ -1239,33 +1223,27 @@ class cUnit {
 			// *********************************************
 			} else if ( oUnitList.isEnemyUnitAt(intUnitPlayerId, intCellX_, intCellY_) ) {
 			
-				//if (intUnitPlayerId==1) println(" in unit.move() debug#3");
 				//doAttackEnemyUnit(iUnitListId_, intCellX_, intCellY_);
 
-				//if ( oAnimateAttack.getAttackAnimationInProgress()==false ) {
-					oAnimateAttack.set(iUnitListId_);
-					oAnimateAttack.setAttackType(2);
-					oAnimateAttack.setAttackerObjectListId(iUnitListId_);
-					oAnimateAttack.setDefenderObjectX(intCellX_);
-					oAnimateAttack.setDefenderObjectY(intCellY_);
-				//} 
+				oAnimateAttack.set(iUnitListId_);
+				oAnimateAttack.setAttackType(2);
+				oAnimateAttack.setAttackerObjectListId(iUnitListId_);
+				oAnimateAttack.setDefenderObjectX(intCellX_);
+				oAnimateAttack.setDefenderObjectY(intCellY_);
+
 				
 			// *********************************************
 			// if unit is tank and destination location is enemy/unoccupied city, attack it
 			// *********************************************
 			} else if ( isTank() && oCityList.isEnemyOrUnoccupiedCity(intUnitPlayerId, intCellX_, intCellY_) ) {
 			
-				//if (intUnitPlayerId==1) println(" in unit.move() debug#4 attacking enemy/unoccupied city");
-
 				//doAttackEnemyCity(iUnitListId_, intCellX_, intCellY_);
 
-				//if ( oAnimateAttack.getAttackAnimationInProgress()==false ) {
-					oAnimateAttack.set(iUnitListId_);
-					oAnimateAttack.setAttackType(1);
-					oAnimateAttack.setAttackerObjectListId(iUnitListId_);
-					oAnimateAttack.setDefenderObjectX(intCellX_);
-					oAnimateAttack.setDefenderObjectY(intCellY_);
-				//} 
+				oAnimateAttack.set(iUnitListId_);
+				oAnimateAttack.setAttackType(1);
+				oAnimateAttack.setAttackerObjectListId(iUnitListId_);
+				oAnimateAttack.setDefenderObjectX(intCellX_);
+				oAnimateAttack.setDefenderObjectY(intCellY_);
 				
 			
 			// *********************************************
@@ -1273,7 +1251,6 @@ class cUnit {
 			// *********************************************
 			} else if ( isTank() && oUnitList.isPlayerTransportAtRowCol(intUnitPlayerId, intCellX_, intCellY_) ) {
 			
-				//if (intUnitPlayerId==1) println(" in unit.move() debug#5");
 				doAddCargo(iUnitListId_, intCellX_, intCellY_);
 			
 			// *********************************************
@@ -1281,7 +1258,7 @@ class cUnit {
 			// *********************************************
 			} else if ( isFighter() && oUnitList.isPlayerCarrierAtRowCol(intUnitPlayerId, intCellX_, intCellY_) ) {
 			
-				//if (intUnitPlayerId==1) println(" in unit.move() debug#6");
+				fuel = oUnitRef[intUnitTypeId].getMaxFuel();
 				doAddCargo(iUnitListId_, intCellX_, intCellY_);
 			
 			// *********************************************

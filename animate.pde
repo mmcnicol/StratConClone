@@ -30,8 +30,13 @@ class cAnimate {
 
 	void clear() {
 		if (debugAnimate) println("debug: in animate.clear()");
-		bAnimate=false;
-		iUnitListId=-1;	
+
+		if ( bAnimate ) {
+			iAnimateSwitch=0;
+			oUnitList.updateDisplay(iUnitListId, iAnimateSwitch);
+			bAnimate=false;
+			iUnitListId=-1;	
+		}
 	}
 	
 	
@@ -73,7 +78,7 @@ class cAnimate {
 class cAnimateAttack extends cAnimate {
 	
 	int counter;
-	int AttackAnimationInProgress;
+	bool AttackAnimationInProgress;
 	int AttackType;
 	int AttackerObjectListId;
 	int DefenderObjectX;
@@ -104,32 +109,37 @@ class cAnimateAttack extends cAnimate {
 
 		//debug();
 		if (debugAnimateAttack) println("debug: in animate.clear()");
-		counter=0;
-		
-		if ( getAttackType()==1 ) { // city
-			
-			if (debugAnimateAttack) println("debug: in animate.clear() calling attack city... ");
-			//unit.doAttackEnemyCity(getAttackerObjectListId(), getDefenderObjectX(), getDefenderObjectY() );
-			oUnitList.doAttackEnemyCity(getAttackerObjectListId(), getDefenderObjectX(), getDefenderObjectY() );
-			if (debugAnimateAttack) println("debug: in animate.clear() done calling attack city... ");
+				
+		if ( AttackAnimationInProgress ) { 
 
-		} else if ( getAttackType()==2 ) { // unit
-			
-			if (debugAnimateAttack) println("debug: in animate.clear() calling attack city... ");
-			//unit.doAttackEnemyCity(getAttackerObjectListId(), getDefenderObjectX(), getDefenderObjectY() );
-			oUnitList.doAttackEnemyUnit(getAttackerObjectListId(), getDefenderObjectX(), getDefenderObjectY() );
-			if (debugAnimateAttack) println("debug: in animate.clear() done calling attack city... ");
+			if ( getAttackType()==1 ) { // city
+				
+				if (debugAnimateAttack) println("debug: in animate.clear() calling attack city... ");
+				//unit.doAttackEnemyCity(getAttackerObjectListId(), getDefenderObjectX(), getDefenderObjectY() );
+				oUnitList.doAttackEnemyCity(getAttackerObjectListId(), getDefenderObjectX(), getDefenderObjectY() );
+				if (debugAnimateAttack) println("debug: in animate.clear() done calling attack city... ");
+
+			} else if ( getAttackType()==2 ) { // unit
+				
+				if (debugAnimateAttack) println("debug: in animate.clear() calling attack city... ");
+				//unit.doAttackEnemyCity(getAttackerObjectListId(), getDefenderObjectX(), getDefenderObjectY() );
+				oUnitList.doAttackEnemyUnit(getAttackerObjectListId(), getDefenderObjectX(), getDefenderObjectY() );
+				if (debugAnimateAttack) println("debug: in animate.clear() done calling attack city... ");
+			}
+
+			counter=0;
+			setAttackAnimationInProgress(false);
+			iAnimateSwitch=0;
+			//oUnitList.updateDisplay(getAttackerObjectListId(), iAnimateSwitch);
+			setAttackType(-1);
+			setAttackerObjectListId(-1);
+			setDefenderObjectX(-1);
+			setDefenderObjectY(-1);
+
+			oViewport.draw();
+			if (debugShowPlayer2Viewport) oViewportPlayer2.draw();
+
 		}
-
-		oViewport.draw();
-		if (debugShowPlayer2Viewport) oViewportPlayer2.draw();
-
-		setAttackAnimationInProgress(false);
-		setAttackType(-1);
-		setAttackerObjectListId(-1);
-		setDefenderObjectX(-1);
-		setDefenderObjectY(-1);
-
 	}
 
 
