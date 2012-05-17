@@ -828,8 +828,8 @@ class cUnitList {
 		
 		unit.updateSelectedUnitPanelInformation();
 		
-		if ( oGameEngine.getCurrentPlayerId()==1 ) oViewport.scrollIfAppropriate(unit.getX(), unit.getY());
-		else if (debugShowPlayer2Viewport) oViewportPlayer2.scrollIfAppropriate(unit.getX(), unit.getY());
+		//if ( oGameEngine.getCurrentPlayerId()==1 ) oViewport.scrollIfAppropriate(unit.getX(), unit.getY());
+		//else if (debugShowPlayer2Viewport) oViewportPlayer2.scrollIfAppropriate(unit.getX(), unit.getY());
 
 		switch( iAnimateSwitch_ ) {
 			case 0:

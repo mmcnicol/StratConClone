@@ -718,8 +718,10 @@ class cGrid {
 
 			if ( PlayerCellWithinViewport ) {
 				if ( debugAnimateAttack ) println("debug: in grid.DrawCell() getAttackAnimationInProgress=true draw grey cell at "+DisplayX+","+DisplayY);
-				fill(70);
-				rect(DisplayX, DisplayY, cellWidth, cellHeight);
+				//fill(70);
+				
+				fill(204, 102, 0);
+				rect(DisplayX+1, DisplayY+1, cellWidth-1, cellHeight-1);
 			}
 			
 

@@ -489,7 +489,10 @@ void setTextSizeString() { textSize(10); }
 
 
 
-
+/************************************************************************
+	Do Nothing / Sleep
+	used to pause game events for a second so that player1 can take in outcome of attack
+************************************************************************/
 
 class cDoNothing {
 	
