@@ -1,12 +1,12 @@
 
-/* @pjs preload="images/32x32/sea.png,images/32x32/land.png,images/32x32/city0.png,images/32x32/city1.png,images/32x32/city2.png,images/32x32/tank1.png,images/32x32/tank2.png,images/32x32/fighter1.png,images/32x32/fighter2.png,images/32x32/battleship1.png,images/32x32/battleship2.png,images/32x32/bomber1.png,images/32x32/bomber2.png,images/32x32/carrier1.png,images/32x32/carrier2.png,images/32x32/destroyer1.png,images/32x32/destroyer2.png,images/32x32/transport1.png,images/32x32/transport2.png,images/32x32/submarine1.png,images/32x32/submarine2.png"; */
+/* @pjs preload="images/16x16/sea.png,images/16x16/land.png,images/16x16/city0.png,images/16x16/city1.png,images/16x16/city2.png,images/16x16/tank1.png,images/16x16/tank2.png,images/16x16/fighter1.png,images/16x16/fighter2.png,images/16x16/battleship1.png,images/16x16/battleship2.png,images/16x16/bomber1.png,images/16x16/bomber2.png,images/16x16/carrier1.png,images/16x16/carrier2.png,images/16x16/destroyer1.png,images/16x16/destroyer2.png,images/16x16/transport1.png,images/16x16/transport2.png,images/16x16/submarine1.png,images/16x16/submarine2.png"; */
 
 PImage imgSea, imgLand, imgCity0, imgCity1, imgCity2, imgTank1, imgTank2, imgFighter1, imgFighter2, imgBattleship1, imgBattleship2, imgBomber1, imgBomber2, imgCarrier1, imgCarrier2, imgDestroyer1, imgDestroyer2, imgTransport1, imgTransport2, imgSubmarine1, imgSubmarine2;  
 
 PFont FontA;
 
 string GAMETITLE="StratConClone";
-string GAMEVERSION="version 0.47";
+string GAMEVERSION="version 0.48";
 
 cWorld oWorld;
 cAnimate oAnimate;
@@ -16,6 +16,7 @@ cPlayer oPlayer2;
 cGeometry oGeometry;
 cGridCell oGridCell;
 cViewport oViewport;
+cViewport oViewportPlayer2;
 cVScrollBar oVScrollBar;
 cHScrollBar oHScrollBar;
 cGrid oGrid;
@@ -25,7 +26,7 @@ cCityList oCityList;
 cUnitList oUnitList; 
 cPanel1 oPanel1;
 cPanel2 oPanel2;
-cPanelSelectedUnit oPanelSelectedUnit;
+cPanelGameMessageLine oPanelGameMessageLine;
 cPanelSelectedCity oPanelSelectedCity;
 cPanelMap oPanelMap;
 cPanelMapPlayer2 oPanelMapPlayer2;
@@ -38,18 +39,19 @@ cPanelPlayerUnitCounts oPanelPlayer2UnitCounts;
 cDialogueStartup oDialogueStartup;
 cDialogueCityProduction oDialogueCityProduction;
 cGameEngine oGameEngine; 
+cDoNothing oDoNothing;
 
-//int cellWidth=16;
-//int cellHeight=16;
-int cellWidth=32;
-int cellHeight=32;
+int cellWidth=16;
+int cellHeight=16;
+//int cellWidth=32;
+//int cellHeight=32;
 
-int iNumberIndent=4;
+int iNumberIndent=1;
 int GameState=0; // 0=init, 1=startup diag, 2=startup diag closed, 3= initial city production, 4=play, 5=pause, 6=surrender?, 99=end
 int iPlayer1Mode=1; // 1=human, 2=computer.
 int iMapSize=2; // 1=Small (45x25), 2=large (90x50)
-int iNumberTextSize=8;
-int iStringTextSize=18;
+int iNumberTextSize=6;
+int iStringTextSize=10;
 //int iNumberTextSize=6;
 //int iStringTextSize=11;
 
@@ -60,25 +62,32 @@ bool debugShowIslandIslandListId	= false;
 bool debugShowCityIslandListId		= false;
 bool debugShowUnitIslandListId		= false;
 bool debugShowUnitMoveTo		= true;
-bool debugShowUnitTaskStatus		= true;
+bool debugShowUnitTaskStatus		= false;
 bool debugShowCellGridLocation		= false;
+bool debugShowPlayer2Viewport		= true;
 
 bool debugTransport			= false;
 bool debugCityAdd			= false;
 bool debugCityProduction		= false;
-bool debugSleep				= true;
+bool debugSleep				= false;
+bool debugMouseClick			= false;
+bool debugAnimate			= false;
+bool debugAnimateAttack			= false;
+bool debugDoNothing			= false;
 
 
 int iNumberOfUnitTypes=9;
 
 void setup() {
 	
+
+
 	//size( oViewport.getWidth()+oPanel1.getWidth(), oViewport.getHeight() );
 
 	//size( 1000, 620 );
-	size( 1200, 2000 ); // width, height
+	size( 1100, 1650 ); // width, height
 
-	frameRate(4);
+	frameRate(5);
 	background(0);
 	
 	//FontA = loadFont("Arial");
@@ -105,11 +114,15 @@ void setup() {
 	oPlayer2 = new cPlayer(2, true);
 	oGeometry = new cGeometry();
 	//oGrid = new cGrid();
+	oDoNothing = new cDoNothing();
+
 
 }
 
 
 void draw() { 
+
+
 
 	//println("debug 1: GameState="+GameState);
 	
@@ -117,16 +130,30 @@ void draw() {
 
 		if ( GameState==4) {
 			
+			//println("debug#4.1");
+
+
+
 			oPanel1.update();
 			oAnimate.do();
 			oAnimateAttack.do();
+			oDoNothing.do();
 			//oPanelCityList.show();
 
 			//oViewport.printWidth();
 
 			//oViewport.draw();
 		
-			if ( oDialogueCityProduction.isActive()==false && oDialogueSurrender.isActive()==false && oGameEngine.isIdle() ) {
+			//if ( oDialogueCityProduction.isActive()==false && oDialogueSurrender.isActive()==false && oGameEngine.isIdle() ) {
+
+			if ( oDialogueCityProduction.isActive()==false && 
+				oDialogueSurrender.isActive()==false && 
+				oAnimateAttack.getAttackAnimationInProgress()==false &&
+				oDoNothing.getDoNothingInProgress()==false ) {
+
+				//iCityListId = oCityList.getPlayerFirstCityListId(1);
+				//println("debug: player 1 first iCityListId="+iCityListId);
+
 				oGameEngine.doPlayerMove();
 
 			} //else println("oDialogueCityProduction.isActive()==true");
@@ -143,6 +170,8 @@ void draw() {
 		
 		if ( GameState==0 ) {
 			
+			//println("debug#0.1");
+
 			GameState=1;
 		
 			oWorld.loadImages();
@@ -158,41 +187,51 @@ void draw() {
 
 			oGrid = new cGrid(99, 99, 1, 1); 
 
-			////oViewport = new cViewport(90, 50, 45, 25); // 16x16
-			//oViewport = new cViewport(80, 79, 40, 35); // 16x16
-			oViewport = new cViewport(99, 99, 21, 18); // 32x32
+			oViewport = new cViewport(1, 99, 99, 26, 18); // 16x16 (width, height)
+			//oViewport = new cViewport(99, 99, 21, 18); // 32x32
 			////oViewport = new cViewport(120, 64, 15, 8); // 48x48
+
+
+			if (debugShowPlayer2Viewport) oViewportPlayer2 = new cViewport(2, 99, 99, 26, 18); // (width, height)
 
 
 			oPanel1 = new cPanel1(0,50);
 			//oPanel2 = new cPanel2(height-30,20);
-			oPanel2 = new cPanel2(590,20);
+			oPanel2 = new cPanel2(310,20);
+
+
+			oPanelSelectedCity = new cPanelSelectedCity(160,100);
 			
-			oPanelSelectedCity = new cPanelSelectedCity(160,300);
+			oPanelGameMessageLine = new cPanelGameMessageLine(310,20);
+
 			
-			//oPanelSelectedUnit = new cPanelSelectedUnit(height-30,20);
-			oPanelSelectedUnit = new cPanelSelectedUnit(590,20);
-			
-			oPanelMap = new cPanelMap(70 ,102, oViewport.getWidth()+25, 1);
-			oPanelMapPlayer2 = new cPanelMapPlayer2(70, 102, oViewport.getWidth()+125, 2);
+			oPanelMap = new cPanelMap(10 ,80, oViewport.getWidth()+225, 1);
+			oPanelMapPlayer2 = new cPanelMapPlayer2(360, 80, oViewport.getWidth()+225, 2);
 			
 			oPanelMapMatrixValidMovesPlayer1 = new cPanelMapMatrixValidMovesPlayer1(170, 160, oViewport.getWidth()+225);
 			oPanelMapMatrixValidMovesPlayer2 = new cPanelMapMatrixValidMovesPlayer2(370, 160, oViewport.getWidth()+225);
 
-			oPanelIslandList = new cPanelIslandList(650,500);
-			oPanelCityList = new cPanelCityList(1200,790);
+			int listPanelStartY = 350;
+			if (debugShowPlayer2Viewport) listPanelStartY = 700;
+			oPanelIslandList = new cPanelIslandList(5, listPanelStartY, 400, 900);
+			oPanelCityList = new cPanelCityList(500, listPanelStartY, 500, 900);
 
-			oPanelPlayer1UnitCounts = new cPanelPlayerUnitCounts(570, 650,190,1);
-			oPanelPlayer2UnitCounts = new cPanelPlayerUnitCounts(790, 650,190,2);
+			oPanelPlayer1UnitCounts = new cPanelPlayerUnitCounts(656+130, 8, 180, 1);
+			oPanelPlayer2UnitCounts = new cPanelPlayerUnitCounts(656+130, 358, 180, 2);
+
+
+
 
 			oGameEngine = new cGameEngine(); 
 			
 			
-			oDialogueStartup = new cDialogueStartup(90,250);
-			oDialogueCityProduction = new cDialogueCityProduction(90,250);
-			oDialogueSurrender = new cDialogueSurrender(90,250);
+			oDialogueStartup = new cDialogueStartup(90,170);
+			oDialogueCityProduction = new cDialogueCityProduction(90,170);
+			oDialogueSurrender = new cDialogueSurrender(90,170);
 			
-			oViewport.draw();
+			//oViewport.draw();
+			
+			//if (debugShowPlayer2Viewport) oViewportPlayer2.draw();
 			
 			oDialogueStartup.show();
 			
@@ -202,31 +241,54 @@ void draw() {
 		
 		if ( GameState==2 ) {
 			
+			//println("debug#2.1");
+
 			GameState=3;
 
-			////oViewport = new cViewport(90, 50, 45, 25); // 16x16
-			//oViewport = new cViewport(80, 79, 40, 35); // 16x16
-			//oViewport = new cViewport(60, 60, 25, 25); // 32x32
-			////oViewport = new cViewport(120, 64, 15, 8); // 48x48
-			oViewport.draw();
+			background(0);
+
 
 			oGrid.generate();
-			
-			// show the city production panel for the human player 1 first city
-			int iCityListId = oCityList.getPlayerFirstCityListId(1);
 
+			//oViewport.draw();
+			//if (debugShowPlayer2Viewport) oViewportPlayer2.draw();
+			
+
+			
+			int iCityListId;
+			iCityListId = oCityList.getPlayerFirstCityListId(1);
+			println("debug: player 1 first iCityListId="+iCityListId);
 			oCityList.clearFogOfWarByPlayerId(1);
+			//oCityList.clearFogOfWar(iCityListId);
+
+			oViewport.draw();
+
+			if (debugShowPlayer2Viewport) {
+				iCityListId = oCityList.getPlayerFirstCityListId(2);
+				println("debug: player 2 first iCityListId="+iCityListId);
+				oCityList.clearFogOfWarByPlayerId(2);
+				//oCityList.clearFogOfWar(iCityListId);
+				oViewportPlayer2.draw();
+			}
 			
+
 			if ( oPlayer1.getIsAI() ) {
-			
-				oCityList.clearFogOfWar(iCityListId);
-				oCityList.setCityProductionUnitTypeId(iCityListId, 0);
-				oViewport.draw();
+
+				//println("debug#2.2");
+
+				//iCityListId = oCityList.getPlayerFirstCityListId(1);
+				//oCityList.clearFogOfWar(iCityListId);
+				//oCityList.setCityProductionUnitTypeId(iCityListId, 0);
+				//oViewport.draw();
 			
 				GameState=4;
 				
 			} else {
-				//println("debug#7");
+				//println("debug#2.3");
+				iCityListId = oCityList.getPlayerFirstCityListId(1);
+				//oCityList.clearFogOfWar(iCityListId);
+
+				// show the city production panel for the human player 1 first city
 				oDialogueCityProduction.show(iCityListId);
 				println("confirm initial city production to begin...");
 			
@@ -238,7 +300,7 @@ void draw() {
 		
 		
 	}
-
+	
 	
 } 
 
@@ -295,33 +357,33 @@ class cWorld {
 	
 		println("debug: in loadimages");
 	
-		imgSea = loadImage("images/32x32/sea.png");
-		imgLand = loadImage("images/32x32/land.png");
-		imgCity0 = loadImage("images/32x32/city0.png");
-		imgCity1 = loadImage("images/32x32/city1.png");
-		imgCity2 = loadImage("images/32x32/city2.png");
-		imgTank1 = loadImage("images/32x32/tank1.png");
-		imgTank2 = loadImage("images/32x32/tank2.png");
-		imgFighter1 = loadImage("images/32x32/fighter1.png");
-		imgFighter2 = loadImage("images/32x32/fighter2.png");
+		imgSea = loadImage("images/16x16/sea.png");
+		imgLand = loadImage("images/16x16/land.png");
+		imgCity0 = loadImage("images/16x16/city0.png");
+		imgCity1 = loadImage("images/16x16/city1.png");
+		imgCity2 = loadImage("images/16x16/city2.png");
+		imgTank1 = loadImage("images/16x16/tank1.png");
+		imgTank2 = loadImage("images/16x16/tank2.png");
+		imgFighter1 = loadImage("images/16x16/fighter1.png");
+		imgFighter2 = loadImage("images/16x16/fighter2.png");
 
-		imgBattleship1 = loadImage("images/32x32/battleship1.png");
-		imgBattleship2 = loadImage("images/32x32/battleship2.png");
+		imgBattleship1 = loadImage("images/16x16/battleship1.png");
+		imgBattleship2 = loadImage("images/16x16/battleship2.png");
 
-		imgBomber1 = loadImage("images/32x32/bomber1.png");
-		imgBomber2 = loadImage("images/32x32/bomber2.png");
+		imgBomber1 = loadImage("images/16x16/bomber1.png");
+		imgBomber2 = loadImage("images/16x16/bomber2.png");
 
-		imgCarrier1 = loadImage("images/32x32/carrier1.png");
-		imgCarrier2 = loadImage("images/32x32/carrier2.png");
+		imgCarrier1 = loadImage("images/16x16/carrier1.png");
+		imgCarrier2 = loadImage("images/16x16/carrier2.png");
 
-		imgDestroyer1 = loadImage("images/32x32/destroyer1.png");
-		imgDestroyer2 = loadImage("images/32x32/destroyer2.png");
+		imgDestroyer1 = loadImage("images/16x16/destroyer1.png");
+		imgDestroyer2 = loadImage("images/16x16/destroyer2.png");
 
-		imgTransport1 = loadImage("images/32x32/transport1.png");
-		imgTransport2 = loadImage("images/32x32/transport2.png");
+		imgTransport1 = loadImage("images/16x16/transport1.png");
+		imgTransport2 = loadImage("images/16x16/transport2.png");
 
-		imgSubmarine1 = loadImage("images/32x32/submarine1.png");
-		imgSubmarine2 = loadImage("images/32x32/submarine2.png");
+		imgSubmarine1 = loadImage("images/16x16/submarine1.png");
+		imgSubmarine2 = loadImage("images/16x16/submarine2.png");
 	}
   
 }
@@ -360,12 +422,22 @@ class cGeometry {
 	}
 	
 	void distanceDragBegin(int sX_, int sY_, int eX_, int eY_) { 
+
+		int ShowFromCellX, ShowFromCellY;
+
+		if ( oGameEngine.getCurrentPlayerId()==1 ) { 
+			ShowFromCellX = oPlayer1.getShowFromCellX();
+			ShowFromCellY = oPlayer1.getShowFromCellY();
+		} else {
+			ShowFromCellX = oPlayer2.getShowFromCellX();
+			ShowFromCellY = oPlayer2.getShowFromCellY();
+		}
 	
-		sX=translateCoordToCell(oGrid.getShowFromCellX(), sX_);
-		sY=translateCoordToCell(oGrid.getShowFromCellY(), sY_);
+		sX=translateCoordToCell(ShowFromCellX, sX_);
+		sY=translateCoordToCell(ShowFromCellY, sY_);
 		
-		eX=translateCoordToCell(oGrid.getShowFromCellX(), eX_);
-		eY=translateCoordToCell(oGrid.getShowFromCellY(), eY_);
+		eX=translateCoordToCell(ShowFromCellX, eX_);
+		eY=translateCoordToCell(ShowFromCellY, eY_);
 		
 		distanceInCells=max( abs(sX-eX), abs(sY-eY) );
 	}
@@ -412,7 +484,60 @@ string RPAD(string str_, int length_) {
 	return str_;
 }
 
-void setTextSizeNumber() { textSize(7); }
-void setTextSizeString() { textSize(11); }
+void setTextSizeNumber() { textSize(6); }
+void setTextSizeString() { textSize(10); }
+
+
+
+
+
+class cDoNothing {
+	
+	int counter;
+	bool DoNothingInProgress;
+	int iLastTime, iCurrentTime;
+
+	cDoNothing() {
+		counter=0;
+		iLastTime=0;
+		setDoNothingInProgress(false);
+	}
+
+	void set() {
+		if (debugDoNothing) println("debug: in DoNothing.set()");
+		setDoNothingInProgress(true);
+		counter=0;
+		iLastTime=0;
+		if (debugDoNothing) println("debug: leaving DoNothing.set()");
+	}
+	
+	void clear() {
+		if (debugDoNothing) println("debug: in DoNothing.clear()");
+		counter=0;
+		setDoNothingInProgress(false);
+	}
+
+	void setDoNothingInProgress(bool value_) { DoNothingInProgress=value_; }
+	bool getDoNothingInProgress() { return DoNothingInProgress; }
+
+	void do() {
+
+		iCurrentTime = millis();
+
+		if ( getDoNothingInProgress() && oDialogueCityProduction.isActive()==false && iCurrentTime > iLastTime+100) {
+		
+			counter=counter+1;
+			iLastTime = iCurrentTime;
+		}
+
+		if ( oDialogueCityProduction.isActive()==false && counter==15 ) {
+			if (debugDoNothing) println("debug: calling clear()");
+			clear();
+		}
+	}
+	
+  
+}
+
 
 

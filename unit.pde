@@ -1,6 +1,8 @@
 
 class cUnit {
 
+
+
 	//*********************************
 	// generic to all units
 	int intUnitTypeId;
@@ -142,10 +144,13 @@ class cUnit {
 
 			iDaysSinceLastClearedFogOfWar=0;
 
+			
+
 		} else {
 			println( "error: cannot add unit for unit type " + intUnitTypeId_ );
 			//exit();
 		}
+
 	}
 
 
@@ -367,10 +372,16 @@ class cUnit {
 			
 	void updateSelectedUnitPanelInformation() {
 		
+		string strMsg="";
+		string strLocation = nf(intCellX,3)+","+nf(intCellY,3);
+
+		if ( fuel==-1 ) strMsg = strUnitName +", strength "+ strength +", "+ movesLeftToday +" moves left, at "+strLocation;
+		else strMsg = strUnitName +", strength "+ strength +", fuel: "+ fuel +", "+ movesLeftToday +" moves left, at "+strLocation;
+		
 		if (intUnitPlayerId==1) {
-			//if( intCellX==intCellX_ && intCellY==intCellY_ ) {
-			oPanelSelectedUnit.show(strUnitName, nf(intCellX,3)+","+nf(intCellY,3), strength, fuel, movesLeftToday);
-			//}
+			oPanelGameMessageLine.show(strMsg);
+		} else if (debugShowPlayer2Viewport) {
+			oPanelGameMessageLine.show(strMsg);
 		}
 	}
 		
@@ -456,8 +467,11 @@ class cUnit {
 		if ( cityAttackSuccessful ) {
 
 			if (intUnitPlayerId==1) {
-				println("Player "+ getUnitPlayerId() + " attack was successful");
-				println("");
+				//println("Player "+ getUnitPlayerId() + " attack was successful");
+				//println("");	
+				oPanelGameMessageLine.show("city attack was successful");
+			} else {
+				oPanelGameMessageLine.show("city attack was successful");
 			}
 
 			oUnitList.deleteUnit(iUnitListId_);
@@ -483,8 +497,11 @@ class cUnit {
 
 			// if attack was not successful, 
 			if (intUnitPlayerId==1) {
-				println("Player "+ getUnitPlayerId() + " attack was not successful");
-				println("");
+				//println("Player "+ getUnitPlayerId() + " attack was not successful");
+				//println("");
+				oPanelGameMessageLine.show("city attack was not successful");
+			} else {
+				oPanelGameMessageLine.show("city attack was not successful");
 			}
 				
 			// 50% probability unit strength is to be reduced
@@ -498,7 +515,7 @@ class cUnit {
 			clearFogOfWarAt(intCellX_, intCellY_);
 		}
 		
-	
+		oDoNothing.set();
 	}
 	
 	
@@ -562,8 +579,11 @@ class cUnit {
 		if ( unitAttackSuccessful ) {
 
 			if (intUnitPlayerId==1) {
-				println("Player "+ getUnitPlayerId() + " attack was successful");
-				println("");
+				//println("Player "+ getUnitPlayerId() + " attack was successful");
+				//println("");
+				oPanelGameMessageLine.show("unit attack was successful");
+			} else {
+				oPanelGameMessageLine.show("unit attack was successful");
 			}
 			
 			//if (intUnitPlayerId==1) println("reducing defending unit strength following successful attack");
@@ -585,8 +605,11 @@ class cUnit {
 
 			// if attack was not successful, 
 			if (intUnitPlayerId==1) {
-				println("Player "+ getUnitPlayerId() + " attack was not successful");
-				println("");
+				//println("Player "+ getUnitPlayerId() + " attack was not successful");
+				//println("");
+				oPanelGameMessageLine.show("unit attack was not successful");
+			} else {
+				oPanelGameMessageLine.show("unit attack was not successful");
 			}
 
 
@@ -600,6 +623,8 @@ class cUnit {
 		}
 		//reDrawNearBy();
 		clearFogOfWarAt(intCellX_, intCellY_);
+
+		oDoNothing.set();
 
 	}
 
@@ -623,9 +648,22 @@ class cUnit {
 		oGrid.DrawCell(intCellX, intCellY, false);
 
 
+
+		int ShowFromCellX, ShowFromCellY;
+
+		if ( oGameEngine.getCurrentPlayerId()==1 ) { 
+			ShowFromCellX = oPlayer1.getShowFromCellX();
+			ShowFromCellY = oPlayer1.getShowFromCellY();
+		} else {
+			ShowFromCellX = oPlayer2.getShowFromCellX();
+			ShowFromCellY = oPlayer2.getShowFromCellY();
+		}
+
+
+
 		// draw bomb explosion
-		int DisplayX=((intCellX_-oGrid.getShowFromCellX()+1)*cellWidth)-(cellWidth-1);
-		int DisplayY=((intCellY_-oGrid.getShowFromCellY()+1)*cellHeight)-(cellHeight-1);
+		int DisplayX=((intCellX_-ShowFromCellX+1)*cellWidth)-(cellWidth-1);
+		int DisplayY=((intCellY_-ShowFromCellY+1)*cellHeight)-(cellHeight-1);
 		fill(126);
 		
 		//println("drawing bomb blast radius "+iBombBlastRadius);
@@ -741,7 +779,7 @@ class cUnit {
 		//println("game resumed");
 		//frameRate(3);
 		
-		
+		oDoNothing.set();
 
 	}
 	
@@ -1127,6 +1165,17 @@ class cUnit {
 			updateMovesLeftToday();
 			
 		} else {
+
+			
+			if ( getUnitPlayerId()==1 ) { 
+				oViewport.scrollIfAppropriate2( getX(), getY() );
+				//oPlayer1.setShowFromCellX( getX()-10 );
+				//oPlayer1.setShowFromCellY( getY()-10 );
+			} else {
+				oViewportPlayer2.scrollIfAppropriate2( getX(), getY() );
+				//oPlayer2.setShowFromCellX( getX()-10 );
+				//oPlayer2.setShowFromCellY( getY()-10 );
+			}
 		
 		
 			//setAnimation(false);
@@ -1191,7 +1240,15 @@ class cUnit {
 			} else if ( oUnitList.isEnemyUnitAt(intUnitPlayerId, intCellX_, intCellY_) ) {
 			
 				//if (intUnitPlayerId==1) println(" in unit.move() debug#3");
-				doAttackEnemyUnit(iUnitListId_, intCellX_, intCellY_);
+				//doAttackEnemyUnit(iUnitListId_, intCellX_, intCellY_);
+
+				//if ( oAnimateAttack.getAttackAnimationInProgress()==false ) {
+					oAnimateAttack.set(iUnitListId_);
+					oAnimateAttack.setAttackType(2);
+					oAnimateAttack.setAttackerObjectListId(iUnitListId_);
+					oAnimateAttack.setDefenderObjectX(intCellX_);
+					oAnimateAttack.setDefenderObjectY(intCellY_);
+				//} 
 				
 			// *********************************************
 			// if unit is tank and destination location is enemy/unoccupied city, attack it
@@ -1199,7 +1256,17 @@ class cUnit {
 			} else if ( isTank() && oCityList.isEnemyOrUnoccupiedCity(intUnitPlayerId, intCellX_, intCellY_) ) {
 			
 				//if (intUnitPlayerId==1) println(" in unit.move() debug#4 attacking enemy/unoccupied city");
-				doAttackEnemyCity(iUnitListId_, intCellX_, intCellY_);
+
+				//doAttackEnemyCity(iUnitListId_, intCellX_, intCellY_);
+
+				//if ( oAnimateAttack.getAttackAnimationInProgress()==false ) {
+					oAnimateAttack.set(iUnitListId_);
+					oAnimateAttack.setAttackType(1);
+					oAnimateAttack.setAttackerObjectListId(iUnitListId_);
+					oAnimateAttack.setDefenderObjectX(intCellX_);
+					oAnimateAttack.setDefenderObjectY(intCellY_);
+				//} 
+				
 			
 			// *********************************************
 			// if unit is tank and destination contains player transport, move into it
@@ -1730,8 +1797,13 @@ class cUnit {
 						for (y=sy;y<=ey;y++) {
 							for (x=sx;x<=ex;x++) {
 								if (intCellX!=x && intCellY!=y) {
-									if ( oGrid.isSea(x, y) && oGrid.isFogOfWar(x, y) )
-										possibleMoves.add( new cGridCell(x, y) );
+									if (getUnitPlayerId()==1) {
+										if ( oGrid.isSea(x, y) && oGrid.isFogOfWar(x, y) )
+											possibleMoves.add( new cGridCell(x, y) );
+									} else {
+										if ( oGrid.isSea(x, y) && oGrid.isFogOfWarP2(x, y) )
+											possibleMoves.add( new cGridCell(x, y) );
+									}
 								}
 							}
 						}
@@ -1942,8 +2014,13 @@ class cUnit {
 				for (y=sy;y<=ey;y++) {
 					for (x=sx;x<=ex;x++) {
 						if (intCellX!=x && intCellY!=y) {
-							if ( oGrid.isFogOfWar(x, y) )
-								possibleMoves.add( new cGridCell(x, y) );
+							if (getUnitPlayerId()==1) {
+								if ( oGrid.isFogOfWar(x, y) )
+									possibleMoves.add( new cGridCell(x, y) );
+							} else {
+								if ( oGrid.isFogOfWarP2(x, y) )
+									possibleMoves.add( new cGridCell(x, y) );
+							}
 						}
 					}
 				}
@@ -2055,8 +2132,13 @@ class cUnit {
 				for (y=sy;y<=ey;y++) {
 					for (x=sx;x<=ex;x++) {
 						if (intCellX!=x && intCellY!=y) {
-							if ( oGrid.isFogOfWar(x, y) )
-								possibleMoves.add( new cGridCell(x, y) );
+							if (intUnitPlayerId==1) {
+								if ( oGrid.isFogOfWar(x, y) )
+									possibleMoves.add( new cGridCell(x, y) );
+							} else {
+								if ( oGrid.isFogOfWarP2(x, y) )
+									possibleMoves.add( new cGridCell(x, y) );
+							}
 						}
 					}
 				}
@@ -2172,8 +2254,13 @@ class cUnit {
 				for (y=sy;y<=ey;y++) {
 					for (x=sx;x<=ex;x++) {
 						if (intCellX!=x && intCellY!=y) {
-							if ( oGrid.isLand(x, y) && oGrid.isFogOfWar(x, y) )
-								possibleMoves.add( new cGridCell(x, y) );
+							if (intUnitPlayerId==1) {
+								if ( oGrid.isLand(x, y) && oGrid.isFogOfWar(x, y) )
+									possibleMoves.add( new cGridCell(x, y) );
+							} else {
+								if ( oGrid.isLand(x, y) && oGrid.isFogOfWarP2(x, y) )
+									possibleMoves.add( new cGridCell(x, y) );
+							}
 						}
 					}
 				}
@@ -2235,8 +2322,13 @@ class cUnit {
 				for (y=sy;y<=ey;y++) {
 					for (x=sx;x<=ex;x++) {
 						if (intCellX!=x && intCellY!=y) {
-							if ( oGrid.isSeaNextToIsland(x, y) && oGrid.isFogOfWar(x, y) && oUnitList.isPlayerSeaVesselAtRowCol(intUnitPlayerId, x, y)==false )
-								possibleMoves.add( new cGridCell(x, y) );
+							if (intUnitPlayerId==1) {
+								if ( oGrid.isSeaNextToIsland(x, y) && oGrid.isFogOfWar(x, y) && oUnitList.isPlayerSeaVesselAtRowCol(intUnitPlayerId, x, y)==false )
+									possibleMoves.add( new cGridCell(x, y) );
+							} else {
+								if ( oGrid.isSeaNextToIsland(x, y) && oGrid.isFogOfWarP2(x, y) && oUnitList.isPlayerSeaVesselAtRowCol(intUnitPlayerId, x, y)==false )
+									possibleMoves.add( new cGridCell(x, y) );
+							}
 						}
 					}
 				}
@@ -2263,8 +2355,13 @@ class cUnit {
 				for (y=sy;y<=ey;y++) {
 					for (x=sx;x<=ex;x++) {
 						if (intCellX!=x && intCellY!=y) {
-							if ( oGrid.isSea(x, y) && oGrid.isFogOfWar(x, y) && oUnitList.isPlayerSeaVesselAtRowCol(intUnitPlayerId, x, y)==false )
-								possibleMoves.add( new cGridCell(x, y) );
+							if (intUnitPlayerId==1) {
+								if ( oGrid.isSea(x, y) && oGrid.isFogOfWar(x, y) && oUnitList.isPlayerSeaVesselAtRowCol(intUnitPlayerId, x, y)==false )
+									possibleMoves.add( new cGridCell(x, y) );
+							} else {
+								if ( oGrid.isSea(x, y) && oGrid.isFogOfWarP2(x, y) && oUnitList.isPlayerSeaVesselAtRowCol(intUnitPlayerId, x, y)==false )
+									possibleMoves.add( new cGridCell(x, y) );
+							}
 						}
 					}
 				}
@@ -2311,16 +2408,54 @@ class cUnit {
 
 	void Draw() {
 
+		//println("debug: in unit.Draw()");
+
 		int countOfPlayerUnits;
-		
-		if ( oViewport.isCellWithinViewport(intCellX, intCellY) ) { 
-					
-			int DisplayX=((intCellX-oGrid.getShowFromCellX()+1)*cellWidth)-(cellWidth-1);
-			int DisplayY=((intCellY-oGrid.getShowFromCellY()+1)*cellHeight)-(cellHeight-1);
+
+		int PlayerDrawOffSetX=220;
+		int PlayerDrawOffSetY=0;
+		bool PlayerCellIsFogOfWar = false;
+		bool DrawUnit = false;
+		bool CellWithinPlayerViewport = false;
+		int ShowFromCellX, ShowFromCellY;
+
+		if ( oGameEngine.getCurrentPlayerId()==1 ) {
+			PlayerCellIsFogOfWar = oGrid.isFogOfWar(intCellX, intCellY);
+
+			CellWithinPlayerViewport = oViewport.isCellWithinViewport(intCellX, intCellY);
+
+			if ( intUnitPlayerId==1 || ( intUnitPlayerId==2 && oUnitList.getCountEnemyUnitNearby(intUnitPlayerId, intCellX, intCellY)>=1 ) ) 
+				DrawUnit = true;
+
+			ShowFromCellX = oPlayer1.getShowFromCellX();
+			ShowFromCellY = oPlayer1.getShowFromCellY();
+
+		} else if (debugShowPlayer2Viewport) {
+			PlayerCellIsFogOfWar = oGrid.isFogOfWarP2(intCellX, intCellY);
+			PlayerDrawOffSetY=350;
+
+			CellWithinPlayerViewport = oViewportPlayer2.isCellWithinViewport(intCellX, intCellY);
+
+			if ( intUnitPlayerId==2 || ( intUnitPlayerId==1 && oUnitList.getCountEnemyUnitNearby(intUnitPlayerId, intCellX, intCellY)>=1 ) ) 
+				DrawUnit = true;
+
+			ShowFromCellX = oPlayer2.getShowFromCellX();
+			ShowFromCellY = oPlayer2.getShowFromCellY();
+		}
+
+		//println("debug: in unit.Draw(), oGameEngine.getCurrentPlayerId()="+oGameEngine.getCurrentPlayerId()+", CellWithinPlayerViewport="+CellWithinPlayerViewport+", PlayerCellIsFogOfWar="+PlayerCellIsFogOfWar+", DrawUnit="+DrawUnit);
+
+		//if ( oViewport.isCellWithinViewport(intCellX, intCellY) ) { 
+		if ( CellWithinPlayerViewport ) { 
+
+			int DisplayX=((intCellX-ShowFromCellX+1)*cellWidth)-(cellWidth-1) + PlayerDrawOffSetX;
+			int DisplayY=((intCellY-ShowFromCellY+1)*cellHeight)-(cellHeight-1) + PlayerDrawOffSetY;
 			
-			if ( oGrid.isFogOfWar(intCellX, intCellY)==false ) { // for testing purposes
 			
-				if ( intUnitPlayerId==1 || ( intUnitPlayerId==2 && oUnitList.getCountEnemyUnitNearby(intUnitPlayerId, intCellX, intCellY)>=1 ) )  {
+			if ( PlayerCellIsFogOfWar==false ) { 
+			
+				//if ( intUnitPlayerId==1 || ( intUnitPlayerId==2 && oUnitList.getCountEnemyUnitNearby(intUnitPlayerId, intCellX, intCellY)>=1 ) )  {
+				if (DrawUnit)  {
 			
 					switch(intUnitTypeId) {
 						case 0:
@@ -2328,6 +2463,7 @@ class cUnit {
 								//println("player 1");
 								//if ( !isCargoOf() && oGameGrid.XXX() ) {
 
+									//println("debug: in unit.draw() drawing tank at "+DisplayX+", "+DisplayY);
 									image( imgTank1, DisplayX, DisplayY );
 
 									// show player Tank count at X,Y on unit image, if more than 1
@@ -2335,22 +2471,22 @@ class cUnit {
 									if ( countOfPlayerUnits > 1 && oGrid.isLand(intCellX, intCellY) ) {
 										fill(200);
 										if ( countOfPlayerUnits > 9 ) 
-											rect(DisplayX+iNumberIndent, DisplayY+iNumberIndent-1, iNumberTextSize+iNumberTextSize, iNumberTextSize);
+											rect(DisplayX+iNumberIndent, DisplayY+iNumberIndent, iNumberTextSize+iNumberTextSize, iNumberTextSize);
 										else
-											rect(DisplayX+iNumberIndent, DisplayY+iNumberIndent-1, iNumberTextSize, iNumberTextSize);
+											rect(DisplayX+iNumberIndent, DisplayY+iNumberIndent, iNumberTextSize, iNumberTextSize);
 										fill(0);
 										setTextSizeNumber();
-										text(countOfPlayerUnits, DisplayX+iNumberIndent+1, DisplayY+iNumberTextSize+2 );
+										text(countOfPlayerUnits, DisplayX+iNumberIndent+1, DisplayY+iNumberTextSize );
 										setTextSizeString();
 									}
 
 									if ( intUnitPlayerId==1 && oPlayer1.getIsAI() && debugShowUnitMoveTo && getTaskStatus()==1 ) {
 										fill(200);
 										rect(DisplayX+iNumberIndent, DisplayY+iNumberTextSize+iNumberIndent-1, cellWidth-iNumberIndent, iNumberTextSize);
-										fill(0);
-										setTextSizeNumber();
-										text( getMoveToX() +","+getMoveToY() , DisplayX+iNumberIndent+1, DisplayY+iNumberTextSize+iNumberTextSize+2 );
-										setTextSizeString();
+										//fill(0);
+										//setTextSizeNumber();
+										//text( getMoveToX() +","+getMoveToY() , DisplayX+iNumberIndent+1, DisplayY+iNumberTextSize+iNumberTextSize+2 );
+										//setTextSizeString();
 
 									}
 
@@ -2395,7 +2531,7 @@ class cUnit {
 								rect(DisplayX+iNumberIndent,DisplayY+iNumberIndent,iNumberTextSize,iNumberTextSize+1);
 								fill(0);
 								setTextSizeNumber();
-								text(getCargoCount(), DisplayX+iNumberIndent+1, DisplayY+iNumberTextSize+1 );
+								text(getCargoCount(), DisplayX+iNumberIndent+1, DisplayY+iNumberTextSize );
 								setTextSizeString();
 							}
 
@@ -2415,7 +2551,7 @@ class cUnit {
 								rect(DisplayX+iNumberIndent,DisplayY+iNumberIndent,iNumberTextSize,iNumberTextSize+1);
 								fill(0);
 								setTextSizeNumber();
-								text(getCargoCount(), DisplayX+iNumberIndent+1, DisplayY+iNumberTextSize+1 );
+								text(getCargoCount(), DisplayX+iNumberIndent+1, DisplayY+iNumberTextSize );
 								setTextSizeString();
 							}
 
@@ -2460,7 +2596,7 @@ class cUnit {
 						// draw unit asleep indicator
 						fill(0);
 						setTextSizeNumber();
-						text("z", DisplayX+cellWidth-iNumberTextSize, DisplayY+iNumberTextSize+1 );
+						text("z", DisplayX+cellWidth-iNumberTextSize, DisplayY+iNumberTextSize );
 						setTextSizeString();
 					}
 
@@ -2488,69 +2624,119 @@ class cUnit {
 
 	void clearFogOfWarAt(int x_, y_) {
 
+		//println("in unit.clearFogOfWarAt()");
+
 		int x, y;
 		int sx, sy;
 		int ex, ey;
+
+
+		int ShowFromCellX, ShowFromCellY;
+
+		if ( oGameEngine.getCurrentPlayerId()==1 ) { 
+			ShowFromCellX = oPlayer1.getShowFromCellX();
+			ShowFromCellY = oPlayer1.getShowFromCellY();
+		} else {
+			ShowFromCellX = oPlayer2.getShowFromCellX();
+			ShowFromCellY = oPlayer2.getShowFromCellY();
+		}
+
 		
-		if( x_-1>=oGrid.getShowFromCellX() ) sx=x_-1;
+		if( x_-1>=ShowFromCellX ) sx=x_-1;
 		else sx=x_;
 
-		if( x_+1<= (oGrid.getShowFromCellX() + oViewport.getWidth() ) ) ex=x_+1;
+		if( x_+1<= (ShowFromCellX + oViewport.getWidth() ) ) ex=x_+1;
 		else ex=x_;
 
 
-		if( y_-1>=oGrid.getShowFromCellY() ) sy=y_-1;
+		if( y_-1>=ShowFromCellY ) sy=y_-1;
 		else sy=y_;
 
-		if( y_+1<= ( oGrid.getShowFromCellY() + oViewport.getHeight() ) ) ey=y_+1;
+		if( y_+1<= ( ShowFromCellY + oViewport.getHeight() ) ) ey=y_+1;
 		else ey=y_;
 		
 		for (y=sy;y<=ey;y++) {
 			for (x=sx;x<=ex;x++) {
 			
-				if ( getUnitPlayerId()==1 ) oGrid.clearFogOfWar(x,y);
-				else if ( getUnitPlayerId()==2 ) oGrid.clearFogOfWarP2(x,y);
+				if ( getUnitPlayerId()==1 ) {
+					oGrid.clearFogOfWar(x,y);
+					//oGrid.DrawCell(x,y,true);
+					//reDrawNearBy();
+					//if (oGrid.isFogOfWar(x,y)==false) oGrid.DrawCell(x,y,true);
+
+					//if( intUnitPlayerId==1) reDrawNearBy();
+
+				} else if ( getUnitPlayerId()==2 ) {
+					oGrid.clearFogOfWarP2(x,y);
+					//oGrid.DrawCell(x,y,true);
+					//if (oGrid.isFogOfWarP2(x,y)==false) oGrid.DrawCell(x,y,true);
+				}
 				
 				//if ( oViewport.isCellWithinViewport(x,y) ) { 
-					if (oGrid.isFogOfWar(x,y)==false) oGrid.DrawCell(x,y,true);
+					//if (oGrid.isFogOfWar(x,y)==false) oGrid.DrawCell(x,y,true);
 				//}
 			}
 		}
 	}
 
 
+
 	void reDrawNearBy() {
+
+		//println("in unit.reDrawNearBy()");
 
 		int x, y;
 		int sx, sy;
 		int ex, ey;
+
+
+		int ShowFromCellX, ShowFromCellY;
+
+		if ( oGameEngine.getCurrentPlayerId()==1 ) { 
+			ShowFromCellX = oPlayer1.getShowFromCellX();
+			ShowFromCellY = oPlayer1.getShowFromCellY();
+		} else {
+			ShowFromCellX = oPlayer2.getShowFromCellX();
+			ShowFromCellY = oPlayer2.getShowFromCellY();
+		}
+
 		
-		if( intCellX-1>=oGrid.getShowFromCellX() ) sx=intCellX-1;
+		if( intCellX-1>=ShowFromCellX ) sx=intCellX-1;
 		else sx=intCellX;
 		
-		if( intCellX+1<= (oGrid.getShowFromCellX()+oGrid.getCellCountX()) ) ex=intCellX+1;
+		if( intCellX+1<= (ShowFromCellX+oGrid.getCellCountX()) ) ex=intCellX+1;
 		else ex=intCellX;
 		
 		
-		if( intCellY-1>=oGrid.getShowFromCellY() ) sy=intCellY-1;
+		if( intCellY-1>=ShowFromCellY ) sy=intCellY-1;
 		else sy=intCellY;
 				
-		if( intCellY+1<= (oGrid.getShowFromCellY()+oGrid.getCellCountY()) ) ey=intCellY+1;
+		if( intCellY+1<= (ShowFromCellY+oGrid.getCellCountY()) ) ey=intCellY+1;
 		else ey=intCellY;
 		
-		//if ( intCellX >= oGrid.getShowFromCellX() && intCellX <= (oGrid.getShowFromCellX()+oGrid.getCellCountX())   &&   intCellY >= oGrid.getShowFromCellY() && intCellY <= (oGrid.getShowFromCellY()+oGrid.getCellCountY()) )  {
 		
 		for (y=sy;y<=ey;y++) {
 			for (x=sx;x<=ex;x++) {
 			
-				if (oGrid.isFogOfWar(x,y)==true) setDaysSinceLastClearedFogOfWar(0);
-
-				if (getUnitPlayerId()==1) oGrid.clearFogOfWar(x,y);
-				else if (getUnitPlayerId()==2) oGrid.clearFogOfWarP2(x,y);
 				
-				if ( oViewport.isCellWithinViewport(x,y) ) { 	
-					if (oGrid.isFogOfWar(x,y)==false) oGrid.DrawCell(x,y,true);
+
+				if ( getUnitPlayerId()==1 ) {
+					if (oGrid.isFogOfWar(x,y)==true) setDaysSinceLastClearedFogOfWar(0);
+					oGrid.clearFogOfWar(x,y);
+					if ( oViewport.isCellWithinViewport(x,y) ) { 	
+						if (oGrid.isFogOfWar(x,y)==false) oGrid.DrawCell(x,y,true);
+					}
+				} else if ( getUnitPlayerId()==2 ) {
+					if (oGrid.isFogOfWarP2(x,y)==true) setDaysSinceLastClearedFogOfWar(0);
+					oGrid.clearFogOfWarP2(x,y);
+					if (debugShowPlayer2Viewport) { 
+						if ( oViewportPlayer2.isCellWithinViewport(x,y) ) { 	
+							if (oGrid.isFogOfWarP2(x,y)==false) oGrid.DrawCell(x,y,true);
+						}
+					}
 				}
+				
+
 			}
 		}
 	}

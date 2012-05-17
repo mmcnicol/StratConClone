@@ -1,12 +1,19 @@
 
 class cPlayer {
 
+
 	int iPlayerId;
 	bool iIsAI;
 	int[] unitCounts = new int[iNumberOfUnitTypes];
+
+	int showFromX;
+	int showFromY;
 	
 	cPlayer(int iPlayerId_, bool isAI_) {
 	
+		showFromX=1;
+		showFromY=1;
+
 		//println("debug#1.1 isAI_="+isAI_);
 		iPlayerId = iPlayerId_;
 		iIsAI = isAI_;
@@ -27,6 +34,37 @@ class cPlayer {
 		//println("debug#1.3 iIsAI="+iIsAI);
 		return iIsAI; 
 	}
+
+
+	int getShowFromCellX() { return showFromX; }
+	void setShowFromCellX(int value) { 
+
+		if ( getPlayerId()==1 ) {
+			if (value<=1) showFromX=1; 
+			else if (value>= (99 - oViewport.getViewportCellCountX()) ) showFromX=(99 - oViewport.getViewportCellCountX());
+			else showFromX=value; 
+		} else if (debugShowPlayer2Viewport) {
+			if (value<=1) showFromX=1; 
+			else if (value>= (99 - oViewportPlayer2.getViewportCellCountX()) ) showFromX=(99 - oViewportPlayer2.getViewportCellCountX());
+			else showFromX=value; 
+		}
+	}
+
+	int getShowFromCellY() { return showFromY; }	
+	void setShowFromCellY(int value) { 
+
+		if ( getPlayerId()==1 ) {
+			if (value<=1) showFromY=1;
+			else if (value>= (99 - oViewport.getViewportCellCountY()) ) showFromY=(99 - oViewport.getViewportCellCountY());
+			else showFromY=value; 
+		} else {
+			if (value<=1) showFromY=1;
+			else if (value>= (99 - oViewport.getViewportCellCountY()) ) showFromY=(99 - oViewport.getViewportCellCountY());
+			else showFromY=value; 
+		}
+	}
+
+
 
 	
 	void increaseUnitTypeCount(int iUnitType_, int iIslandListId_) { 

@@ -9,7 +9,8 @@ class cPanel {
 		
 	cPanel(int panelStartY_, int panelHeight_) {
 	
-		panelStartX = oViewport.getWidth()+5;
+		//panelStartX = oViewport.getWidth()+5;
+		panelStartX = 5;
 		panelStartY = panelStartY_+2;
 		panelWidth = 210;
 		panelHeight = panelHeight_;
@@ -43,7 +44,7 @@ class cPanel {
 
 
 /* ====================================================================================
-   this panel displays mouse/cursor grid location and screen coordinates.
+   this panel displays game day number and mouse/cursor grid location and screen coordinates.
 */
 class cPanel1 extends cPanel {
 
@@ -53,11 +54,11 @@ class cPanel1 extends cPanel {
 	
 	void update() {
 		
-		clear(255);
+		clear(70);
 		
-		fill(0); //fill(255,0,0);
-		int cellY=oGrid.getShowFromCellY()-1+int(floor((mouseY+cellHeight)/cellHeight));
-		int cellX=oGrid.getShowFromCellX()-1+int(floor((mouseX+cellWidth)/cellWidth));
+		fill(255); //fill(255,0,0);
+		int cellY=oPlayer1.getShowFromCellY()-1 + int(floor( (mouseY+cellHeight) /cellHeight) );
+		int cellX=oPlayer1.getShowFromCellX()-1 + int(floor( ((mouseX-220)+cellWidth)/cellWidth) );
 
 		iSpaceHeight=iNumberTextSize+3;
 		iLineNumber=1;
@@ -111,8 +112,8 @@ class cPanel2 extends cPanel {
 		
 		if ( GameState==4 ) {
 			//println("in cPanel2.show()");
-			clear(255);
-			fill(50);
+			clear(70);
+			fill(255);
 			setTextSizeString();
 			text("Player "+oGameEngine.getCurrentPlayerId()+" turn", panelStartX+2, panelStartY+14);
 		}
@@ -122,11 +123,13 @@ class cPanel2 extends cPanel {
 
 
 /* ====================================================================================
-   this panel displays information about the currently selected unit
-*/
-class cPanelSelectedUnit extends cPanel {
+   this panel displays Game Message Line
+*/ 
+class cPanelGameMessageLine extends cPanel {
 
-	cPanelSelectedUnit(int panelStartY_, int panelHeight_) {
+
+
+	cPanelGameMessageLine(int panelStartY_, int panelHeight_) {
 	
 		super(panelStartY_, panelHeight_);
 		
@@ -134,45 +137,21 @@ class cPanelSelectedUnit extends cPanel {
 		panelWidth=450;
 	}
 	
-	void show(string unitName_, int location_, int strength_, int fuel_, int movesLeftToday_) {
+	void show(string strMsg_) {
 		
-		clear(255);
+		clear(70);
 		
-		fill(0); //fill(255,0,0);
+		fill(255); //fill(255,0,0);
 		
 		setTextSizeString();
-
-		string strMsg = "";
 		
-		if ( fuel_==-1 ) strMsg = unitName_ +", strength "+ strength_ +", "+ movesLeftToday_ +" moves left, at "+location_
-		else strMsg = unitName_ +", strength "+ strength_ +", fuel: "+ fuel_ +", "+ movesLeftToday_ +" moves left, at "+location_
-		
-		
-		text(strMsg, panelStartX+2, panelStartY+14);
-
-		
-		/*
-		iLineNumber=1;
-				
-		text("      unit: "+unitName_, (panelStartX+iLeftTextIndent), panelStartY+(iSpaceHeight*iLineNumber));
-		iLineNumber++;
-		
-		text("  location: "+location_, (panelStartX+iLeftTextIndent), panelStartY+(iSpaceHeight*iLineNumber));
-		iLineNumber++;
-		
-		text("  strength: "+strength_, (panelStartX+iLeftTextIndent), panelStartY+(iSpaceHeight*iLineNumber));
-		iLineNumber++;
-		
-		if ( fuel_!=-1 ) {
-			text("      fuel: "+fuel_, (panelStartX+iLeftTextIndent), panelStartY+(iSpaceHeight*iLineNumber));
-			iLineNumber++;
-		}
-		
-		text("moves left: "+movesLeftToday_, (panelStartX+iLeftTextIndent), panelStartY+(iSpaceHeight*iLineNumber));
-		*/
+		text(strMsg_, panelStartX+2, panelStartY+14);
 		
 	}
+
+
 }
+
 
 
 
@@ -194,9 +173,9 @@ class cPanelSelectedCity extends cPanel {
 	
 	void show(int location_, string productionUnitTypeName_, int productionDaysLeft_, int unitCount_) {
 		
-		clear(255);
+		clear(70);
 		
-		fill(0); //fill(255,0,0);
+		fill(255); //fill(255,0,0);
 		int iLineNumber=1;
 		setTextSizeString();
 		
@@ -260,7 +239,7 @@ class cPanelMap extends cPanel {
 	
 	void show() {
 		
-		//clear(255);
+		clear(70);
 		oGrid.drawMap(panelStartX, panelStartY, iMapPlayerId);
 	}
 }
@@ -286,7 +265,7 @@ class cPanelMapPlayer2 extends cPanel {
 	
 	void show() {
 		
-		//clear(255);
+		clear(70);
 		oGrid.drawMap(panelStartX, panelStartY, iMapPlayerId);
 	}
 }
@@ -311,7 +290,7 @@ class cPanelMapMatrixValidMovesPlayer1 extends cPanel {
 	
 	void show() {
 		
-		clear(255);
+		clear(0);
 		oGrid.drawMapValidMove(panelStartX, panelStartY, iMapPlayerId);
 	}
 }
@@ -334,7 +313,7 @@ class cPanelMapMatrixValidMovesPlayer2 extends cPanel {
 	
 	void show() {
 		
-		clear(255);
+		clear(0);
 		oGrid.drawMapValidMove(panelStartX, panelStartY, iMapPlayerId);
 	}
 }
@@ -350,19 +329,19 @@ class cPanelCityList extends cPanel {
 	int iLineNumber;
 	//cButton oButtonProduction;
 
-	cPanelCityList(int panelStartY_, int panelHeight_) {
+	cPanelCityList(int panelStartX_, int panelStartY_, int panelWidth_, int panelHeight_) {
 		super(panelStartY_, panelHeight_);
-		panelStartX = 5;
-		panelWidth=500;
-		iSpaceHeight=iNumberTextSize+3;
+		panelStartX = panelStartX_;
+		panelWidth = panelWidth_;
+		iSpaceHeight = iNumberTextSize+3;
 	}
 	
 	void show() {
 		
 		//clear(255);
-		clear(200);
+		clear(70);
 		
-		fill(0); //fill(255,0,0);
+		fill(255); //fill(255,0,0);
 		iLineNumber=1;
 		setTextSizeString();
 
@@ -401,19 +380,19 @@ class cPanelIslandList extends cPanel {
 	int iLineNumber;
 	//cButton oButtonProduction;
 
-	cPanelIslandList(int panelStartY_, int panelHeight_) {
+	cPanelIslandList(int panelStartX_, int panelStartY_, int panelWidth_, int panelHeight_) {
 		super(panelStartY_, panelHeight_);
-		panelStartX = 5;
-		panelWidth=500;
-		iSpaceHeight=iNumberTextSize+3;
+		panelStartX = panelStartX_;
+		panelWidth = panelWidth_;
+		iSpaceHeight = iNumberTextSize+3;
 	}
 	
 	void show() {
 		
 		//clear(255);
-		clear(230);
+		clear(70);
 		
-		fill(0); //fill(255,0,0);
+		fill(255); //fill(255,0,0);
 		iLineNumber=1;
 		setTextSizeString();
 		
@@ -465,9 +444,9 @@ class cPanelPlayerUnitCounts extends cPanel {
 		//println("in cPanelPlayerUnitCounts.show()...");
 
 		//clear(255);
-		clear(230);
+		clear(70);
 		
-		fill(0); //fill(255,0,0);
+		fill(255); //fill(255,0,0);
 		iLineNumber=1;
 		setTextSizeString();
 		

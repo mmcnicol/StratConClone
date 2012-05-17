@@ -20,7 +20,8 @@ void mouseReleased() {
 
 	oGeometry.distanceDragEnd();
 
-	//println("mouseReleased() mouseX=" + mouseX + ", mouseY=" + mouseY );
+	if (debugMouseClick) println("");
+	if (debugMouseClick) println("debug: mouseReleased() mouseX=" + mouseX + ", mouseY=" + mouseY );
 	
 	if( mousePrsd ) {
 
@@ -47,13 +48,17 @@ void mouseReleased() {
 			//if ( cPanelSelectedCity.isActive() ) 
 			oPanelSelectedCity.handleEvent(mouseX, mouseY);
 			
-			
-			int tempX=oGrid.getShowFromCellX()-1+int(floor((clickStartX+(cellWidth-1))/cellWidth));
-			int tempY=oGrid.getShowFromCellY()-1+int(floor((clickStartY+(cellHeight-1))/cellHeight));
+			if (debugMouseClick) println("debug: oPlayer1.getShowFromCellX()="+oPlayer1.getShowFromCellX());
+			if (debugMouseClick) println("debug: oPlayer1.getShowFromCellY()="+oPlayer1.getShowFromCellY());
+
+			int tempX=oPlayer1.getShowFromCellX()-1+int(floor( (clickStartX+(cellWidth-1)-220 ) /cellWidth));
+			int tempY=oPlayer1.getShowFromCellY()-1+int(floor( (clickStartY+(cellHeight-1) ) /cellHeight));
+
+			if (debugMouseClick) println("debug: mouse click at cell "+tempX+","+tempY+"");
 
 			if (mouseX==clickStartX && mouseY==clickStartY) {
 			
-				//println("mouse click, release location same location as press "+tempX+","+tempY+"");
+				if (debugMouseClick) println("debug: mouse click, release location same location as press");
 				
 				if ( oVScrollBar.isClicked(clickStartX, clickStartY) ) {
 					//println("clicked VScrollBar");
@@ -68,11 +73,11 @@ void mouseReleased() {
 					// ********************************************
 					// did user click on a city?
 					
-					//println("did user click on a city?");
+					if (debugMouseClick) println("debug: did user click on a city?");
 
 					int iCityListId = oCityList.getCityId(tempX, tempY);
 
-					//println("...iCityListId="+iCityListId);
+					if (debugMouseClick) println("debug: ...iCityListId="+iCityListId);
 
 					if (iCityListId>=0) {
 					
@@ -87,21 +92,18 @@ void mouseReleased() {
 					// ********************************************
 					// or did user click on a unit?
 					
-					//println("did user click on a unit? at "+tempX+","+tempY);
+					if (debugMouseClick) println("debug: did user click on a unit? at "+tempX+","+tempY);
 					
 					int iUnitCount = oUnitList.getCountOfPlayerUnitsAt(1, tempX, tempY);
 					
-					//println("...iUnitCount="+iUnitCount);
+					if (debugMouseClick) println("debug: ...iUnitCount="+iUnitCount);
 
 					if( iUnitCount>0 ) { // user has clicked on a unit
 
-						//println("yes");
-						//println("human unit number at "+clickStartX+","+clickStartY);
+						if (debugMouseClick) println("debug: yes");
+						if (debugMouseClick) println("debug: human unit number at "+clickStartX+","+clickStartY);
 
-						//int targetCellX=oGrid.getShowFromCellX()-1+int(floor((mouseX+15)/16));
-						//int targetCellY=oGrid.getShowFromCellY()-1+int(floor((mouseY+15)/16));
-
-						//println("oGameEngine.getCommand()= "+oGameEngine.getCommand() );
+						if (debugMouseClick) println("debug: oGameEngine.getCommand()= "+oGameEngine.getCommand() );
 						
 						switch( oGameEngine.getCommand() ) {
 
@@ -122,8 +124,9 @@ void mouseReleased() {
 				// or did user click & drag on a unit?
 				
 				
-				//println("did user click & drag on a unit? ("+clickStartX+","+clickStartY+")");
-				//println("target tempX="+tempX+", tempY="+tempY);
+				//if (debugMouseClick) println("debug: did user click & drag on a unit? ("+clickStartX+","+clickStartY+")");
+				if (debugMouseClick) println("debug: did user click & drag on a unit?  ("+tempX+", "+tempY+")");
+				//if (debugMouseClick) println("debug: target tempX="+tempX+", tempY="+tempY);
 
 				//oCityList.printHumanCityLocations();
 				//oUnitList.printHumanUnitLocations();
@@ -132,14 +135,14 @@ void mouseReleased() {
 
 				int intUnitListId = oUnitList.getPlayerUnitNumberAtRowCol(1, tempX, tempY);
 				
-				//println(" intUnitListId="+intUnitListId);
+				if (debugMouseClick) println("debug: intUnitListId="+intUnitListId);
 				
 				if( intUnitListId>-1 ) { // user has clicked on a unit
 				
-					//println("human unit number at ("+clickStartX+","+clickStartY+")="+intUnitListId);
+					if (debugMouseClick) println("debug: human unit number at ("+clickStartX+","+clickStartY+")="+intUnitListId);
 				
-					int targetCellX=oGrid.getShowFromCellX()-1+int(floor((mouseX+(cellWidth-1))/cellWidth));
-					int targetCellY=oGrid.getShowFromCellY()-1+int(floor((mouseY+(cellHeight-1))/cellHeight));
+					int targetCellX=oPlayer1.getShowFromCellX()-1+int(floor( (mouseX+(cellWidth-1)-220 )/cellWidth));
+					int targetCellY=oPlayer1.getShowFromCellY()-1+int(floor((mouseY+(cellHeight-1))/cellHeight));
 					
 					if ( targetCellX<oGrid.getCellCountX()+1 && targetCellY<oGrid.getCellCountY()+1 ) {
 

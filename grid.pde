@@ -4,8 +4,6 @@ class cGrid {
 	int countX;
 	int countY;
 	int x,y;
-	int showFromX;
-	int showFromY;
 
 	//final int cellWidth=16;
 	//final int cellHeight=16;
@@ -38,9 +36,6 @@ class cGrid {
 	cGrid(int countX_, int countY_, int showFromX_, int showFromY_) {
 		countX = countX_;
 		countY = countY_;
-
-		showFromX = showFromX_;
-		showFromY = showFromY_;
 		
 		listNeighbour = new ArrayList();  // Create an empty ArrayList
 
@@ -51,9 +46,6 @@ class cGrid {
 	void resize(int countX_, int countY_, int showFromX_, int showFromY_) {
 		countX = countX_;
 		countY = countY_;
-
-		showFromX = showFromX_;
-		showFromY = showFromY_;
 		
 		init();
 	}
@@ -79,8 +71,7 @@ class cGrid {
 				intGridCellType[x][y]=SEA;
 				intGridIslands[x][y]=-4; // Nothing
 
-				if (ShowFogOfWar==true) intGridCellFog[x][y]=true;
-				else intGridCellFog[x][y]=false;
+				intGridCellFog[x][y]=true;
 
 				intGridCellFogP2[x][y]=true;
 			}
@@ -191,20 +182,6 @@ class cGrid {
 		return false;
 	}
 
-	int getShowFromCellX() { return showFromX; }
-	void setShowFromCellX(int value) { 
-		if (value<=1) showFromX=1; 
-		else if (value>= (99 - oViewport.getViewportCellCountX()) ) showFromX=(99 - oViewport.getViewportCellCountX());
-		else showFromX=value; 
-	}
-
-	int getShowFromCellY() { return showFromY; }	
-	void setShowFromCellY(int value) { 
-		if (value<=1) showFromY=1;
-		else if (value>= (99 - oViewport.getViewportCellCountY()) ) showFromY=(99 - oViewport.getViewportCellCountY());
-		else showFromY=value; 
-	}
-
 
 	int getCellCountX() { return countX; }
 	void setCellCountX(int value) { countX=value; }
@@ -297,7 +274,7 @@ class cGrid {
 		if (x_+1<=countX && y_-1>=1)
 			if( intGridCellType[x_+1][y_-1]==LAND ) result=intGridIslands[x_+1][y_-1];	
 		
-		println("in grid.getIslandIdIfIsNextToLand("+x_+","+y_+"), result="+result);
+		//println("in grid.getIslandIdIfIsNextToLand("+x_+","+y_+"), result="+result);
 		
 		//println("leaving oGrid.getIslandIdIfIsNextToLand()");
 
@@ -513,83 +490,71 @@ class cGrid {
 	}
 
 
-	
-	// ******************************************************
-	// MOVE
-	// ******************************************************
-
-
-	void moveLeft(int moveByCellCount) {
-
-		if ( getShowFromCellX() > oViewport.getViewportCellCountX() ) {
-			setShowFromCellX( getShowFromCellX()-(moveByCellCount) );
-		} else {
-			setShowFromCellX( 1 );
-		}
-	}
-
-	void moveRight(int moveByCellCount) {
-
-		if ( getShowFromCellX() < oViewport.getViewportCellCountX() ) {
-			setShowFromCellX( getShowFromCellX()+(moveByCellCount) );
-		} else {
-			setShowFromCellX( getCellCountX()-oViewport.getViewportCellCountX() );
-		}
-
-	}
-
-	void moveUp(int moveByCellCount) {
-
-		if ( getShowFromCellY() > oViewport.getViewportCellCountY() ) {
-			setShowFromCellY( getShowFromCellY()-(moveByCellCount) );
-		} else {
-			setShowFromCellY( 1 );
-		}
-	}
-
-	void moveDown(int moveByCellCount) {
-
-		if ( getShowFromCellY() < oViewport.getViewportCellCountY() ) {
-			setShowFromCellY( getShowFromCellY()+(moveByCellCount) );
-		} else {
-			setShowFromCellY( getCellCountY()-oViewport.getViewportCellCountY() );
-		}
-
-	}
-
-
-
 	// ******************************************************
 	// DRAW
 	// ******************************************************
 
 	void draw() {
 
+	
+
+		//println("debug: in grid.draw(), oGameEngine.getCurrentPlayerId()="+oGameEngine.getCurrentPlayerId() );
+
 		int DisplayX, DisplayY;
 
-		int showToX = showFromX + oViewport.getViewportCellCountX()-1;
-		int showToY = showFromY + oViewport.getViewportCellCountY()-1;
+		//int showToX = showFromX + oViewport.getViewportCellCountX()-1;
+		//int showToY = showFromY + oViewport.getViewportCellCountY()-1;
 
-		for (y=showFromY; y<=showToY; y=y+1) {
-			for (x=showFromX; x<=showToX; x=x+1) {
-			
-				DrawCell(x, y, true);
-			}
+		int showFromX, showFromY;
+		int showToX, showToY;
+
+		if ( oGameEngine.getCurrentPlayerId()==1 ) {
+			showFromX = oPlayer1.getShowFromCellX();
+			showFromY = oPlayer1.getShowFromCellY();
+			showToX = oPlayer1.getShowFromCellX() + oViewport.getViewportCellCountX()-1;
+			showToY = oPlayer1.getShowFromCellY() + oViewport.getViewportCellCountY()-1;
+		} else if (debugShowPlayer2Viewport) {
+			showFromX = oPlayer2.getShowFromCellX();
+			showFromY = oPlayer2.getShowFromCellY();
+			showToX = oPlayer2.getShowFromCellX() + oViewportPlayer2.getViewportCellCountX()-1;
+			showToY = oPlayer2.getShowFromCellY() + oViewportPlayer2.getViewportCellCountY()-1;
 		}
 
+		if ( oAnimateAttack.getAttackAnimationInProgress()==false ) {
+
+			for (y=showFromY; y<=showToY; y=y+1) {
+				for (x=showFromX; x<=showToX; x=x+1) {
+				
+					DrawCell(x, y, true);
+				}
+			}
+		}
+	
 	}
 
 
 
 	void drawMap(int sx, int sy, int iMapPlayerId_) {
 		
+		fill(70);
+		rect(sx-2, sy-2, countX+4, countY+4);
+
 		fill(0);
-		rect(sx, sy, countX+1, countY+1);
+		rect(sx, sy, countX, countY);
 		
 		int DisplayX, DisplayY;
+		int showFromX, showFromY;
 
-		color colSea = color(0, 0, 200);
-		color colLand = color(0, 200, 0);
+		if ( iMapPlayerId_==1 ) {
+			showFromX = oPlayer1.getShowFromCellX();
+			showFromY = oPlayer1.getShowFromCellY();
+		} else {
+			showFromX = oPlayer2.getShowFromCellX();
+			showFromY = oPlayer2.getShowFromCellY();
+		}
+	
+		//color colSea = color(0, 0, 200);
+		//color colLand = color(0, 200, 0);
 		
 		int x,y;
 		for (y=1; y<countY; y=y+1) {
@@ -599,33 +564,42 @@ class cGrid {
 				DisplayY=sy+y; //(((y-showFromY)+1)*16)-15;
 				DisplayX=sx+x; //(((x-showFromX)+1)*16)-(15);
 				
-				if ( iMapPlayerId_==1 && intGridCellFog[x][y]==false ) {
-					
-					if ( isSea(x,y) ) stroke(180);	
-					else stroke(120);
-					
-					if( oCityList.isCity(x,y) ) stroke(0);
-					
-					point(DisplayX, DisplayY);
+				if ( iMapPlayerId_==1 ) {
 
-				} else if ( iMapPlayerId_==2 && intGridCellFogP2[x][y]==false ) {
+					if ( intGridCellFog[x][y]==false ) {
 					
-					if ( isSea(x,y) ) stroke(180);	
-					else stroke(120);
+						if ( isSea(x,y) ) stroke(180);	
+						else stroke(120);
 					
-					if( oCityList.isCity(x,y) ) stroke(0);
+						if( oCityList.isCity(x,y) ) stroke(0);
 					
-					point(DisplayX, DisplayY);
+						point(DisplayX, DisplayY);
+					}
+
+				} else if ( debugShowPlayer2Viewport && iMapPlayerId_==2 ) {
+
+					if ( intGridCellFogP2[x][y]==false ) {
+					
+						if ( isSea(x,y) ) stroke(180);	
+						else stroke(120);
+						
+						if( oCityList.isCity(x,y) ) stroke(0);
+						
+						point(DisplayX, DisplayY);
+					}
 				}	
 			}
 		}
 		
+		
 		// draw a rectangle around area viewable within viewport
-		if ( iMapPlayerId_==1 ) { 
-			noFill();
-			stroke(250);
+		noFill();
+		stroke(250);
+		if ( iMapPlayerId_==1 ) 
 			rect(sx+showFromX, sy+showFromY, oViewport.getViewportCellCountX()-1, oViewport.getViewportCellCountY()-1);
-		}
+		else if (debugShowPlayer2Viewport) 
+			rect(sx+showFromX, sy+showFromY, oViewportPlayer2.getViewportCellCountX()-1, oViewportPlayer2.getViewportCellCountY()-1);
+		
 	}
 
 
@@ -642,14 +616,26 @@ class cGrid {
 		setTextSizeNumber();
 		text( "Viewport Matrix of Valid Moves for Player "+iMapPlayerId_+":" , sx, sy+iNumberTextSize );
 		setTextSizeString();
+
+
+		int showFromX, showFromY;
+
+		if ( iMapPlayerId_==1 ) {
+			showFromX = oPlayer1.getShowFromCellX();
+			showFromY = oPlayer1.getShowFromCellY();
+		} else {
+			showFromX = oPlayer2.getShowFromCellX();
+			showFromY = oPlayer2.getShowFromCellY();
+		}
+
 		
 		int x,y;
-		for (y=getShowFromCellY(); y<=( getShowFromCellY() + oViewport.getViewportCellCountY() ); y=y+1) {
+		for (y=showFromY; y<=( showFromY + oViewport.getViewportCellCountY() ); y=y+1) {
 
-			for (x=getShowFromCellX(); x<=( getShowFromCellX() + oViewport.getViewportCellCountX() ); x=x+1) {
+			for (x=showFromX; x<=( showFromX + oViewport.getViewportCellCountX() ); x=x+1) {
 				
-				DisplayY=sy+((y-getShowFromCellY())*iNumberTextSize)+iNumberTextSize+iNumberTextSize; //(((y-showFromY)+1)*iNumberTextSize)-iNumberTextSize;
-				DisplayX=sx+((x-getShowFromCellX())*iNumberTextSize); //(((x-showFromX)+1)*iNumberTextSize)-(iNumberTextSize);
+				DisplayY=sy+((y-showFromY)*iNumberTextSize)+iNumberTextSize+iNumberTextSize; //(((y-showFromY)+1)*iNumberTextSize)-iNumberTextSize;
+				DisplayX=sx+((x-showFromX)*iNumberTextSize); //(((x-showFromX)+1)*iNumberTextSize)-(iNumberTextSize);
 					
 				fill(0);
 				setTextSizeNumber();
@@ -666,23 +652,84 @@ class cGrid {
 	
 	void DrawCell(int x, int y, bool bDrawAnyUnits) {
 
-		//println("debug: in grid.DrawCell("+x+","+y+") bDrawAnyUnits="+bDrawAnyUnits);
+	
+
+		//if (debugAnimate) println("debug: in grid.DrawCell("+x+","+y+") bDrawAnyUnits="+bDrawAnyUnits);
 		int DisplayX, DisplayY;
 		//println("showFromY="+showFromY+", countY="+countY+  ", showFromX="+showFromX+", countX="+countX);
 
-		int showToX = showFromX + oViewport.getViewportCellCountX()-1;
-		int showToY = showFromY + oViewport.getViewportCellCountY()-1;
+
+		//int showToX = showFromX + oViewport.getViewportCellCountX()-1;
+		//int showToY = showFromY + oViewport.getViewportCellCountY()-1;
+
+		int showFromX, showFromY;
+		int PlayerDrawOffSetX=220;
+		int PlayerDrawOffSetY=0;
+		bool PlayerCellWithinViewport=false;
+		bool PlayerCellIsFogOfWar = false;
+
+
+		if ( oGameEngine.getCurrentPlayerId()==1 ) {
+			PlayerCellIsFogOfWar = isFogOfWar(x, y);
+			PlayerCellWithinViewport = oViewport.isCellWithinViewport(x, y);
+			showFromX = oPlayer1.getShowFromCellX();
+			showFromY = oPlayer1.getShowFromCellY();
+
+		} else if (debugShowPlayer2Viewport) {
+			PlayerCellIsFogOfWar = isFogOfWarP2(x, y);
+			PlayerDrawOffSetY=350;
+			PlayerCellWithinViewport = oViewportPlayer2.isCellWithinViewport(x, y);
+			showFromX = oPlayer2.getShowFromCellX();
+			showFromY = oPlayer2.getShowFromCellY();
+		}
 
 
 		//println("x="+x+", y="+y);
-		DisplayY=(((y-showFromY)+1)*cellHeight)-(cellHeight-1);
-		DisplayX=(((x-showFromX)+1)*cellWidth)-(cellWidth-1);
+		DisplayY=((( y-showFromY )+1)*cellHeight)-(cellHeight-1) + PlayerDrawOffSetY;
+		DisplayX=((( x-showFromX )+1)*cellWidth)-(cellWidth-1) + PlayerDrawOffSetX;
+	
+		if ( oAnimate.getAnimationInProgress() ) {
 
-		//if ( x >= oGrid.getShowFromCellX() && x <= (oGrid.getShowFromCellX()+oGrid.getCellCountX())   &&   y >= oGrid.getShowFromCellY() && y <= (oGrid.getShowFromCellY()+oGrid.getCellCountY()) )  {
-		if ( oViewport.isCellWithinViewport(x, y) ) { 
-			
-			if (intGridCellFog[x][y]==false) {
+			if ( PlayerCellWithinViewport ) {
+				
+				//fill(70);
+				//rect(DisplayX, DisplayY, cellWidth, cellHeight);
+				//oUnitList.Draw(x,y);
+				
 				if ( oCityList.isCity(x,y) ) {
+					//if ( debugAnimate ) println("debug: in grid.DrawCell() getAnimationInProgress=true draw CITY at "+DisplayX+","+DisplayY+" ");
+					oCityList.Draw(x,y);
+				} else if ( isSea(x,y) ) {
+					//if ( debugAnimate ) println("debug: in grid.DrawCell() getAnimationInProgress=true draw SEA at "+DisplayX+","+DisplayY+" ");
+					image( imgSea, DisplayX, DisplayY ); 
+				} else {
+					//if ( debugAnimate ) println("debug: in grid.DrawCell() getAnimationInProgress=true draw LAND at "+DisplayX+","+DisplayY+" ");
+					image( imgLand, DisplayX, DisplayY ); 
+				}
+
+				if (bDrawAnyUnits) {
+					//if ( debugAnimate ) println("debug: in grid.DrawCell() getAnimationInProgress=true draw ANY UNITS at "+DisplayX+","+DisplayY+" ");
+					//oUnitList.Draw(x,y);
+				}
+				
+			}
+
+		} else if ( oAnimateAttack.getAttackAnimationInProgress() ) {
+
+			if ( PlayerCellWithinViewport ) {
+				if ( debugAnimateAttack ) println("debug: in grid.DrawCell() getAttackAnimationInProgress=true draw grey cell at "+DisplayX+","+DisplayY);
+				fill(70);
+				rect(DisplayX, DisplayY, cellWidth, cellHeight);
+			}
+			
+
+		//if ( oViewport.isCellWithinViewport(x, y) ) {
+		} else if ( PlayerCellWithinViewport ) {  
+			
+			//if (intGridCellFog[x][y]==false) {
+			if (PlayerCellIsFogOfWar==false) {
+				if ( oCityList.isCity(x,y) ) {
+					//println("debug: in grid.DrawCell("+x+","+y+") bDrawAnyUnits="+bDrawAnyUnits+", draw city");
 					oCityList.Draw(x,y);
 				//} else if ( oUnitList.isUnit(x,y) && bDrawAnyUnits==true ) {
 				//	oUnitList.Draw(x,y);
@@ -691,25 +738,11 @@ class cGrid {
 						//println("drawing sea... at ("+DisplayX+","+DisplayY+")");
 						image( imgSea, DisplayX, DisplayY ); 
 
-						/*
-						// for testing purposes
-						fill(0);
-						setTextSizeNumber();
-						text("S", DisplayX+iNumberIndent, DisplayY+iNumberTextSize );
-						setTextSizeString();
-						*/
 					} else {
 						//println("drawing land... at ("+x+","+y+") "("+DisplayX+","+DisplayY+")");
 						//println("is land... at ("+x+","+y+") ("+DisplayX+","+DisplayY+")");
 						image( imgLand, DisplayX, DisplayY ); 
 
-						/*
-						// for testing purposes
-						fill(0);
-						setTextSizeNumber();
-						text("L", DisplayX+iNumberIndent, DisplayY+iNumberTextSize );
-						setTextSizeString();
-						*/
 					}
 
 					if ( debugShowCellGridLocation ) {
@@ -747,7 +780,7 @@ class cGrid {
 				//redraw();
 			}
 		}
-
+		
 
 	}
 
