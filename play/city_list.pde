@@ -290,6 +290,14 @@ class cCityList {
 
 		oIslandList.updateIslandPlayerCityCount(city.getCityIslandListId(), city.getCityPlayerId(), iPlayerId_);
 	
+		/*
+		if ( iPlayerId_==1 ) {
+			oPlayer1.decreaseUnitTypeCount(0, city.getCityIslandListId() );
+		} else {
+			oPlayer2.decreaseUnitTypeCount(0, city.getCityIslandListId() );
+		}
+		*/
+
 		city.setCityPlayerId(iPlayerId_);
 		
 		// continue building unit type, else 
@@ -359,15 +367,25 @@ class cCityList {
 		
 		cCity city = (cCity) listCity.get(iCityListId_);
 		city.clearFogOfWar();	
+
 		if ( city.getCityPlayerId()==1 ) oViewport.scrollIfAppropriate(city.getCellX(), city.getCellY());
+		else if (debugShowPlayer2Viewport) oViewportPlayer2.scrollIfAppropriate(city.getCellX(), city.getCellY());
 	}
+
 
 	void clearFogOfWarByPlayerId(int iPlayerId_) {
 
 		for (int i = 0; i < listCity.size(); i++) { 
 			cCity city = (cCity) listCity.get(i);
-			if( city.getCityPlayerId()==iPlayerId_) {
-				city.clearFogOfWar();	
+			
+			if (iPlayerId_==1) {
+				if( city.getCityPlayerId()==iPlayerId_) {
+					city.clearFogOfWar();	
+				}
+			} else {
+				if( city.getCityPlayerId()==iPlayerId_) {
+					city.clearFogOfWar();	
+				}
 			}
 		}  
 	}

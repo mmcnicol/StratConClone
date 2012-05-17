@@ -11,6 +11,8 @@ class cCity {
 
 	cCity(int intCityPlayerId_, int intCellX_, int intCellY_, int iCityIslandListId_) {
 
+	
+
 		if (debugCityAdd) println("   cCity constructor for intCityPlayerId_=" + intCityPlayerId_+", iCityIslandListId_="+iCityIslandListId_);
 
 		intCityPlayerId=intCityPlayerId_;
@@ -44,6 +46,7 @@ class cCity {
 
 			oIslandList.increaseUnoccupiedCityCount( getCityIslandListId() );
 		}
+	
 	}
 
 	string getLocation() { return nf(intCellX,3)+","+nf(intCellY,3); }
@@ -128,16 +131,41 @@ class cCity {
 	
 		//println("in cCity.Draw(), intCityPlayerId=" + intCityPlayerId+" row="+intCellX+" col="+intCellY);
 
-		//if ( intCellX >= oGrid.getShowFromCellY() && intCellX <= oGrid.getCellCountY()   &&   intCellY >= oGrid.getShowFromCellX() && intCellY <= oGrid.getCellCountX() )  {
-		
-		//if ( intCellX >= oGrid.getShowFromCellX() && intCellX <= (oGrid.getShowFromCellX() + oViewport.getViewportCellCountY() )   &&   intCellY >= oGrid.getShowFromCellY() && intCellY <= ( oGrid.getShowFromCellY() + oViewport.getViewportCellCountY() ) )  {
-		if ( oViewport.isCellWithinViewport(intCellX, intCellY) ) { 
+		int PlayerDrawOffSetX=220;
+		int PlayerDrawOffSetY=0;
+		bool PlayerCellIsFogOfWar = false;
+		bool CellWithinPlayerViewport = false;
+		int DisplayY;
+		int DisplayX;
+
+		if ( oGameEngine.getCurrentPlayerId()==1 ) {
+			PlayerCellIsFogOfWar = oGrid.isFogOfWar(intCellX, intCellY);
+
+			CellWithinPlayerViewport = oViewport.isCellWithinViewport(intCellX, intCellY);
+
+			DisplayY=((intCellY-oPlayer1.getShowFromCellY()+1)*cellWidth)-(cellWidth-1) + PlayerDrawOffSetY;
+			DisplayX=((intCellX-oPlayer1.getShowFromCellX()+1)*cellHeight)-(cellHeight-1) + PlayerDrawOffSetX;
+
+		} else if (debugShowPlayer2Viewport) {
+			PlayerCellIsFogOfWar = oGrid.isFogOfWarP2(intCellX, intCellY);
+			PlayerDrawOffSetY=350;
+
+			CellWithinPlayerViewport = oViewportPlayer2.isCellWithinViewport(intCellX, intCellY);
+
+			DisplayY=((intCellY-oPlayer2.getShowFromCellY()+1)*cellWidth)-(cellWidth-1) + PlayerDrawOffSetY;
+			DisplayX=((intCellX-oPlayer2.getShowFromCellX()+1)*cellHeight)-(cellHeight-1) + PlayerDrawOffSetX;
+		}
+
+		//println("debug: in cCity.Draw(), intCityPlayerId=" + intCityPlayerId+" row="+intCellX+" col="+intCellY+", CellWithinPlayerViewport="+CellWithinPlayerViewport+", PlayerCellIsFogOfWar="+PlayerCellIsFogOfWar);
+
+		//if ( oViewport.isCellWithinViewport(intCellX, intCellY) ) { 
+		if ( CellWithinPlayerViewport ) { 
 			
+			//int DisplayY=((intCellY-oGrid.getShowFromCellY()+1)*cellWidth)-(cellWidth-1) + PlayerDrawOffSetY;
+			//int DisplayX=((intCellX-oGrid.getShowFromCellX()+1)*cellHeight)-(cellHeight-1) + PlayerDrawOffSetX;
 			
-			int DisplayY=((intCellY-oGrid.getShowFromCellY()+1)*cellWidth)-(cellWidth-1);
-			int DisplayX=((intCellX-oGrid.getShowFromCellX()+1)*cellHeight)-(cellHeight-1);
-			
-			if ( oGrid.isFogOfWar(intCellX, intCellY)==false ) { // for testing purposes
+			//if ( oGrid.isFogOfWar(intCellX, intCellY)==false ) { // for testing purposes
+			if (PlayerCellIsFogOfWar==false) {
 				switch(intCityPlayerId) {
 					case -1:
 						image( imgCity0, DisplayX, DisplayY );
@@ -149,14 +177,14 @@ class cCity {
 							// show Production Days Left on city image
 							fill(255);
 							if ( getProductionDaysLeft() > 9 )
-								rect(DisplayX+iNumberIndent, DisplayY+iNumberIndent-1, iNumberTextSize+iNumberTextSize, iNumberTextSize);
+								rect(DisplayX+iNumberIndent, DisplayY+iNumberIndent, iNumberTextSize+iNumberTextSize, iNumberTextSize);
 							else
-								rect(DisplayX+iNumberIndent, DisplayY+iNumberIndent-1, iNumberTextSize, iNumberTextSize);
+								rect(DisplayX+iNumberIndent, DisplayY+iNumberIndent, iNumberTextSize, iNumberTextSize);
 
 							fill(0);
 							setTextSizeNumber();
 							//text(getProductionDaysLeft(), DisplayX+iNumberIndent, DisplayY+iNumberTextSize+1 );
-							text(getProductionDaysLeft(), DisplayX+iNumberIndent+1, DisplayY+iNumberTextSize+2 );
+							text(getProductionDaysLeft(), DisplayX+iNumberIndent+1, DisplayY+iNumberTextSize );
 							setTextSizeString();
 						}
 
@@ -205,18 +233,27 @@ class cCity {
 		int x, y;
 		int sx, sy;
 		int ex, ey;
-		
-		if( intCellX-1>=oGrid.getShowFromCellX() ) sx=intCellX-1;
+		int showFromX, showFromY;
+
+		if ( getCityPlayerId()==1 ) { 
+			showFromX = oPlayer1.getShowFromCellX();
+			showFromY = oPlayer1.getShowFromCellY();
+		} else if ( getCityPlayerId()==2 ) {
+			showFromX = oPlayer2.getShowFromCellX();
+			showFromY = oPlayer2.getShowFromCellY();
+		}
+
+		if( intCellX-1>=showFromX ) sx=intCellX-1;
 		else sx=intCellX;
 		
-		if( intCellX+1<= (oGrid.getShowFromCellX() + oViewport.getWidth() ) ) ex=intCellX+1;
+		if( intCellX+1<= (showFromX + oViewport.getWidth() ) ) ex=intCellX+1;
 		else ex=intCellX;
 		
 		
-		if( intCellY-1>=oGrid.getShowFromCellY() ) sy=intCellY-1;
+		if( intCellY-1>=showFromY ) sy=intCellY-1;
 		else sy=intCellY;
 				
-		if( intCellY+1<= ( oGrid.getShowFromCellY() + oViewport.getHeight() ) ) ey=intCellY+1;
+		if( intCellY+1<= ( showFromY + oViewport.getHeight() ) ) ey=intCellY+1;
 		else ey=intCellY;
 		
 		
@@ -269,7 +306,7 @@ class cCity {
 			if( productionDaysLeft > 1 ) productionDaysLeft--;
 			else {
 				
-				//println("in city.manageProduction() productionUnitTypeId="+productionUnitTypeId);
+				//println("in city.manageProduction() productionUnitTypeId="+productionUnitTypeId+",  city has finished producing a unit");
 				
 				// city has finished producing a unit
 				
@@ -280,14 +317,26 @@ class cCity {
 				// start building next unit
 				
 				//doNextUnitProductionAI(intCityPlayerId); // for testing purposes
+
+
+				if ( intCityPlayerId==1 ) { 
+					oViewport.scrollIfAppropriate2( getCellX(), getCellY() );
+					//oPlayer1.setShowFromCellX( getCellX()-10 );
+					//oPlayer1.setShowFromCellY( getCellY()-10 );
+				} else {
+					oViewportPlayer2.scrollIfAppropriate2( getCellX(), getCellY() );
+					//oPlayer2.setShowFromCellX( getCellX()-10 );
+					//oPlayer2.setShowFromCellY( getCellY()-10 );
+				}
 				
 				if( intCityPlayerId == 2 ) {
 				
+					if (debugShowPlayer2Viewport) oViewportPlayer2.scrollIfAppropriate(intCellX, intCellY);
 					doNextUnitProductionAI(intCityPlayerId);
 								
 				} else if( intCityPlayerId == 1 && oPlayer1.getIsAI() ) {
 
-					if ( intCityPlayerId==1 ) oViewport.scrollIfAppropriate(intCellX, intCellY);				
+					oViewport.scrollIfAppropriate(intCellX, intCellY);
 					doNextUnitProductionAI(intCityPlayerId);
 
 								
@@ -313,6 +362,8 @@ class cCity {
 					oDialogueCityProduction.display();
 					*/
 				}
+
+				clearFogOfWar();
 				
 			}
 		} else {

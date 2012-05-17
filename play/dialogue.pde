@@ -11,10 +11,11 @@ class cDialogue {
 
 		//println("in cDialogue constructor "+panelStartY_+","+ panelHeight_);
 		
-		panelWidth = 400;
+		panelWidth = 320;
 		panelHeight = panelHeight_;	
-		panelStartX = round( ((oViewport.getWidth()-(cellWidth-1))/2)-(panelWidth/2) );
-		panelStartY = panelStartY_;
+		panelStartX = 220 + round( ((oViewport.getWidth()-(cellWidth-1))/2)-(panelWidth/2) );
+		//panelStartY = panelStartY_;
+		panelStartY = round( (oViewport.getHeight()/2)-(panelHeight/2) );
 		//println("in cDialogue constructor... "+panelStartY+","+ panelHeight);
 		
 		bActive=false; // when active, system checks for mouse clicks. use if panel contains clickable items.
@@ -288,6 +289,11 @@ class cDialogueCityProduction extends cDialogue {
 			bActive=false;
 			GameState=4;
 			//println("city production dialogue, button clicked");
+
+			//oViewport.draw();
+			//if (debugShowPlayer2Viewport) oViewportPlayer2.draw();
+			println("initial city production confirmed.");
+
 		}
 
 	}

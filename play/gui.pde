@@ -1,6 +1,8 @@
 
 class cViewport {
 
+	int iPlayerId;
+
 	int viewportWidth;
 	int viewportHeight;
 
@@ -12,8 +14,10 @@ class cViewport {
 	
 	int ScrollBarWidth;
 
-	cViewport(int gridCellCountX, int gridCellCountY, int viewportCellCountX_, int viewportCellCountY_) {
+	cViewport(int iPlayerId_, int gridCellCountX, int gridCellCountY, int viewportCellCountX_, int viewportCellCountY_) {
 	
+		iPlayerId = iPlayerId_;
+
 		iStartX=1;
 		iStartY=1;
 	
@@ -46,8 +50,8 @@ class cViewport {
 		
 		//println("in viewport.resize...viewportCellCountX="+ viewportCellCountX  +", viewportCellCountY="+viewportCellCountY);
 	
-		viewportWidth = (viewportCellCountX*cellWidth)+cellWidth; 
-		viewportHeight = (viewportCellCountY*cellHeight)+cellHeight;
+		viewportWidth = (viewportCellCountX*cellWidth); 
+		viewportHeight = (viewportCellCountY*cellHeight);
 
 		oVScrollBar = new cVScrollBar(viewportWidth, viewportHeight, viewportCellCountX, viewportCellCountY, gridCellCountX, gridCellCountY); 
 		oHScrollBar = new cHScrollBar(viewportWidth, viewportHeight, viewportCellCountX, viewportCellCountY, gridCellCountX, gridCellCountY); 
@@ -79,46 +83,58 @@ class cViewport {
 	
 	void draw() {
 	
-		//println("debug: in viewport.draw()");
-		
-		background(#FFFFFF);
-		fill(0);
-		rect(0,0,viewportWidth-ScrollBarWidth,viewportHeight-ScrollBarWidth);
-		noStroke();
-		
-		if ( showViewportScrollBars ) {
-			oVScrollBar.draw();
-			oHScrollBar.draw();
+		//println("debug: in viewport.draw(), oGameEngine.getCurrentPlayerId()="+oGameEngine.getCurrentPlayerId() );
+
+		if ( oAnimateAttack.getAttackAnimationInProgress()==false ) {
+
+			fill(0);
+			if ( oGameEngine.getCurrentPlayerId()==-1 ) { 
+				rect(220, 0, viewportWidth, viewportHeight);
+				rect(220, 350, viewportWidth, viewportHeight);
+			} else if ( oGameEngine.getCurrentPlayerId()==1 ) { 
+				rect(220, 0, viewportWidth, viewportHeight);
+			} else {
+				rect(220, 350, viewportWidth, viewportHeight);
+			}
+			
+			//background(#FFFFFF);
+			//fill(0);
+			//rect(0,0,viewportWidth-ScrollBarWidth,viewportHeight-ScrollBarWidth);
+			noStroke();
+			
+			if ( showViewportScrollBars ) {
+				oVScrollBar.draw();
+				oHScrollBar.draw();
+			}
+
+			oGrid.draw();
+			//oCityList.Draw();
+			oUnitList.Draw();
+
+			
+			//oPanel2.show();
+
+			//redraw();
 		}
-
-		oGrid.draw();
-		//oCityList.Draw();
-		oUnitList.Draw();
-		oPanelCityList.show();
-		oPanelIslandList.show();
-		
-		oPanelPlayer1UnitCounts.show();
-		oPanelPlayer2UnitCounts.show();
-
-		// GameState code 4=play
-		if ( GameState==4 ) {
-
-			oPanelMap.show();
-			oPanelMapPlayer2.show();
-		}
-		
-		//oPanel2.show();
-
-		//redraw();
 	}
 	
 	bool isCellWithinViewport(int x_, int y_) {
+
+		int showFromX, showFromY;
+
+		if ( oGameEngine.getCurrentPlayerId()==1 ) { 
+			showFromX = oPlayer1.getShowFromCellX();
+			showFromY = oPlayer1.getShowFromCellY();
+		} else {
+			showFromX = oPlayer2.getShowFromCellX();
+			showFromY = oPlayer2.getShowFromCellY();
+		}
 	
-		if ( 	x_ >= oGrid.getShowFromCellX() && 
-			x_ <= (oGrid.getShowFromCellX()+getViewportCellCountX()-1)   
+		if ( 	x_ >= showFromX && 
+			x_ <= (showFromX+getViewportCellCountX()-1)   
 			&&   
-			y_ >= oGrid.getShowFromCellY() && 
-			y_ <= (oGrid.getShowFromCellY()+getViewportCellCountY()-1) )  {
+			y_ >=showFromY && 
+			y_ <= (showFromY+getViewportCellCountY()-1) )  {
 			
 			return true;
 		} else 
@@ -127,47 +143,85 @@ class cViewport {
 
 	void scrollIfAppropriate(int x_, int y_) {
 
-		//println("oViewport.scrollIfAppropriate("+x_+","+y_+"), getShowFromCellX()="+oGrid.getShowFromCellX()+", getShowFromCellY()="+oGrid.getShowFromCellY() );
-
-		int iMargin=2;
-		bool bRedraw=false;
-
-
-		// 32x32
-		int tempX = x_ - oGrid.getShowFromCellX();
-		if ( tempX > 20 ) { oGrid.setShowFromCellX( x_ - 10 ); bRedraw=true; }
-		else if ( tempX < -20 ) { oGrid.setShowFromCellX( x_ + 10 ); bRedraw=true; }
-
-		int tempY = y_ - oGrid.getShowFromCellY();
-		if ( tempY > 20 ) { oGrid.setShowFromCellY( y_ - 10 ); bRedraw=true; }
-		else if ( tempY < -20 ) { oGrid.setShowFromCellY( y_ + 10 ); bRedraw=true; }
-
-
-		if ( bRedraw==false ) {
-
-			if ( x_ < oGrid.getShowFromCellX()+(iMargin*2) && oGrid.getShowFromCellX()>1 ) { oGrid.setShowFromCellX(oGrid.getShowFromCellX()-iMargin); bRedraw=true; }
-			if ( y_ < oGrid.getShowFromCellY()+(iMargin*2) && oGrid.getShowFromCellY()>1  ) { oGrid.setShowFromCellY(oGrid.getShowFromCellY()-iMargin); bRedraw=true; }
-
-			// 16x16
-			//if ( x_ > oGrid.getShowFromCellX()+getViewportCellCountX()-(iMargin*2) && oGrid.getShowFromCellX()<41 ) { oGrid.setShowFromCellX(oGrid.getShowFromCellX()+iMargin); bRedraw=true; }
-			//if ( y_ > oGrid.getShowFromCellY()+getViewportCellCountY()-(iMargin*2) && oGrid.getShowFromCellY()<44  ) { oGrid.setShowFromCellY(oGrid.getShowFromCellY()+iMargin); bRedraw=true; }
-
-			// 32x32
-			if ( x_ > oGrid.getShowFromCellX()+getViewportCellCountX()-(iMargin*2) && oGrid.getShowFromCellX()<(99 - getViewportCellCountX()) ) { oGrid.setShowFromCellX(oGrid.getShowFromCellX()+iMargin); bRedraw=true; }
-			if ( y_ > oGrid.getShowFromCellY()+getViewportCellCountY()-(iMargin*2) && oGrid.getShowFromCellY()<(99 - getViewportCellCountY())  ) { oGrid.setShowFromCellY(oGrid.getShowFromCellY()+iMargin); bRedraw=true; }
-		}
-
-
-		oHScrollBar.setBlockStartX( (oGrid.getShowFromCellX()*8) );
-		oVScrollBar.setBlockStartY( (oGrid.getShowFromCellY()*8) );
-
-		//println("bRedraw="+bRedraw);
-
-		if ( bRedraw ) {
-			oViewport.draw();
-		}
 
 	}
+	
+	
+
+
+
+
+	void scrollIfAppropriate2(int x_, int y_) {
+
+	
+
+		//println("oViewport.scrollIfAppropriate("+x_+","+y_+"), oGameEngine.getCurrentPlayerId()="+oGameEngine.getCurrentPlayerId() );
+
+		if ( oAnimateAttack.getAttackAnimationInProgress()==false ) {
+
+			int iMargin=2;
+			bool bRedraw=false;
+
+			int showFromX, showFromY, currentPlayerId;
+
+			currentPlayerId = oGameEngine.getCurrentPlayerId();
+
+			if ( currentPlayerId==1 ) { 
+				showFromX = oPlayer1.getShowFromCellX();
+				showFromY = oPlayer1.getShowFromCellY();
+			} else {
+				showFromX = oPlayer2.getShowFromCellX();
+				showFromY = oPlayer2.getShowFromCellY();
+			}
+
+
+			int tempX = x_ - showFromX;
+			if ( tempX > 20 ) { showFromX = x_ - 10; bRedraw=true; }
+			else if ( tempX < -20 ) { showFromX = x_ + 10; bRedraw=true; }
+
+			int tempY = y_ - showFromY;
+			if ( tempY > 20 ) { showFromY = y_ - 10; bRedraw=true; }
+			else if ( tempY < -20 ) { showFromY = y_ + 10; bRedraw=true; }
+
+
+			if ( bRedraw==false ) {
+
+				if ( x_ < showFromX+(iMargin*2) && showFromX>1 ) { showFromX = showFromX-iMargin; bRedraw=true; }
+				if ( y_ < showFromY+(iMargin*2) && showFromY>1  ) { showFromY = showFromY-iMargin; bRedraw=true; }
+
+				// 32x32
+				if ( x_ > showFromX+getViewportCellCountX()-(iMargin*2) && showFromX<(99 - getViewportCellCountX()) ) { showFromX = showFromX+iMargin; bRedraw=true; }
+				if ( y_ > showFromY+getViewportCellCountY()-(iMargin*2) && showFromY<(99 - getViewportCellCountY())  ) { showFromY = showFromY+iMargin; bRedraw=true; }
+			}
+
+		
+			if ( currentPlayerId==1 ) { 
+				oPlayer1.setShowFromCellX(showFromX);
+				oPlayer1.setShowFromCellY(showFromY);
+			} else {
+				oPlayer2.setShowFromCellX(showFromX);
+				oPlayer2.setShowFromCellY(showFromY);
+			}
+		
+
+
+
+			//oHScrollBar.setBlockStartX( (showFromX*8) );
+			//oVScrollBar.setBlockStartY( (showFromY*8) );
+
+			//println("bRedraw="+bRedraw);
+
+			if ( bRedraw ) {
+
+				//oViewport.draw();
+				draw();
+			}
+		}
+	
+	}
+
+
+
 	
 }
 
@@ -232,7 +286,7 @@ class cButton extends cClickable {
 	
 		super(objId_, strLabel_, startX_, startY_);
 		
-		objWidth = 210;
+		objWidth = 180;
 		objHeight = iStringTextSize+2;
 	}
 

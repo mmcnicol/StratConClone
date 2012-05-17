@@ -1,6 +1,8 @@
 
 class cUnitList {
 
+
+
 	ArrayList listUnit;
 
 	cUnitList() {
@@ -278,6 +280,7 @@ class cUnitList {
 		}
 
 		//println( "unit list debug#1: in IsTransportNearbyWaitingForUnits() return false ");
+
 		return false;
 	}
 
@@ -530,8 +533,9 @@ class cUnitList {
 		unit.reduceStrength();
 		if ( unit.getStrength()==0 ) {
 			if ( unit.getUnitPlayerId()==1 ) {
-				println("Player "+ oGameEngine.getCurrentPlayerId() + " Unit destroyed!");
-				println("");
+				//println("Player "+ oGameEngine.getCurrentPlayerId() + " Unit destroyed!");
+				//println("");
+				oPanelGameMessageLine.show("Player "+ oGameEngine.getCurrentPlayerId() + " Unit destroyed!");
 			}
 			unit.kill();
 			/////////listUnit.remove(iUnitListId_);
@@ -550,96 +554,28 @@ class cUnitList {
 	}
 
 
+	void doAttackEnemyCity(int AttackerObjectListId_, int DefenderObjectX_, int DefenderObjectY_) {
 
+		if (debugAnimateAttack) println("debug: in UnitList.doAttackEnemyCity("+AttackerObjectListId_+","+DefenderObjectX_+","+DefenderObjectY_+")");
 
-
-
-
-/* note: this method is redundant
-
-	void identifyPlayerLandUnitsToMoveTo(int iPlayerId_, int x_, int y_, int iCargoCount_, int iTargetCargoCount_) {
+		if (AttackerObjectListId_>=0) {
+			cUnit unit = (cUnit) listUnit.get( AttackerObjectListId_ );
+			unit.doAttackEnemyCity(AttackerObjectListId_, DefenderObjectX_, DefenderObjectY_ );
+		} else exit();
+	}
 	
-		//if (iPlayerId_==1) println("in identifyPlayerTankUnitsToMoveTo("+x_+","+y_+")... iCargoCount_="+iCargoCount_);
+	void doAttackEnemyUnit(int AttackerObjectListId_, int DefenderObjectX_, int DefenderObjectY_) {
 
-		int i, countLandUnitsIdentified, cellCount=7;
-		
+		if (debugAnimateAttack) println("debug: in UnitList.doAttackEnemyCity("+AttackerObjectListId_+","+DefenderObjectX_+","+DefenderObjectY_+")");
 
-		countLandUnitsIdentified=0;
-
-		countLandUnitsIdentified = countLandUnitsIdentified + getCountPlayerLandUnitsWithToMoveTo(iPlayerId_, x_, y_);
-		
-		countLandUnitsIdentified = countLandUnitsIdentified + iCargoCount_;
-
-		for (i = 0; i < listUnit.size() && countLandUnitsIdentified<=iTargetCargoCount_+1; i++) { 
-			cUnit unit = (cUnit) listUnit.get(i);
-			
-			//if (iPlayerId_==1) println("can tank at "+unit.getX()+","+unit.getY()+" be moved onto transport at "+x_+","+y_+"?");
-			
-			if( unit.getUnitPlayerId()==iPlayerId_ 
-				&& unit.isTank() 
-				&& unit.isCargoOf()==false 
-				&& unit.isAlive()
-				&& unit.getMoveToX()==-1
-				&& unit.getMoveToY()==-1 
-				) {
-			
-				// && unit.isAsleep()==false 
-
-				//if (iPlayerId_==1) println("can tank at "+unit.getX()+","+unit.getY()+" be moved onto transport at "+x_+","+y_+"?");
-				
-				if ( 	   unit.getX() >= x_-cellCount
-					&& unit.getY() >= y_-cellCount
-					&& unit.getX() <= x_+cellCount
-					&& unit.getY() <= y_+cellCount
-					) {
-				
-					//if (iPlayerId_==1) println(" yes, setting tank at "+unit.getX()+","+unit.getY()+" to move to transport at "+x_+","+y_+"");
-					unit.setMoveToX(x_);
-					unit.setMoveToY(y_);
-					unit.setTaskStatus(1);
-					countLandUnitsIdentified++;				
-				} else {
-					//if (iPlayerId_==1) println(" no, not setting tank at "+unit.getX()+","+unit.getY()+" to move to transport at "+x_+","+y_+"");
-				}
-			} else {
-				//println(" no, not setting tank at "+unit.getX()+","+unit.getY()+" to move to transport at "+x_+","+y_+"");
-			}
-		}  
-		
-		//if (iPlayerId_==1) println("countLandUnitsIdentified=" + countLandUnitsIdentified);
-			
+		if (AttackerObjectListId_>=0) {
+			cUnit unit = (cUnit) listUnit.get( AttackerObjectListId_ );
+			unit.doAttackEnemyUnit(AttackerObjectListId_, DefenderObjectX_, DefenderObjectY_ );
+		} else exit();
 	}
 
 
 
-	void getCountPlayerLandUnitsWithToMoveTo(int iPlayerId_, int x_, int y_) {
-	
-		//if (iPlayerId_==1) println("in getCountPlayerLandUnitsWithToMoveTo()...");
-
-		int i, counter=0;
-		
-		for (i = 0; i < listUnit.size() && counter<6; i++) { 
-			cUnit unit = (cUnit) listUnit.get(i);
-			
-			if( unit.getUnitPlayerId()==iPlayerId_ 
-				&& unit.isTank() 
-				&& unit.isAlive()
-				&& unit.getMoveToX()==x_
-				&& unit.getMoveToY()==y_
-				) {
-				
-				counter++;
-			}
-		}  
-		
-		//if (iPlayerId_==1) println("counter=" + counter);
-		return counter;
-			
-	}	
-
-*/
-	
-	
 	// ****************************************************************
 	// MOVE
 	// ****************************************************************
@@ -693,9 +629,12 @@ class cUnitList {
 
 				} else {	
 			
-					if ( intPlayerId_==1 && oPlayer1.getIsAI()==true) 
-						oViewport.scrollIfAppropriate(unit.getX(), unit.getY());
+					//if ( intPlayerId_==1 && oPlayer1.getIsAI()==true) 
 
+					if ( intPlayerId_==1 ) 
+						oViewport.scrollIfAppropriate(unit.getX(), unit.getY());
+					else if ( debugShowPlayer2Viewport) 
+						oViewportPlayer2.scrollIfAppropriate(unit.getX(), unit.getY());
 
 					//unit.moveAI(i);
 					unit.moveToIfSpecified(i);
@@ -803,12 +742,16 @@ class cUnitList {
 
 	void Draw(int cellX_, int cellY_) {
 		
+		//println("debug: in UnitList.Draw(), oGameEngine.getCurrentPlayerId()="+oGameEngine.getCurrentPlayerId() );
+
 		for (int i = 0; i < listUnit.size(); i++) { 
 			cUnit unit = (cUnit) listUnit.get(i);
 			//if( unit.getUnitPlayerId()==1 && unit.isAt(cellX_, cellY_)==true ) {
 			if( unit.isAt(cellX_, cellY_)==true && unit.isAlive() ) {
 			
 				if ( unit.isCargoOf()==false || oGameEngine.getSelectedUnitListId()==i ) {
+
+					//println("debug: in UnitList.Draw(), oGameEngine.getCurrentPlayerId()="+oGameEngine.getCurrentPlayerId() );
 					unit.Draw();
 				}
 			}
@@ -843,7 +786,7 @@ class cUnitList {
 
 	void highlightNextUnitWithMovesLeftToday(int intPlayerId_) {
 
-		//println("in highlightNextUnitWithMovesLeftToday()...");
+		//println("in highlightNextUnitWithMovesLeftToday("+intPlayerId_+")...");
 
 		for (int i = 0; i < listUnit.size(); i++) { 
 			cUnit unit = (cUnit) listUnit.get(i);
@@ -851,13 +794,18 @@ class cUnitList {
 				
 				//println("calling unit.highlight()...");
 				
-				if ( intPlayerId_==1 ) oViewport.scrollIfAppropriate(unit.getX(), unit.getY());
+				if ( intPlayerId_==1 ) oViewport.scrollIfAppropriate2(unit.getX(), unit.getY());
 				
 				//if (intPlayerId_==1) unit.setAnimation(true);
 				//unit.setAnimation(true);
 				
-				if (intPlayerId_==1) oAnimate.set(i);
+				//unit.clearFogOfWarAt(unit.getX(), unit.getY() ); // FISH 
+				//unit.reDrawNearBy();  // FISH
+				//unit.Draw();
 
+				if ( oAnimate.getUnitListId()!=i ) {
+					if (intPlayerId_==1) oAnimate.set(i);
+				}
 				
 				// if testing, comment out this section so that player 1 is moved by computer
 				//if (intPlayerId_==1) 
@@ -867,24 +815,29 @@ class cUnitList {
 				i=listUnit.size();
 			}
 		}  
+	
 	}
 
 
 	void updateDisplay(int iUnitListId_, int iAnimateSwitch_) {
+
+	
+		//println("debug: in UnitList.updateDisplay() ");
 
 		cUnit unit = (cUnit) listUnit.get(iUnitListId_);
 		
 		unit.updateSelectedUnitPanelInformation();
 		
 		if ( oGameEngine.getCurrentPlayerId()==1 ) oViewport.scrollIfAppropriate(unit.getX(), unit.getY());
+		else if (debugShowPlayer2Viewport) oViewportPlayer2.scrollIfAppropriate(unit.getX(), unit.getY());
 
 		switch( iAnimateSwitch_ ) {
 			case 0:
-				//println("Animating unit DRAW, "+unit.getX()+","+unit.getY());
+				if (debugAnimate) println("debug: Animating unit DRAW, "+unit.getX()+","+unit.getY());
 				unit.Draw();
 				break;
 			case 1:
-				//println("Animating unit HIDE, "+unit.getX()+","+unit.getY());
+				if (debugAnimate) println("debug: Animating unit HIDE, "+unit.getX()+","+unit.getY());
 				//oGrid.DrawCell(intCellX, intCellY, false);
 				if ( unit.isCargoOf() ) {
 					drawTransportAt(unit.getUnitPlayerId(), unit.getX(), unit.getY() );
@@ -894,7 +847,7 @@ class cUnitList {
 				}
 				break;					
 		}	
-		
+	
 	}
 	
 	
@@ -915,7 +868,7 @@ class cUnitList {
 			if ( oUnitRef[ unit.getUnitTypeId() ].canFly() ) unit.updateFuelLeft(iUnitListId);			
 		}		
 		
-		oPanelSelectedUnit.clear(255);
+		oGameMessageLine.clear(70);
 	}
 	
 
@@ -941,7 +894,7 @@ class cUnitList {
 			if ( oUnitRef[ unit.getUnitTypeId() ].canFly() ) unit.updateFuelLeft(iUnitListId);			
 		}
 		
-		oPanelSelectedUnit.clear(255);
+		oGameMessageLine.clear(70);
 	}
 
 
@@ -952,13 +905,16 @@ class cUnitList {
 		if ( iUnitListId != -1 ) {
 		
 			cUnit unit = (cUnit) listUnit.get(iUnitListId);
+
 			if ( intPlayerId_==1 ) oViewport.scrollIfAppropriate(unit.getX(), unit.getY());
+			else if (debugShowPlayer2Viewport) oViewportPlayer2.scrollIfAppropriate(unit.getX(), unit.getY());
+
 			oAnimate.clear();
 			unit.moveAI(iUnitListId);
 			
 		}		
 		
-		oPanelSelectedUnit.clear(255);
+		oPanelGameMessageLine.clear(70);
 	}
 
 
@@ -995,6 +951,8 @@ class cUnitList {
 		}  
 		return counter;	
 	}	
+
+	
 }
 
 
