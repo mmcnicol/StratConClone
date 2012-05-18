@@ -74,12 +74,12 @@ class cIslandList {
 		return listIsland.size();
 	}
 
-	/*
-	int getCountIslandPlayerCity(int iIslandId_, int iPlayerId_) {
-
-		return oCityList.getCountIslandPlayerCity(iIslandId_, iPlayerId_);
-	}
-	*/
+	
+	//int getCountIslandPlayerCity(int iIslandId_, int iPlayerId_) {
+	//
+	//	return oCityList.getCountIslandPlayerCity(iIslandId_, iPlayerId_);
+	//}
+	
 
 
 

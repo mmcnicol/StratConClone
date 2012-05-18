@@ -19,18 +19,18 @@ class cGrid {
 	int intGridValidMoves[][] = new int[101][101]; // use for next move search algorithm
 
 	int intGridIslands[][] = new int[101][101]; // use for find islands algorithm
-	/*
-		-4 = nothing
-		-3 = island, but we don't know which island number yet
-		-2 = Sea next to an Island
-		-1 = Sea
-		0... = islandListId
-	*/
+	
+	//	-4 = nothing
+	//	-3 = island, but we don't know which island number yet
+	//	-2 = Sea next to an Island
+	//	-1 = Sea
+	//	0... = islandListId
+	
 
 	bool intGridCellFog[][] = new bool[101][101];
 	bool intGridCellFogP2[][] = new bool[101][101];
 
-	ArrayList listNeighbour;
+	ArrayList listNeighbour; // used by algorithm to identify actual islands
 	
 
 	cGrid(int countX_, int countY_, int showFromX_, int showFromY_) {
@@ -190,9 +190,15 @@ class cGrid {
 	void setCellCountY(int value) { countY=value; }
 	
 
-	bool isFogOfWar(int x_, int y_) { return intGridCellFog[x_][y_]; }
+	bool isFogOfWar(int x_, int y_) { 
+		if ( ShowFogOfWar==true ) return intGridCellFog[x_][y_]; 
+		else return false;
+	}
 
-	bool isFogOfWarP2(int x_, int y_) { return intGridCellFogP2[x_][y_]; }
+	bool isFogOfWarP2(int x_, int y_) { 
+		if ( ShowFogOfWar==true ) return intGridCellFogP2[x_][y_]; 
+		else return false;
+	}
 	
 
 	void clearFogOfWar(int x_, int y_) { intGridCellFog[x_][y_]=false;}
@@ -494,11 +500,11 @@ class cGrid {
 	// DRAW
 	// ******************************************************
 
-	void draw() {
 
-	
+	void draw4Player(int playerId_) {
 
-		//println("debug: in grid.draw(), oGameEngine.getCurrentPlayerId()="+oGameEngine.getCurrentPlayerId() );
+
+		//println("debug: in grid.draw4Player(), playerId_="+playerId_ );
 
 		int DisplayX, DisplayY;
 
@@ -508,7 +514,7 @@ class cGrid {
 		int showFromX, showFromY;
 		int showToX, showToY;
 
-		if ( oGameEngine.getCurrentPlayerId()==1 ) {
+		if ( playerId_==1 ) {
 			showFromX = oPlayer1.getShowFromCellX();
 			showFromY = oPlayer1.getShowFromCellY();
 			showToX = oPlayer1.getShowFromCellX() + oViewport.getViewportCellCountX()-1;
@@ -520,22 +526,23 @@ class cGrid {
 			showToY = oPlayer2.getShowFromCellY() + oViewportPlayer2.getViewportCellCountY()-1;
 		}
 
+		//println("debug: oAnimateAttack.getAttackAnimationInProgress()="+ oAnimateAttack.getAttackAnimationInProgress() );
+		//println("debug: showFromX="+ showFromX + ", showFromY="+ showFromY );
+
 		if ( oAnimateAttack.getAttackAnimationInProgress()==false ) {
 
 			for (y=showFromY; y<=showToY; y=y+1) {
 				for (x=showFromX; x<=showToX; x=x+1) {
 				
-					DrawCell(x, y, true);
+					DrawCell4Player(playerId_, x, y, true);
 				}
 			}
 		}
-	
+
 	}
 
-
-
 	void drawMap(int sx, int sy, int iMapPlayerId_) {
-		
+
 		fill(70);
 		rect(sx-2, sy-2, countX+4, countY+4);
 
@@ -566,19 +573,19 @@ class cGrid {
 				
 				if ( iMapPlayerId_==1 ) {
 
-					if ( intGridCellFog[x][y]==false ) {
-					
+					if ( ShowFogOfWar==false || intGridCellFog[x][y]==false ) {
+
 						if ( isSea(x,y) ) stroke(180);	
 						else stroke(120);
-					
+
 						if( oCityList.isCity(x,y) ) stroke(0);
-					
+
 						point(DisplayX, DisplayY);
-					}
+					} 
 
 				} else if ( debugShowPlayer2Viewport && iMapPlayerId_==2 ) {
 
-					if ( intGridCellFogP2[x][y]==false ) {
+					if ( ShowFogOfWar==false || intGridCellFogP2[x][y]==false ) {
 					
 						if ( isSea(x,y) ) stroke(180);	
 						else stroke(120);
@@ -600,6 +607,8 @@ class cGrid {
 		else if (debugShowPlayer2Viewport) 
 			rect(sx+showFromX, sy+showFromY, oViewportPlayer2.getViewportCellCountX()-1, oViewportPlayer2.getViewportCellCountY()-1);
 		
+		//oIslandPolyList.Draw4Map(sx, sy); 
+
 	}
 
 
@@ -649,10 +658,12 @@ class cGrid {
 
 
 	
-	
-	void DrawCell(int x, int y, bool bDrawAnyUnits) {
 
-	
+
+
+
+	void DrawCell4Player(int playerId_, int x, int y, bool bDrawAnyUnits) {
+
 
 		//if (debugAnimate) println("debug: in grid.DrawCell("+x+","+y+") bDrawAnyUnits="+bDrawAnyUnits);
 		int DisplayX, DisplayY;
@@ -669,7 +680,7 @@ class cGrid {
 		bool PlayerCellIsFogOfWar = false;
 
 
-		if ( oGameEngine.getCurrentPlayerId()==1 ) {
+		if ( playerId_==1 ) {
 			PlayerCellIsFogOfWar = isFogOfWar(x, y);
 			PlayerCellWithinViewport = oViewport.isCellWithinViewport(x, y);
 			showFromX = oPlayer1.getShowFromCellX();
@@ -688,6 +699,11 @@ class cGrid {
 		DisplayY=((( y-showFromY )+1)*cellHeight)-(cellHeight-1) + PlayerDrawOffSetY;
 		DisplayX=((( x-showFromX )+1)*cellWidth)-(cellWidth-1) + PlayerDrawOffSetX;
 	
+		if ( oCityList.isCity(x,y) ) {
+
+			oCityList.Draw(x,y);
+		}
+
 		if ( oAnimate.getAnimationInProgress() ) {
 
 			if ( PlayerCellWithinViewport ) {
@@ -701,10 +717,23 @@ class cGrid {
 					oCityList.Draw(x,y);
 				} else if ( isSea(x,y) ) {
 					//if ( debugAnimate ) println("debug: in grid.DrawCell() getAnimationInProgress=true draw SEA at "+DisplayX+","+DisplayY+" ");
-					image( imgSea, DisplayX, DisplayY ); 
+
+					if ( GridDrawMode ==1 ) {
+						image( imgSea, DisplayX, DisplayY ); 
+					} else if ( GridDrawMode ==2 ){
+						fill(#51ADD9);
+						rect(DisplayX, DisplayY, cellWidth, cellHeight); // FISH
+					}
 				} else {
 					//if ( debugAnimate ) println("debug: in grid.DrawCell() getAnimationInProgress=true draw LAND at "+DisplayX+","+DisplayY+" ");
-					image( imgLand, DisplayX, DisplayY ); 
+
+					if ( GridDrawMode ==1 ) { 
+						image( imgLand, DisplayX, DisplayY ); 
+					} else if ( GridDrawMode ==2 ){
+						stroke(0);
+						noFill();
+						rect(DisplayX+1, DisplayY+1, cellWidth, cellHeight); // FISH
+					}
 				}
 
 				if (bDrawAnyUnits) {
@@ -725,26 +754,37 @@ class cGrid {
 			}
 			
 
-		//if ( oViewport.isCellWithinViewport(x, y) ) {
 		} else if ( PlayerCellWithinViewport ) {  
 			
-			//if (intGridCellFog[x][y]==false) {
 			if (PlayerCellIsFogOfWar==false) {
+
 				if ( oCityList.isCity(x,y) ) {
-					//println("debug: in grid.DrawCell("+x+","+y+") bDrawAnyUnits="+bDrawAnyUnits+", draw city");
+
 					oCityList.Draw(x,y);
-				//} else if ( oUnitList.isUnit(x,y) && bDrawAnyUnits==true ) {
-				//	oUnitList.Draw(x,y);
+
 				} else {
 					if ( isSea(x,y) ) {
 						//println("drawing sea... at ("+DisplayX+","+DisplayY+")");
-						image( imgSea, DisplayX, DisplayY ); 
+
+						if ( GridDrawMode ==1 ) {
+							image( imgSea, DisplayX, DisplayY ); 
+						}
+						//fill(#51ADD9);
+						//rect(DisplayX, DisplayY, cellWidth, cellHeight); // FISH
 
 					} else {
 						//println("drawing land... at ("+x+","+y+") "("+DisplayX+","+DisplayY+")");
 						//println("is land... at ("+x+","+y+") ("+DisplayX+","+DisplayY+")");
-						image( imgLand, DisplayX, DisplayY ); 
-
+	
+						if ( GridDrawMode ==1 ) {
+							image( imgLand, DisplayX, DisplayY ); 
+						} else if ( GridDrawMode ==2 ) {
+							//fill(#45B22D);
+							stroke(0);
+							noFill();
+							rect(DisplayX, DisplayY, cellWidth, cellHeight); // FISH
+							noStroke();
+						}
 					}
 
 					if ( debugShowCellGridLocation ) {
@@ -779,7 +819,15 @@ class cGrid {
 					if (bDrawAnyUnits)
 						oUnitList.Draw(x,y);
 				}
+
 				//redraw();
+
+			} else if ( GridDrawMode==2 ) {
+
+				// draw FogOfWar as we are using ScreenBuffer1 
+				fill(0);
+				noStroke();
+				rect(DisplayX, DisplayY, cellWidth, cellHeight); // FISH
 			}
 		}
 		
@@ -866,6 +914,8 @@ class cGrid {
 			count=count+1;
 
 		} while (deg <= 6.4 && count < 50);
+
+		if ( GridDrawMode==2 ) oIslandPolyList.Add(intX, intY, count);
 
 		// for each cell that is within the rectangle (that contains the poly)
 		// credits: amended version of 'point in poly' algorithm by Randolph Franklin

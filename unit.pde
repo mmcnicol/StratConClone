@@ -69,6 +69,8 @@ class cUnit {
 	//****************************************************************
 	//****************************************************************
 	// class constructor
+
+
 	cUnit(int intUnitTypeId_, int intUnitPlayerId_, int intCellX_, int intCellY_, int iUnitIslandListId_) {
 
 		if( intUnitTypeId_!=-1 ) {
@@ -413,7 +415,8 @@ class cUnit {
 			if(intUnitPlayerId==1) println(strUnitName+" ran out of fuel and crashed!");
 			
 			oUnitList.deleteUnit(iUnitListId_);
-			oGrid.DrawCell(getX(), getY(), false);
+			//oGrid.DrawCell(getX(), getY(), false);
+			oGrid.DrawCell4Player(getUnitPlayerId(), getX(), getY(), false);
 			
 		}
 				
@@ -461,7 +464,7 @@ class cUnit {
 			oUnitList.deleteUnit(iUnitListId_);
 			//oGrid.DrawCell(intCellX, intCellY, false);
 
-			//reDrawNearBy();
+			reDrawNearBy();
 			//clearFogOfWarAt(intCellX_, intCellY_);
 			
 			oCityList.CityConquered(tempCityId, intUnitPlayerId);
@@ -475,7 +478,8 @@ class cUnit {
 
 			updateMovesLeftToday();
 			if ( oUnitRef[intUnitTypeId].canFly() ) updateFuelLeft(iUnitListId_);
-			//if( intUnitPlayerId==1) reDrawNearBy();
+			//if( intUnitPlayerId==1) 
+			//reDrawNearBy();
 			updateSelectedUnitPanelInformation();				
 
 
@@ -495,8 +499,9 @@ class cUnit {
 					
 				oUnitList.manageUnitStrengthReduction(iUnitListId_);
 			}
-			//reDrawNearBy();
-			//clearFogOfWarAt(intCellX_, intCellY_);
+			clearFogOfWarNearBy(intCellX_, intCellY_);
+			reDrawNearBy();
+			
 		}
 		
 		oDoNothing.set();
@@ -605,9 +610,10 @@ class cUnit {
 				oUnitList.manageUnitStrengthReduction(iUnitListId_);
 			}
 		}
-		//reDrawNearBy();
-		clearFogOfWarAt(intCellX_, intCellY_);
 
+		clearFogOfWarNearBy(intCellX_, intCellY_);
+		reDrawNearBy();
+		
 		oDoNothing.set();
 
 	}
@@ -621,21 +627,22 @@ class cUnit {
 		//frameRate(0);
 		//println("millis()="+millis());
 		
-		/*
-		Initially, the Bombers have a radius of 0, and can thus only destroy one square. However, for Bombers started after day 50, the radius of the Bomber goes up to 1, meaning that the same bomb can now destroy 9 squares and everything in them. After day 100, Bombers will have radius 2, and will destroy a total of 25 squares. 
-		*/
+		
+		//Initially, the Bombers have a radius of 0, and can thus only destroy one square. However, for Bombers started after day 50, the radius of the Bomber goes up to 1, meaning that the same bomb can now destroy 9 squares and everything in them. After day 100, Bombers will have radius 2, and will destroy a total of 25 squares. 
+		
 
 
 		setXY(intCellX_, intCellY_);
-		//clearFogOfWarAt(intCellX_, intCellY_);
+		clearFogOfWarNearBy(intCellX_, intCellY_);
 		reDrawNearBy();
-		oGrid.DrawCell(intCellX, intCellY, false);
+		//oGrid.DrawCell(intCellX, intCellY, false);
+		oGrid.DrawCell4Player(getUnitPlayerId(), getX(), getY(), false);
 
 
 
 		int ShowFromCellX, ShowFromCellY;
 
-		if ( oGameEngine.getCurrentPlayerId()==1 ) { 
+		if ( getUnitPlayerId()==1 ) { 
 			ShowFromCellX = oPlayer1.getShowFromCellX();
 			ShowFromCellY = oPlayer1.getShowFromCellY();
 		} else {
@@ -664,7 +671,7 @@ class cUnit {
 		
 		ellipse(DisplayX+8, DisplayY+8, iDisplayRadiusX, iDisplayRadiusY);
 		
-		// TODO: NOTE: drawing a large vircle will be a problem if near edge of viewport
+		// TODO: NOTE: drawing a large circle will be a problem if near edge of viewport
 		
 		redraw();
 		
@@ -1032,6 +1039,7 @@ class cUnit {
 
 	void moveTo(int iUnitListId_, int intCellX_, int intCellY_) {
 
+
 		//println("in unit.moveTo current="+intCellX+","+intCellY+" MoveToCell="+intCellX_+","+intCellY_+" getUnitTypeId()="+getUnitTypeId());
 
 		int iNextCellX, iNextCellY;
@@ -1164,9 +1172,9 @@ class cUnit {
 		
 			//setAnimation(false);
 
-			if ( intUnitPlayerId == 1 ) {
+			//if ( intUnitPlayerId == 1 ) {
 				oAnimate.clear();
-			} 
+			//} 
 			
 			// *********************************************
 			// draw cell before moving current unit 
@@ -1182,7 +1190,10 @@ class cUnit {
 			//} else { 
 			
 				// draw current location (city or land or sea)
-				oGrid.DrawCell(intCellX, intCellY, false);
+				//oGrid.DrawCell(intCellX, intCellY, false);
+				//oGrid.DrawCell4Player(getUnitPlayerId(), getX(), getY(), false);
+				reDrawNearBy();
+				//oGrid.draw4Player( getUnitPlayerId() );
 				
 			//}
 
@@ -1197,14 +1208,14 @@ class cUnit {
 			// *********************************************
 			
 			
-			/*
-			if( intUnitPlayerId==1) println(" isBomber()="+isBomber() );
+			
+			//if( intUnitPlayerId==1) println(" isBomber()="+isBomber() );
 			
 			if ( isBomber() ) {
 				println("oCityList.isEnemyCity()="+ oCityList.isEnemyCity(intUnitPlayerId, intCellX_, intCellY_) );
 				println("oUnitList.isBombableEnemy()="+ oUnitList.isBombableEnemy(intUnitPlayerId, intCellX_, intCellY_) );
 			}
-			*/
+			
 			
 			if ( isBomber() && ( ( oCityList.isEnemyCity(intUnitPlayerId, intCellX_, intCellY_) 
 						&& !oCityList.isUnoccupiedCity(intCellX_, intCellY_) ) 
@@ -1221,7 +1232,7 @@ class cUnit {
 			// *********************************************
 			// if destination contains enemy unit, attack it
 			// *********************************************
-			} else if ( oUnitList.isEnemyUnitAt(intUnitPlayerId, intCellX_, intCellY_) ) {
+			} else  if ( oUnitList.isEnemyUnitAt(intUnitPlayerId, intCellX_, intCellY_) ) {
 			
 				//doAttackEnemyUnit(iUnitListId_, intCellX_, intCellY_);
 
@@ -1258,7 +1269,7 @@ class cUnit {
 			// *********************************************
 			} else if ( isFighter() && oUnitList.isPlayerCarrierAtRowCol(intUnitPlayerId, intCellX_, intCellY_) ) {
 			
-				fuel = oUnitRef[intUnitTypeId].getMaxFuel();
+				//fuel = oUnitRef[intUnitTypeId].getMaxFuel();
 				doAddCargo(iUnitListId_, intCellX_, intCellY_);
 			
 			// *********************************************
@@ -1274,17 +1285,24 @@ class cUnit {
 					oUnitList.clearUnitFromCargoOf( getIsCargoOf(), iUnitListId_ );
 					setIsCargoOf(-1);
 				}
-				oGrid.DrawCell(intCellX, intCellY, false);
-				
+				////oGrid.DrawCell(intCellX, intCellY, false);
+				//oGrid.DrawCell4Player(getUnitPlayerId(), getX(), getY(), false);
+ 
 				setXY(intCellX_, intCellY_);
+				clearFogOfWarNearBy(intCellX_, intCellY_);
 				reDrawNearBy();
 				updateMovesLeftToday();
 				if ( oUnitRef[intUnitTypeId].canFly() ) updateFuelLeft(iUnitListId_);
 				//if( intUnitPlayerId==1) reDrawNearBy();
 				updateSelectedUnitPanelInformation();				
-				
+
+	
+				//if ( intCityPlayerId_==1 ) oViewport.scrollIfAppropriate(intCellX, intCellY);
+				//else if (debugShowPlayer2Viewport) oViewportPlayer2.scrollIfAppropriate(intCellX, intCellY);
+
+					
 			}
-			
+		
 		}
 		
 	}
@@ -1297,13 +1315,6 @@ class cUnit {
 	// PRE-MOVE VALIDATION RULES
 	// *********************************************	
 	private bool checkPreMoveValidationRules(int iUnitListId_, int intCellX_, int intCellY_) {
-
-		/*
-		if ( oGrid.getGridIslandId( getX(),getY() ) != getUnitIslandListId() ) {
-			println("debug: in unit.checkPreMoveValidationRules(), unit islandListId ("+getUnitIslandListId()+") is not equal to grid islandListId ("+oGrid.getGridIslandId( getX(),getY() )+")");
-			setUnitIslandListId( oGrid.getGridIslandId( getX(),getY() ) );
-		}
-		*/
 		
 		bool ValidMove=true;
 	
@@ -1542,12 +1553,12 @@ class cUnit {
 				if (intUnitPlayerId==1 && debugTransport ) println("1=move to waiting transport, tank at "+getX()+","+getY()+", moving to transport at ("+getMoveToX()+","+getMoveToY()+") ");
 						// && isCargoOf()
 				
-				/*
-				if ( getMoveToX()==-1 && getMoveToY()==-1 ) {
-					println("in unit.identifyNextMoveTankAI, unit status=1, assumed to have moved onto transport, so sleep.");
-					setTaskStatus(99);
-				}
-				*/
+				
+				//if ( getMoveToX()==-1 && getMoveToY()==-1 ) {
+				//	println("in unit.identifyNextMoveTankAI, unit status=1, assumed to have moved onto transport, so sleep.");
+				//	setTaskStatus(99);
+				//}
+				
 					
 
 									
@@ -1825,19 +1836,7 @@ class cUnit {
 				if (getUnitPlayerId()==1 && debugTransport ) println("debug: transport oIslandList.isEnemyOrUnoccupiedIsland()="+oIslandList.isEnemyOrUnoccupiedIsland(getUnitPlayerId(), oGrid.getIslandIdIfIsNextToLand() ) );
 
 				if ( 
-					/*
-					(
-					 ( 
-					  intCellX < (transportCargoLoadLocationX -2) || 
-					  intCellX > (transportCargoLoadLocationX +2) 
-					 ) 
-					  ||
-					 ( 
-					  intCellY < (transportCargoLoadLocationY -2) ||
-					  intCellY > (transportCargoLoadLocationY +2) 
-					 ) 
-					)
-					*/
+
 
 					  oGrid.getIslandIdIfIsNextToLand()>=0 
 					 && oGrid.getIslandIdIfIsNextToLand()!=transportCargoLoadIslandId 
@@ -2156,6 +2155,7 @@ class cUnit {
 
 	void identifyNextMoveAI(int iUnitListId_) {
 
+
 		//if (intUnitPlayerId==1 && isCargoOf() ) println(" begin unit.identifyNextMoveAI, strUnitName="+strUnitName+", movesLeftToday="+movesLeftToday);
 		//if (intUnitPlayerId==1 && isCargoOf() ) println(" intCellX="+intCellX+", intCellY="+intCellY);
 
@@ -2314,18 +2314,7 @@ class cUnit {
 			// can unit attack a city?
 			// TODO: ship could attack city, only to try to kill any enemy units
 			// ...
-			/*
-			if( possibleMoves.size()==0 ) {
-				for (y=sy;y<=ey;y++) {
-					for (x=sx;x<=ex;x++) {
-						if (intCellX!=x && intCellY!=y) {
-							if ( oGrid.isLand(x, y) && oCityList.isEnemyOrUnoccupiedCity(intUnitPlayerId, x, y) )
-								possibleMoves.add( new cGridCell(x, y) );
-						}
-					}
-				}
-			}
-			*/
+
 
 			// can unit clear fog?
 			if( possibleMoves.size()==0 ) {
@@ -2385,6 +2374,7 @@ class cUnit {
 
 	void Draw() {
 
+
 		//println("debug: in unit.Draw()");
 
 		int countOfPlayerUnits;
@@ -2396,12 +2386,12 @@ class cUnit {
 		bool CellWithinPlayerViewport = false;
 		int ShowFromCellX, ShowFromCellY;
 
-		if ( oGameEngine.getCurrentPlayerId()==1 ) {
+		if ( getUnitPlayerId()==1 ) {
 			PlayerCellIsFogOfWar = oGrid.isFogOfWar(intCellX, intCellY);
 
 			CellWithinPlayerViewport = oViewport.isCellWithinViewport(intCellX, intCellY);
 
-			if ( intUnitPlayerId==1 || ( intUnitPlayerId==2 && oUnitList.getCountEnemyUnitNearby(intUnitPlayerId, intCellX, intCellY)>=1 ) ) 
+			if ( getUnitPlayerId()==1 || ( getUnitPlayerId()==2 && oUnitList.getCountEnemyUnitNearby(getUnitPlayerId(), intCellX, intCellY)>=1 ) ) 
 				DrawUnit = true;
 
 			ShowFromCellX = oPlayer1.getShowFromCellX();
@@ -2413,7 +2403,7 @@ class cUnit {
 
 			CellWithinPlayerViewport = oViewportPlayer2.isCellWithinViewport(intCellX, intCellY);
 
-			if ( intUnitPlayerId==2 || ( intUnitPlayerId==1 && oUnitList.getCountEnemyUnitNearby(intUnitPlayerId, intCellX, intCellY)>=1 ) ) 
+			if ( getUnitPlayerId()==2 || ( getUnitPlayerId()==1 && oUnitList.getCountEnemyUnitNearby(getUnitPlayerId(), intCellX, intCellY)>=1 ) ) 
 				DrawUnit = true;
 
 			ShowFromCellX = oPlayer2.getShowFromCellX();
@@ -2436,7 +2426,7 @@ class cUnit {
 			
 					switch(intUnitTypeId) {
 						case 0:
-							if (intUnitPlayerId==1) {
+							if (getUnitPlayerId()==1) {
 								//println("player 1");
 								//if ( !isCargoOf() && oGameGrid.XXX() ) {
 
@@ -2444,7 +2434,7 @@ class cUnit {
 									image( imgTank1, DisplayX, DisplayY );
 
 									// show player Tank count at X,Y on unit image, if more than 1
-									countOfPlayerUnits = oUnitList.getCountOfPlayerTankUnitsAt(intUnitPlayerId, intCellX, intCellY);
+									countOfPlayerUnits = oUnitList.getCountOfPlayerTankUnitsAt(getUnitPlayerId(), intCellX, intCellY);
 									if ( countOfPlayerUnits > 1 && oGrid.isLand(intCellX, intCellY) ) {
 										fill(200);
 										if ( countOfPlayerUnits > 9 ) 
@@ -2457,7 +2447,7 @@ class cUnit {
 										setTextSizeString();
 									}
 
-									if ( intUnitPlayerId==1 && oPlayer1.getIsAI() && debugShowUnitMoveTo && getTaskStatus()==1 ) {
+									if ( getUnitPlayerId()==1 && oPlayer1.getIsAI() && debugShowUnitMoveTo && getTaskStatus()==1 ) {
 										fill(200);
 										rect(DisplayX+iNumberIndent, DisplayY+iNumberTextSize+iNumberIndent-1, cellWidth-iNumberIndent, iNumberTextSize);
 										//fill(0);
@@ -2468,7 +2458,7 @@ class cUnit {
 									}
 
 
-									if ( intUnitPlayerId==1 && oPlayer1.getIsAI() && debugShowUnitTaskStatus ) {
+									if ( getUnitPlayerId()==1 && oPlayer1.getIsAI() && debugShowUnitTaskStatus ) {
 
 										// show task status
 										fill(255);
@@ -2487,22 +2477,22 @@ class cUnit {
 							}
 							break;
 						case 1:
-							if (intUnitPlayerId==1) image( imgFighter1, DisplayX, DisplayY );
+							if (getUnitPlayerId()==1) image( imgFighter1, DisplayX, DisplayY );
 							else image( imgFighter2, DisplayX, DisplayY );
 							break;
 						case 2:
-							if (intUnitPlayerId==1) image( imgBattleship1, DisplayX, DisplayY );
+							if (getUnitPlayerId()==1) image( imgBattleship1, DisplayX, DisplayY );
 							else image( imgBattleship2, DisplayX, DisplayY );
 							break;	
 						case 3:
-							if (intUnitPlayerId==1) image( imgBomber1, DisplayX, DisplayY );
+							if (getUnitPlayerId()==1) image( imgBomber1, DisplayX, DisplayY );
 							else image( imgBomber2, DisplayX, DisplayY );
 							break;	
 						case 4:
-							if (intUnitPlayerId==1) image( imgCarrier1, DisplayX, DisplayY );
+							if (getUnitPlayerId()==1) image( imgCarrier1, DisplayX, DisplayY );
 							else image( imgCarrier2, DisplayX, DisplayY );
 
-							if( intUnitPlayerId==1 && getCargoCount() > 0 ) {
+							if( getUnitPlayerId()==1 && getCargoCount() > 0 ) {
 								// show cargo count on unit image
 								fill(255);
 								rect(DisplayX+iNumberIndent,DisplayY+iNumberIndent,iNumberTextSize,iNumberTextSize+1);
@@ -2514,14 +2504,14 @@ class cUnit {
 
 							break;	
 						case 5:
-							if (intUnitPlayerId==1) image( imgDestroyer1, DisplayX, DisplayY );
+							if (getUnitPlayerId()==1) image( imgDestroyer1, DisplayX, DisplayY );
 							else image( imgDestroyer2, DisplayX, DisplayY );
 							break;
 						case 6:
-							if (intUnitPlayerId==1) image( imgTransport1, DisplayX, DisplayY );
+							if (getUnitPlayerId()==1) image( imgTransport1, DisplayX, DisplayY );
 							else image( imgTransport2, DisplayX, DisplayY );
 
-							if( intUnitPlayerId==1 && getCargoCount() > 0 ) {
+							if( getUnitPlayerId()==1 && getCargoCount() > 0 ) {
 
 								// show cargo count on unit image
 								fill(255);
@@ -2532,7 +2522,7 @@ class cUnit {
 								setTextSizeString();
 							}
 
-							if ( intUnitPlayerId==1 && debugShowUnitMoveTo && getTaskStatus()==1 ) {
+							if ( getUnitPlayerId()==1 && debugShowUnitMoveTo && getTaskStatus()==1 ) {
 								fill(200);
 								rect(DisplayX+iNumberIndent, DisplayY+iNumberTextSize+iNumberIndent-1, cellWidth-iNumberIndent, iNumberTextSize);
 								fill(0);
@@ -2542,7 +2532,7 @@ class cUnit {
 
 							}
 
-							if ( intUnitPlayerId==1 && debugShowUnitTaskStatus ) {
+							if ( getUnitPlayerId()==1 && debugShowUnitTaskStatus ) {
 
 								// show task status
 								fill(255);
@@ -2556,7 +2546,7 @@ class cUnit {
 							break;
 
 						case 7:
-							if (intUnitPlayerId==1) image( imgSubmarine1, DisplayX, DisplayY );
+							if (getUnitPlayerId()==1) image( imgSubmarine1, DisplayX, DisplayY );
 							else image( imgSubmarine2, DisplayX, DisplayY );						
 							break;						
 					}
@@ -2595,11 +2585,12 @@ class cUnit {
 				}
 			}	
 			
-		}
+		} 
 	}
 	
 
-	void clearFogOfWarAt(int x_, y_) {
+	void clearFogOfWarNearBy(int x_, y_) {
+
 
 		//println("in unit.clearFogOfWarAt()");
 
@@ -2610,7 +2601,7 @@ class cUnit {
 
 		int ShowFromCellX, ShowFromCellY;
 
-		if ( oGameEngine.getCurrentPlayerId()==1 ) { 
+		if ( getUnitPlayerId()==1 ) { 
 			ShowFromCellX = oPlayer1.getShowFromCellX();
 			ShowFromCellY = oPlayer1.getShowFromCellY();
 		} else {
@@ -2637,7 +2628,8 @@ class cUnit {
 			
 				if ( getUnitPlayerId()==1 ) {
 					oGrid.clearFogOfWar(x,y);
-					//oGrid.DrawCell(x,y,true);
+					////oGrid.DrawCell(x,y,true);
+					oGrid.DrawCell4Player(getUnitPlayerId(), x,y,true);
 					//reDrawNearBy();
 					//if (oGrid.isFogOfWar(x,y)==false) oGrid.DrawCell(x,y,true);
 
@@ -2645,7 +2637,7 @@ class cUnit {
 
 				} else if ( getUnitPlayerId()==2 ) {
 					oGrid.clearFogOfWarP2(x,y);
-					//oGrid.DrawCell(x,y,true);
+					oGrid.DrawCell4Player(getUnitPlayerId(), x,y,true);
 					//if (oGrid.isFogOfWarP2(x,y)==false) oGrid.DrawCell(x,y,true);
 				}
 				
@@ -2654,11 +2646,14 @@ class cUnit {
 				//}
 			}
 		}
+
+
 	}
 
 
 
 	void reDrawNearBy() {
+
 
 		//println("in unit.reDrawNearBy()");
 
@@ -2669,7 +2664,7 @@ class cUnit {
 
 		int ShowFromCellX, ShowFromCellY;
 
-		if ( oGameEngine.getCurrentPlayerId()==1 ) { 
+		if ( getUnitPlayerId()==1 ) { 
 			ShowFromCellX = oPlayer1.getShowFromCellX();
 			ShowFromCellY = oPlayer1.getShowFromCellY();
 		} else {
@@ -2701,14 +2696,20 @@ class cUnit {
 					if (oGrid.isFogOfWar(x,y)==true) setDaysSinceLastClearedFogOfWar(0);
 					oGrid.clearFogOfWar(x,y);
 					if ( oViewport.isCellWithinViewport(x,y) ) { 	
-						if (oGrid.isFogOfWar(x,y)==false) oGrid.DrawCell(x,y,true);
+						if (oGrid.isFogOfWar(x,y)==false) {
+							//oGrid.DrawCell(x,y,true);
+							oGrid.DrawCell4Player(getUnitPlayerId(), getX(), getY(), true);
+						}
 					}
 				} else if ( getUnitPlayerId()==2 ) {
 					if (oGrid.isFogOfWarP2(x,y)==true) setDaysSinceLastClearedFogOfWar(0);
 					oGrid.clearFogOfWarP2(x,y);
 					if (debugShowPlayer2Viewport) { 
 						if ( oViewportPlayer2.isCellWithinViewport(x,y) ) { 	
-							if (oGrid.isFogOfWarP2(x,y)==false) oGrid.DrawCell(x,y,true);
+							if (oGrid.isFogOfWarP2(x,y)==false) {
+								//oGrid.DrawCell(x,y,true);
+								oGrid.DrawCell4Player(getUnitPlayerId(), getX(), getY(), true);
+							}
 						}
 					}
 				}
@@ -2716,10 +2717,12 @@ class cUnit {
 
 			}
 		}
+	
 	}
 	
 
-	
+
+
 	
 }
 

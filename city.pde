@@ -1,6 +1,7 @@
 
 class cCity {
 
+
 	int intCityPlayerId;
 	int iCityIslandListId;
 	int intCellX, intCellY;
@@ -46,7 +47,7 @@ class cCity {
 
 			oIslandList.increaseUnoccupiedCityCount( getCityIslandListId() );
 		}
-	
+
 	}
 
 	string getLocation() { return nf(intCellX,3)+","+nf(intCellY,3); }
@@ -133,12 +134,12 @@ class cCity {
 
 		int PlayerDrawOffSetX=220;
 		int PlayerDrawOffSetY=0;
-		bool PlayerCellIsFogOfWar = false;
+		bool PlayerCellIsFogOfWar = true;
 		bool CellWithinPlayerViewport = false;
 		int DisplayY;
 		int DisplayX;
 
-		if ( oGameEngine.getCurrentPlayerId()==1 ) {
+		if ( intCityPlayerId==1 || oGameEngine.getCurrentPlayerId()==1 ) {
 			PlayerCellIsFogOfWar = oGrid.isFogOfWar(intCellX, intCellY);
 
 			CellWithinPlayerViewport = oViewport.isCellWithinViewport(intCellX, intCellY);
@@ -211,14 +212,14 @@ class cCity {
 
 			}
 			
-			/*
-			if ( oGrid.isFogOfWar(intCellX, intCellY)==true ) { // for testing purposes
-				fill(0);
-				setTextSizeNumber();
-				text("F", DisplayX+iNumberIndent, DisplayY+iNumberTextSize );
-				setTextSizeString();
-			}
-			*/
+			
+			//if ( oGrid.isFogOfWar(intCellX, intCellY)==true ) { // for testing purposes
+			//	fill(0);
+			//	setTextSizeNumber();
+			//	text("F", DisplayX+iNumberIndent, DisplayY+iNumberTextSize );
+			//	setTextSizeString();
+			//}
+			
 			
 		}	
 
@@ -331,18 +332,18 @@ class cCity {
 				
 				if( intCityPlayerId == 2 ) {
 				
-					if (debugShowPlayer2Viewport) oViewportPlayer2.scrollIfAppropriate(intCellX, intCellY);
+					//if (debugShowPlayer2Viewport) oViewportPlayer2.scrollIfAppropriate(intCellX, intCellY);
 					doNextUnitProductionAI(intCityPlayerId);
 								
 				} else if( intCityPlayerId == 1 && oPlayer1.getIsAI() ) {
 
-					oViewport.scrollIfAppropriate(intCellX, intCellY);
+					//oViewport.scrollIfAppropriate(intCellX, intCellY);
 					doNextUnitProductionAI(intCityPlayerId);
 
 								
 				} else if( intCityPlayerId == 1 ) {
 
-					oViewport.scrollIfAppropriate(intCellX, intCellY);
+					//oViewport.scrollIfAppropriate(intCellX, intCellY);
 				
 					if( productionUnitTypeId!=-1) {
 		
@@ -355,12 +356,12 @@ class cCity {
 					}
 					
 					
-					/*
-					println("in city.manageProduction() player="+intCityPlayerId+" display city production dialogue...");
-					oCityList.updateSelectedCityPanelInformation(iCityListId_);
-					oGameEngine.setSelectedCityListId(iCityListId_);
-					oDialogueCityProduction.display();
-					*/
+					
+					//println("in city.manageProduction() player="+intCityPlayerId+" display city production dialogue...");
+					//oCityList.updateSelectedCityPanelInformation(iCityListId_);
+					//oGameEngine.setSelectedCityListId(iCityListId_);
+					//oDialogueCityProduction.display();
+					
 				}
 
 				clearFogOfWar();
@@ -407,14 +408,14 @@ class cCity {
 			productionDaysLeft = oUnitRef[0].getDaysToProduce();
 
 
-/* TODO: the following code causes an unexpected error which I have not been able to resolve yet.
+		// TODO: the following code causes an unexpected error which I have not been able to resolve yet.
 		// ******************************************************
 		// if is port city and island has too many tanks, build more transports
-		if ( isPort() && ( oIslandList.getIslandUnitTypeCount( getCityIslandListId(), iPlayerId_, 0 )>15)  ) {
+		//if ( isPort() && ( oIslandList.getIslandUnitTypeCount( getCityIslandListId(), iPlayerId_, 0 )>15)  ) {
 
-			productionUnitTypeId= oUnitRef[6].getUnitTypeId(); 
-			productionDaysLeft = oUnitRef[6].getDaysToProduce();
-*/
+		//	productionUnitTypeId= oUnitRef[6].getUnitTypeId(); 
+		//	productionDaysLeft = oUnitRef[6].getDaysToProduce();
+
 
 		// ******************************************************
 		// else, player needs a minimum number of tanks

@@ -2,7 +2,6 @@
 class cUnitList {
 
 
-
 	ArrayList listUnit;
 
 	cUnitList() {
@@ -21,14 +20,14 @@ class cUnitList {
 		//println( "unit list debug#1");
 	}
 
-	/*
-	void printPlayerUnitLocations(int iPlayerId_) {
-		for (int i = 0; i < listUnit.size(); i++) { 
-			cUnit unit = (cUnit) listUnit.get(i);
-			if ( unit.getUnitPlayerId()==iPlayerId_ ) unit.printRowCol();
-		}  
-	}
-	*/
+	
+	//void printPlayerUnitLocations(int iPlayerId_) {
+	//	for (int i = 0; i < listUnit.size(); i++) { 
+	//		cUnit unit = (cUnit) listUnit.get(i);
+	//		if ( unit.getUnitPlayerId()==iPlayerId_ ) unit.printRowCol();
+	//	}  
+	//}
+	
 
 
 
@@ -648,15 +647,7 @@ class cUnitList {
 	}
 
 
-/*
-	void move(int UnitListId_, int x_, iny y_) {
 
-		//println("in unit_list.move, UnitListId_=("+UnitListId_+")");
-		cUnit unit = (cUnit) listUnit.get(UnitListId_);
-		unit.setX(x_);
-		unit.setY(y_);
-	}
-*/
 
 
 	void move(int iUnitListId_, int Row_, int Col_) {
@@ -800,7 +791,7 @@ class cUnitList {
 				//unit.setAnimation(true);
 				
 				//unit.clearFogOfWarAt(unit.getX(), unit.getY() ); // FISH 
-				//unit.reDrawNearBy();  // FISH
+				unit.reDrawNearBy();  // FISH
 				//unit.Draw();
 
 				if ( oAnimate.getUnitListId()!=i ) {
@@ -833,17 +824,17 @@ class cUnitList {
 
 		switch( iAnimateSwitch_ ) {
 			case 0:
-				if (debugAnimate) println("debug: Animating unit DRAW, "+unit.getX()+","+unit.getY());
+				//if (debugAnimate) println("debug: Animating unit DRAW, "+unit.getX()+","+unit.getY());
 				unit.Draw();
 				break;
 			case 1:
-				if (debugAnimate) println("debug: Animating unit HIDE, "+unit.getX()+","+unit.getY());
-				//oGrid.DrawCell(intCellX, intCellY, false);
+				//if (debugAnimate) println("debug: Animating unit HIDE, "+unit.getX()+","+unit.getY());
 				if ( unit.isCargoOf() ) {
 					drawTransportAt(unit.getUnitPlayerId(), unit.getX(), unit.getY() );
 					drawCarrierAt(unit.getUnitPlayerId(), unit.getX(), unit.getY() );
 				} else {
-					oGrid.DrawCell(unit.getX(), unit.getY(), false);
+					//oGrid.DrawCell(unit.getX(), unit.getY(), false);
+					oGrid.DrawCell4Player(unit.getUnitPlayerId(), unit.getX(), unit.getY(), false);
 				}
 				break;					
 		}	

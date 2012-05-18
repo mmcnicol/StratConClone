@@ -1,6 +1,7 @@
 
 class cAnimate {
 
+
 	bool bAnimate;
 	int iUnitListId;
 	int iAnimateSwitch;

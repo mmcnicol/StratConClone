@@ -8,22 +8,29 @@ PFont FontA;
 string GAMETITLE="StratConClone";
 string GAMEVERSION="version 0.48";
 
+
 cWorld oWorld;
-cAnimate oAnimate;
-cAnimateAttack oAnimateAttack;
+cUnitRef[] oUnitRef = new cUnitRef[9];  
+cGridCell oGridCell;
 cPlayer oPlayer1;
 cPlayer oPlayer2;
-cGeometry oGeometry;
-cGridCell oGridCell;
+
 cViewport oViewport;
 cViewport oViewportPlayer2;
 cVScrollBar oVScrollBar;
 cHScrollBar oHScrollBar;
+
+
+cAnimate oAnimate;  
+cAnimateAttack oAnimateAttack;
+
+cGeometry oGeometry;
 cGrid oGrid;
-cUnitRef[] oUnitRef = new cUnitRef[9]; 
 cIslandList oIslandList;
 cCityList oCityList;
 cUnitList oUnitList; 
+cIslandPolyList oIslandPolyList;  
+
 cPanel1 oPanel1;
 cPanel2 oPanel2;
 cPanelGameMessageLine oPanelGameMessageLine;
@@ -39,7 +46,9 @@ cPanelPlayerUnitCounts oPanelPlayer2UnitCounts;
 cDialogueStartup oDialogueStartup;
 cDialogueCityProduction oDialogueCityProduction;
 cGameEngine oGameEngine; 
+
 cDoNothing oDoNothing;
+
 
 int cellWidth=16;
 int cellHeight=16;
@@ -55,6 +64,7 @@ int iStringTextSize=10;
 //int iNumberTextSize=6;
 //int iStringTextSize=11;
 
+int  GridDrawMode			= 2;     // 1=normal images, 2=ScreenBuffer1
 bool ShowFogOfWar			= true;
 bool showViewportScrollBars		= false;
 
@@ -78,6 +88,9 @@ bool debugDoNothing			= false;
 
 int iNumberOfUnitTypes=9;
 
+PGraphics ScreenBuffer1;
+//PImage ScreenBuffer1 = createImage(900, 900, RGB);
+
 void setup() {
 	
 
@@ -86,8 +99,9 @@ void setup() {
 
 	//size( 1000, 620 );
 	size( 1100, 1650 ); // width, height
+	//size( 1710, 2300 ); // width, height
 
-	frameRate(5);
+	frameRate(7);
 	background(0);
 	
 	//FontA = loadFont("Arial");
@@ -108,14 +122,26 @@ void setup() {
 
 	//oWorld = new cWorld(0);
 	oWorld = new cWorld();
-	oAnimate = new cAnimate();
+
+	oAnimate = new cAnimate();  
 	oAnimateAttack = new cAnimateAttack();
+
+
 	oPlayer1 = new cPlayer(1, false);
 	oPlayer2 = new cPlayer(2, true);
+
 	oGeometry = new cGeometry();
 	//oGrid = new cGrid();
 	oDoNothing = new cDoNothing();
+	oIslandPolyList = new cIslandPolyList();  
 
+
+	// http://processingjs.org/reference/createGraphics_/
+
+	//ScreenBuffer1 = createGraphics(1700, 1700, JAVA2D);
+
+	//if ( GridDrawMode==2 ) ScreenBuffer1 = createGraphics(900, 900, JAVA2D);
+	if ( GridDrawMode==2 ) ScreenBuffer1 = createGraphics(1700, 1700, JAVA2D);
 
 }
 
@@ -148,6 +174,7 @@ void draw() {
 
 			if ( oDialogueCityProduction.isActive()==false && 
 				oDialogueSurrender.isActive()==false && 
+				oAnimate.getAnimationInProgress()==false &&
 				oAnimateAttack.getAttackAnimationInProgress()==false &&
 				oDoNothing.getDoNothingInProgress()==false ) {
 
@@ -221,7 +248,6 @@ void draw() {
 
 
 
-
 			oGameEngine = new cGameEngine(); 
 			
 			
@@ -230,9 +256,8 @@ void draw() {
 			oDialogueSurrender = new cDialogueSurrender(90,170);
 			
 			//oViewport.draw();
-			
 			//if (debugShowPlayer2Viewport) oViewportPlayer2.draw();
-			
+
 			oDialogueStartup.show();
 			
 		}
@@ -249,10 +274,14 @@ void draw() {
 
 
 			oGrid.generate();
+			
 
 			//oViewport.draw();
 			//if (debugShowPlayer2Viewport) oViewportPlayer2.draw();
 			
+
+
+
 
 			
 			int iCityListId;
@@ -261,7 +290,9 @@ void draw() {
 			oCityList.clearFogOfWarByPlayerId(1);
 			//oCityList.clearFogOfWar(iCityListId);
 
+
 			oViewport.draw();
+			
 
 			if (debugShowPlayer2Viewport) {
 				iCityListId = oCityList.getPlayerFirstCityListId(2);
@@ -271,6 +302,19 @@ void draw() {
 				oViewportPlayer2.draw();
 			}
 			
+
+
+
+			if ( GridDrawMode==2 ) oIslandPolyList.Draw4ScreenBuffer1(); 
+
+				 
+				//copy(ScreenBuffer1,
+				//	0,0,
+				//	1700,1700,
+				//	0,600,
+				//	1700,1700);
+				
+
 
 			if ( oPlayer1.getIsAI() ) {
 
@@ -287,6 +331,9 @@ void draw() {
 				//println("debug#2.3");
 				iCityListId = oCityList.getPlayerFirstCityListId(1);
 				//oCityList.clearFogOfWar(iCityListId);
+
+				//oIslandPolyList.Draw(); 
+				//oIslandPolyList.Draw4Viewport();
 
 				// show the city production panel for the human player 1 first city
 				oDialogueCityProduction.show(iCityListId);
@@ -462,6 +509,255 @@ class cGridCell {
 	int getX() { return x; }
 	int getY() { return y; }
 }
+
+
+
+
+
+/************************************************************************
+	Island Poly
+************************************************************************/
+
+
+class cIslandPolyList {
+
+	ArrayList listIslandPoly;
+
+	cIslandPolyList() {
+		listIslandPoly = new ArrayList();  // Create an empty ArrayList
+	}
+
+	void Add(int[] pX_, int[] pY_, int count_) {
+		
+		//println("add island poly");		
+		listIslandPoly.add( new cIslandPoly(pX_, pY_, count_) );  
+	}
+
+	void Draw() {
+
+		for (int i = 0; i < listIslandPoly.size(); i++) { 
+			cIslandPoly IslandPoly = (cIslandPoly) listIslandPoly.get( i );
+			IslandPoly.Draw();
+		}
+	}
+
+	void Draw4ScreenBuffer1() {
+
+		for (int i = 0; i < listIslandPoly.size(); i++) { 
+			cIslandPoly IslandPoly = (cIslandPoly) listIslandPoly.get( i );
+			IslandPoly.Draw4ScreenBuffer1();
+		}
+	}
+
+	void Draw4Viewport(int playerId_) {
+
+		for (int i = 0; i < listIslandPoly.size(); i++) { 
+			cIslandPoly IslandPoly = (cIslandPoly) listIslandPoly.get( i );
+			IslandPoly.Draw4Viewport(playerId_);
+		}
+	}
+
+	void Draw4Map(int sx_, int sy_) {
+
+		for (int i = 0; i < listIslandPoly.size(); i++) { 
+			cIslandPoly IslandPoly = (cIslandPoly) listIslandPoly.get( i );
+			IslandPoly.Draw4Map(sx_, sy_);
+		}
+
+		
+		int showFromX, showFromY;
+		
+		if ( oGameEngine.getCurrentPlayerId()==1 ) { 
+			showFromX = oPlayer1.getShowFromCellX();
+			showFromY = oPlayer1.getShowFromCellY();
+		} else {
+			showFromX = oPlayer2.getShowFromCellX();
+			showFromY = oPlayer2.getShowFromCellY();
+		}
+
+		/*
+		
+		// draw a rectangle around area viewable within viewport
+		noFill();
+		stroke(250);
+		if ( oGameEngine.getCurrentPlayerId()==1 ) {
+			rect( 	sx_+round(showFromX/cellWidth), 
+				sy_+(showFromY/cellHeight), 
+				round( (oViewport.getViewportCellCountX()-1) /cellWidth), 
+				round( (oViewport.getViewportCellCountY()-1) /cellHeight) 
+				);
+		else if (debugShowPlayer2Viewport) 
+			rect(	sx_+round(showFromX/cellWidth), 
+				sy_+(showFromY/cellHeight), 
+				round( (oViewportPlayer2.getViewportCellCountX()-1) /cellWidth), 
+				round( (oViewportPlayer2.getViewportCellCountY()-1) /cellHeight) 
+				);
+		*/
+	}
+
+}
+
+class cIslandPoly {
+
+
+	int[] pX = new int[50];
+	int[] pY = new int[50];
+	int count;
+
+	cIslandPoly(int[] pX_, int[] pY_, int count_) {
+
+		pX=pX_;
+		pY=pY_;
+		count=count_;
+	}
+
+	void Draw() {
+
+		//println("in cIslandPoly.Draw()");
+		int x,y;
+		fill(#45B22D);
+		beginShape();
+
+		for (int i = 0; i < count; i++) { 
+
+			x=pX[i];
+			y=pY[i];
+			//println(pX[i]+","+pY[i]+"... "+x+","+y);
+			vertex( x, y );
+		}
+		endShape();
+		//println("leaving cIslandPoly.Draw()");
+	}
+
+
+
+	void Draw4ScreenBuffer1() {
+
+		
+		// ScreenBuffer1.background(102);
+		// ScreenBuffer1.stroke(255);
+		// ScreenBuffer1.line(40, 40, mouseX, mouseY);
+		
+		// image(ScreenBuffer1, 10, 10); 
+		
+
+		
+		ScreenBuffer1.beginDraw();
+
+		// set background colour to sea blue - not working for some reason
+		//ScreenBuffer1.background(#51ADD9); // sea is blue
+		//ScreenBuffer1.background(81,173,217); // sea is blue
+		//ScreenBuffer1.fill(#51ADD9); // sea is blue
+		//ScreenBuffer1.rect(0,0,900,900); // sea is blue
+		//ScreenBuffer1.tint(#51ADD9); // sea is blue
+		ScreenBuffer1.fill(#45B22D); // land is green
+		ScreenBuffer1.stroke(0);
+		
+		ScreenBuffer1.beginShape();
+
+		for (int i = 0; i < count; i++) { 
+			//ScreenBuffer1.vertex( round((pX[i])/2), round((pY[i])/2) );
+			ScreenBuffer1.vertex( round((pX[i])), round((pY[i])) );
+		}
+		//ScreenBuffer1.vertex( round((pX[0])/2), round((pY[0])/2) );
+		ScreenBuffer1.vertex( round((pX[0])), round((pY[0])) );
+
+		ScreenBuffer1.endShape();
+		ScreenBuffer1.endDraw();
+
+		
+	}
+
+
+
+
+	void Draw4Viewport(int playerId_) {
+
+
+		//println("in cIslandPoly.Draw4Viewport()");
+		int x,y;
+		int cellX,cellY;
+		int showFromX, showFromY;
+		
+		if ( oGameEngine.getCurrentPlayerId()==1 ) { 
+			showFromX = oPlayer1.getShowFromCellX();
+			showFromY = oPlayer1.getShowFromCellY();
+		} else {
+			showFromX = oPlayer2.getShowFromCellX();
+			showFromY = oPlayer2.getShowFromCellY();
+		}
+
+		
+		fill(#45B22D);
+
+		beginShape();
+
+		for (int i = 0; i < count; i++) { 
+
+			if ( playerId_==1 ) {
+				x=round(pX[i]/2);
+				y=round(pY[i]/2);
+			} else if (debugShowPlayer2Viewport) {
+				x=round(pX[i]/2);
+				y=round(pY[i]/2);
+			}
+
+
+			cellX=oGeometry.translateCoordToCell(showFromX, x*2); // return showCellFrom_-1+int(floor((coord_+(cellWidth-1))/cellWidth));
+			cellY=oGeometry.translateCoordToCell(showFromY, y*2); 
+
+			if ( playerId_==1 ) {
+				x=x+220;
+				y=y+20;
+			} else if (debugShowPlayer2Viewport) {
+				x=x+220;
+				y=y+350;
+			}
+
+
+			x=x-((showFromX*cellWidth)/2);
+			y=y-((showFromY*cellHeight)/2);
+
+
+			vertex( x, y );
+
+			
+			//if ( 	cellX >= (showFromX-5) && 
+			//	cellX <= ( (showFromX+5) + oViewport.getViewportCellCountX()-1)   
+			//	&&   
+			//	cellY >=(showFromY-5) && 
+			//	cellY <= ( (showFromY+5) + oViewport.getViewportCellCountX()-1) )  {
+			//	
+			//	if ( playerId_==2 ) vertex( x, y );
+			//} 
+			
+			
+		}
+		endShape();
+
+	}
+
+
+
+	void Draw4Map(int sx_, int sy_) {
+
+		int x,y;
+		noStroke();
+		fill(#45B22D);
+		beginShape();
+
+		for (int i = 0; i < count; i++) { 
+
+			x=sx_ + round(pX[i]/cellWidth);
+			y=sy_ + round(pY[i]/cellHeight)+150;
+			vertex( x, y );
+		}
+		endShape();
+
+	}
+
+}
+
 
 
 

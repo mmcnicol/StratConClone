@@ -1,6 +1,7 @@
 
 class cViewport {
 
+
 	int iPlayerId;
 
 	int viewportWidth;
@@ -24,8 +25,12 @@ class cViewport {
 		viewportCellCountX = viewportCellCountX_;
 		viewportCellCountY = viewportCellCountY_;
 	
-		viewportWidth = (viewportCellCountX*cellWidth)+cellWidth; 
-		viewportHeight = (viewportCellCountY*cellHeight)+cellHeight;
+		//viewportWidth = (viewportCellCountX*cellWidth)+cellWidth; 
+		//viewportHeight = (viewportCellCountY*cellHeight)+cellHeight;
+
+		viewportWidth = (viewportCellCountX*cellWidth); 
+		viewportHeight = (viewportCellCountY*cellHeight);
+
 
 		oVScrollBar = new cVScrollBar(viewportWidth, viewportHeight, viewportCellCountX, viewportCellCountY, gridCellCountX, gridCellCountY); 
 		oHScrollBar = new cHScrollBar(viewportWidth, viewportHeight, viewportCellCountX, viewportCellCountY, gridCellCountX, gridCellCountY); 
@@ -64,6 +69,8 @@ class cViewport {
 
 	}
 
+	int getPlayerId() { return iPlayerId; }
+
 	int getStartX() { return iStartX; } 
 	int getStartY() { return iStartY; }  
 	
@@ -87,19 +94,30 @@ class cViewport {
 
 		if ( oAnimateAttack.getAttackAnimationInProgress()==false ) {
 
-			fill(0);
-			if ( oGameEngine.getCurrentPlayerId()==-1 ) { 
-				rect(220, 0, viewportWidth, viewportHeight);
-				rect(220, 350, viewportWidth, viewportHeight);
-			} else if ( oGameEngine.getCurrentPlayerId()==1 ) { 
-				rect(220, 0, viewportWidth, viewportHeight);
-			} else {
-				rect(220, 350, viewportWidth, viewportHeight);
+
+			if ( GridDrawMode==1 ) {
+
+				//background(#FFFFFF);
+
+				
+				fill(0);
+
+				if ( iPlayerId==-1 ) { 
+					rect(220, 0, viewportWidth, viewportHeight);
+					rect(220, 350, viewportWidth, viewportHeight);
+				} else if ( iPlayerId==1 ) { 
+					rect(220, 0, viewportWidth, viewportHeight);
+				} else {
+					rect(220, 350, viewportWidth, viewportHeight);
+				}
+				
+
+				//background(#FFFFFF);
+				//fill(0);
+				//rect(0,0,viewportWidth-ScrollBarWidth,viewportHeight-ScrollBarWidth);
+
 			}
-			
-			//background(#FFFFFF);
-			//fill(0);
-			//rect(0,0,viewportWidth-ScrollBarWidth,viewportHeight-ScrollBarWidth);
+
 			noStroke();
 			
 			if ( showViewportScrollBars ) {
@@ -107,14 +125,73 @@ class cViewport {
 				oHScrollBar.draw();
 			}
 
-			oGrid.draw();
+
+
+
+			if ( GridDrawMode ==2 ) {
+
+				int showFromX, showFromY;
+
+				if ( iPlayerId==1 ) { 
+					showFromX = oPlayer1.getShowFromCellX()*cellWidth;
+					showFromY = oPlayer1.getShowFromCellY()*cellHeight;
+				} else {
+					showFromX = oPlayer2.getShowFromCellX()*cellWidth;
+					showFromY = oPlayer2.getShowFromCellY()*cellHeight;
+				}
+
+				// ***********************************************
+				// http://processingjs.org/reference/copy_/
+
+				// copy(srcImg,x,y,width,height,dx,dy,dwidth,dheight)
+
+				// Parameters: 	
+				// srcImg 	PImage:a image variable referring to the source image.
+				// x 		int: X coordinate of the source's upper left corner
+				// y 		int: Y coordinate of the source's upper left corner
+				// width 	int: source image width
+				// height 	int: source image height
+				// dx 		int: X coordinate of the destination's upper left corner
+				// dy 		int: Y coordinate of the destination's upper left corner
+				// dwidth 	int: destination image width
+				// dheight 	int: destination image height
+				// *****************************************************
+				
+
+				noFill();
+				int tempScaleFactor=1;
+				if ( iPlayerId==1 ) { 
+					//println("player 1, copy from ScreenBuffer1, "+showFromX+","+showFromY+"  "+viewportWidth+","+viewportHeight );
+					copy(ScreenBuffer1,
+						round(showFromX/tempScaleFactor),round(showFromY/tempScaleFactor),
+						round(viewportWidth/tempScaleFactor),round(viewportHeight/tempScaleFactor),
+						222,2,  viewportWidth-2,viewportHeight-2);
+
+				} else if ( debugShowPlayer2Viewport ) { 
+					//println("player 2, copy from ScreenBuffer1, "+showFromX+","+showFromY+"  "+viewportWidth+","+viewportHeight );
+					copy(ScreenBuffer1,
+						round(showFromX/tempScaleFactor),round(showFromY/tempScaleFactor),
+						round(viewportWidth/tempScaleFactor),round(viewportHeight/tempScaleFactor),
+						222,352,  viewportWidth-2,viewportHeight-2);
+				} 
+
+
+			}
+
+			oGrid.draw4Player(iPlayerId); // FISH
+
+			
+			//oGrid.draw(); // FISH
 			//oCityList.Draw();
-			oUnitList.Draw();
+			//oIslandPolyList.Draw(); 
+			//oIslandPolyList.Draw4Viewport( getPlayerId() ); // FISH
+			//oUnitList.Draw();
 
 			
 			//oPanel2.show();
 
 			//redraw();
+			
 		}
 	}
 	
@@ -122,7 +199,7 @@ class cViewport {
 
 		int showFromX, showFromY;
 
-		if ( oGameEngine.getCurrentPlayerId()==1 ) { 
+		if ( iPlayerId==1 ) { 
 			showFromX = oPlayer1.getShowFromCellX();
 			showFromY = oPlayer1.getShowFromCellY();
 		} else {
@@ -164,9 +241,9 @@ class cViewport {
 
 			int showFromX, showFromY, currentPlayerId;
 
-			currentPlayerId = oGameEngine.getCurrentPlayerId();
+			//currentPlayerId = oGameEngine.getCurrentPlayerId();
 
-			if ( currentPlayerId==1 ) { 
+			if ( iPlayerId==1 ) { 
 				showFromX = oPlayer1.getShowFromCellX();
 				showFromY = oPlayer1.getShowFromCellY();
 			} else {
@@ -195,7 +272,7 @@ class cViewport {
 			}
 
 		
-			if ( currentPlayerId==1 ) { 
+			if ( iPlayerId==1 ) { 
 				oPlayer1.setShowFromCellX(showFromX);
 				oPlayer1.setShowFromCellY(showFromY);
 			} else {
@@ -385,9 +462,9 @@ class cScrollBar {
 
 		if ( showScrollBar ) {
 
-			/* The noStroke() function disables drawing the stroke (outline). If both <b>noStroke()</b> and
-	      	   <b>noFill()</b> are called, no shapes will be drawn to the screen.
-			*/
+			// The noStroke() function disables drawing the stroke (outline). If both <b>noStroke()</b> and
+			// <b>noFill()</b> are called, no shapes will be drawn to the screen.
+			
 			noStroke();
 
 			// draw the scroll bar background
@@ -523,6 +600,7 @@ class cHScrollBar extends cScrollBar {
 			moveRight();
 		}
 	}
+
 
 }
 

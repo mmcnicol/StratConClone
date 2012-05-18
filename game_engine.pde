@@ -1,6 +1,7 @@
 
 class cGameEngine {
 
+
 	int dayNumber;
 	//bool bIdle;
 	int selectedUnitListId=-1;
@@ -119,8 +120,8 @@ class cGameEngine {
 			oPanelMap.show();
 			if (debugShowPlayer2Viewport) oPanelMapPlayer2.show();
 
-			oPanelCityList.show();
-			oPanelIslandList.show();
+			//oPanelCityList.show(); // FISH
+			//oPanelIslandList.show(); // FISH
 			
 			oPanelPlayer1UnitCounts.show();
 			if (debugShowPlayer2Viewport) oPanelPlayer2UnitCounts.show();

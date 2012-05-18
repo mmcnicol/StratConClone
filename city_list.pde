@@ -1,6 +1,7 @@
 
 class cCityList {
 
+
 	ArrayList listCity;
 
 	cCityList() {
@@ -88,11 +89,11 @@ class cCityList {
 	}
 	
 	
-	/*
-	void printCount() {
-		console.log( "city list size=" + listCity.size() );
-	}
-	*/
+	
+	//void printCount() {
+	//	console.log( "city list size=" + listCity.size() );
+	//}
+	
 
 	int getCount() {
 		//return listCity.size()-1;
@@ -290,13 +291,13 @@ class cCityList {
 
 		oIslandList.updateIslandPlayerCityCount(city.getCityIslandListId(), city.getCityPlayerId(), iPlayerId_);
 	
-		/*
-		if ( iPlayerId_==1 ) {
-			oPlayer1.decreaseUnitTypeCount(0, city.getCityIslandListId() );
-		} else {
-			oPlayer2.decreaseUnitTypeCount(0, city.getCityIslandListId() );
-		}
-		*/
+		
+		//if ( iPlayerId_==1 ) {
+		//	oPlayer1.decreaseUnitTypeCount(0, city.getCityIslandListId() );
+		//} else {
+		//	oPlayer2.decreaseUnitTypeCount(0, city.getCityIslandListId() );
+		//}
+		
 
 		city.setCityPlayerId(iPlayerId_);
 		
@@ -368,8 +369,8 @@ class cCityList {
 		cCity city = (cCity) listCity.get(iCityListId_);
 		city.clearFogOfWar();	
 
-		if ( city.getCityPlayerId()==1 ) oViewport.scrollIfAppropriate(city.getCellX(), city.getCellY());
-		else if (debugShowPlayer2Viewport) oViewportPlayer2.scrollIfAppropriate(city.getCellX(), city.getCellY());
+		if ( city.getCityPlayerId()==1 ) oViewport.scrollIfAppropriate2(city.getCellX(), city.getCellY());
+		else if (debugShowPlayer2Viewport) oViewportPlayer2.scrollIfAppropriate2(city.getCellX(), city.getCellY());
 	}
 
 
