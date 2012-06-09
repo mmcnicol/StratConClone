@@ -163,6 +163,8 @@ class cDialogueCityProduction extends cDialogue {
 	
 	private void display() {
 	
+		if ( oAnimate.getAnimationInProgress() ) oAnimate.clear();
+
 		clear(255);
 		noStroke();
 		fill(150); 
@@ -288,11 +290,12 @@ class cDialogueCityProduction extends cDialogue {
 			hide();
 			bActive=false;
 			GameState=4;
+			if (debugGameState) println("debug: GameState="+GameState);
 			//println("city production dialogue, button clicked");
 
-			//oViewport.draw();
-			//if (debugShowPlayer2Viewport) oViewportPlayer2.draw();
-			println("initial city production confirmed.");
+			oViewport.draw();
+			if (debugShowPlayer2Viewport) oViewportPlayer2.draw();
+			println("city production confirmed.");
 
 		}
 
@@ -453,6 +456,7 @@ class cDialogueStartup extends cDialogue {
 			hide();
 			bActive=false;
 			GameState=2;
+			if (debugGameState) println("debug: GameState="+GameState);
 			//println("startup dialogue, button clicked");
 		}
 
@@ -553,6 +557,7 @@ class cDialogueSurrender extends cDialogue {
 			hide();
 			bActive=false;
 			GameState=4;
+			if (debugGameState) println("debug: GameState="+GameState);
 			//println("Surrender dialogue, no button clicked");
 			println("Continue game.");
 			println("");			

@@ -665,7 +665,7 @@ class cGrid {
 	void DrawCell4Player(int playerId_, int x, int y, bool bDrawAnyUnits) {
 
 
-		//if (debugAnimate) println("debug: in grid.DrawCell("+x+","+y+") bDrawAnyUnits="+bDrawAnyUnits);
+		if (debugDrawGrid) println("debug: in grid.DrawCell("+x+","+y+") bDrawAnyUnits="+bDrawAnyUnits);
 		int DisplayX, DisplayY;
 		//println("showFromY="+showFromY+", countY="+countY+  ", showFromX="+showFromX+", countX="+countX);
 
@@ -701,6 +701,7 @@ class cGrid {
 	
 		if ( oCityList.isCity(x,y) ) {
 
+			if (debugDrawGrid) println("debug: calling oCityList.Draw("+x+","+y+")");
 			oCityList.Draw(x,y);
 		}
 
@@ -720,9 +721,11 @@ class cGrid {
 
 					if ( GridDrawMode ==1 ) {
 						image( imgSea, DisplayX, DisplayY ); 
-					} else if ( GridDrawMode ==2 ){
+					} else {
+						/*
 						fill(#51ADD9);
 						rect(DisplayX, DisplayY, cellWidth, cellHeight); // FISH
+						*/
 					}
 				} else {
 					//if ( debugAnimate ) println("debug: in grid.DrawCell() getAnimationInProgress=true draw LAND at "+DisplayX+","+DisplayY+" ");
@@ -733,6 +736,15 @@ class cGrid {
 						stroke(0);
 						noFill();
 						rect(DisplayX+1, DisplayY+1, cellWidth, cellHeight); // FISH
+						noStroke();
+
+						/*
+						fill(#45B22D);
+						stroke(0);
+						//noFill();
+						rect(DisplayX, DisplayY, cellWidth, cellHeight); // FISH
+						noStroke();						
+						*/
 					}
 				}
 
@@ -768,9 +780,15 @@ class cGrid {
 
 						if ( GridDrawMode ==1 ) {
 							image( imgSea, DisplayX, DisplayY ); 
+						} else {
+							/*
+							fill(#51ADD9);
+							stroke(0);
+							//noFill();
+							rect(DisplayX, DisplayY, cellWidth, cellHeight); // FISH
+							noStroke();
+							*/
 						}
-						//fill(#51ADD9);
-						//rect(DisplayX, DisplayY, cellWidth, cellHeight); // FISH
 
 					} else {
 						//println("drawing land... at ("+x+","+y+") "("+DisplayX+","+DisplayY+")");
@@ -778,12 +796,19 @@ class cGrid {
 	
 						if ( GridDrawMode ==1 ) {
 							image( imgLand, DisplayX, DisplayY ); 
-						} else if ( GridDrawMode ==2 ) {
-							//fill(#45B22D);
+						} else {
 							stroke(0);
 							noFill();
 							rect(DisplayX, DisplayY, cellWidth, cellHeight); // FISH
 							noStroke();
+
+							/*
+							fill(#45B22D);
+							stroke(0);
+							//noFill();
+							rect(DisplayX, DisplayY, cellWidth, cellHeight); // FISH
+							noStroke();
+							*/
 						}
 					}
 

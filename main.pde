@@ -58,47 +58,50 @@ int cellHeight=16;
 int iNumberIndent=1;
 int GameState=0; // 0=init, 1=startup diag, 2=startup diag closed, 3= initial city production, 4=play, 5=pause, 6=surrender?, 99=end
 int iPlayer1Mode=1; // 1=human, 2=computer.
-int iMapSize=2; // 1=Small (45x25), 2=large (90x50)
+//int iMapSize=2; // 1=Small (45x25), 2=large (90x50)
 int iNumberTextSize=6;
 int iStringTextSize=10;
 //int iNumberTextSize=6;
 //int iStringTextSize=11;
+int iNumberOfUnitTypes=9;
 
-int  GridDrawMode			= 2;     // 1=normal images, 2=ScreenBuffer1
-bool ShowFogOfWar			= true;
-bool showViewportScrollBars		= false;
-
+int  GridDrawMode					= 1;     // 1=normal images, 2=ScreenBuffer1
+bool showViewportScrollBars			= false;
+bool ShowFogOfWar					= true;
+bool debugShowPlayer2Viewport		= true;
 bool debugShowIslandIslandListId	= false;
 bool debugShowCityIslandListId		= false;
 bool debugShowUnitIslandListId		= false;
-bool debugShowUnitMoveTo		= true;
+bool debugShowUnitMoveTo			= false;
 bool debugShowUnitTaskStatus		= false;
 bool debugShowCellGridLocation		= false;
-bool debugShowPlayer2Viewport		= true;
 
-bool debugTransport			= false;
-bool debugCityAdd			= false;
-bool debugCityProduction		= false;
-bool debugSleep				= false;
-bool debugMouseClick			= false;
-bool debugAnimate			= false;
-bool debugAnimateAttack			= false;
-bool debugDoNothing			= false;
+bool debugTransport					= false;
+bool debugCityAdd					= false;
+bool debugCityProduction			= false;
+bool debugSleep						= false;
+bool debugMouseClick				= false;
+bool debugAnimate					= false;
+bool debugAnimateAttack				= false;
+bool debugMove						= false;
+bool debugDrawGrid					= false;
+bool debugDrawViewport				= false;
+bool debugDoNothing					= false;
+bool debugGameState					= false;
 
-
-int iNumberOfUnitTypes=9;
 
 PGraphics ScreenBuffer1;
 //PImage ScreenBuffer1 = createImage(900, 900, RGB);
 
 void setup() {
 	
-
-
 	//size( oViewport.getWidth()+oPanel1.getWidth(), oViewport.getHeight() );
 
-	//size( 1000, 620 );
-	size( 1100, 1650 ); // width, height
+	if ( debugShowCityIslandListId && debugShowUnitIslandListId ) {
+		size( 1100, 1650 ); // width, height
+	} else {
+		size( 1000, 645 ); // width, height
+	}
 	//size( 1710, 2300 ); // width, height
 
 	frameRate(7);
@@ -107,25 +110,17 @@ void setup() {
 	//FontA = loadFont("Arial");
 	FontA = loadFont("Courier New");
 	textFont(FontA);
-	
-	fill(255);
-	//textSize(26);
-	//text("generating map...",(width/2)-90,height/2);
-	
+
 	
 	setTextSizeString();
 	noStroke();
 	//redraw();
-	
-
-
 
 	//oWorld = new cWorld(0);
 	oWorld = new cWorld();
 
 	oAnimate = new cAnimate();  
 	oAnimateAttack = new cAnimateAttack();
-
 
 	oPlayer1 = new cPlayer(1, false);
 	oPlayer2 = new cPlayer(2, true);
@@ -141,25 +136,18 @@ void setup() {
 	//ScreenBuffer1 = createGraphics(1700, 1700, JAVA2D);
 
 	//if ( GridDrawMode==2 ) ScreenBuffer1 = createGraphics(900, 900, JAVA2D);
-	if ( GridDrawMode==2 ) ScreenBuffer1 = createGraphics(1700, 1700, JAVA2D);
+	//if ( GridDrawMode==2 ) ScreenBuffer1 = createGraphics(1700, 1700, JAVA2D);
+	if ( GridDrawMode==2 ) ScreenBuffer1 = createGraphics(1700, 1700, P2D);
 
 }
 
 
 void draw() { 
-
-
-
-	//println("debug 1: GameState="+GameState);
 	
 	if(GameState!=99) {
 
 		if ( GameState==4) {
 			
-			//println("debug#4.1");
-
-
-
 			oPanel1.update();
 			oAnimate.do();
 			oAnimateAttack.do();
@@ -196,21 +184,20 @@ void draw() {
 
 		
 		if ( GameState==0 ) {
-			
-			//println("debug#0.1");
+
+			if (debugGameState) println("debug: GameState="+GameState);
 
 			GameState=1;
 		
 			oWorld.loadImages();
 
 			oWorld.setupUnitRefs();
-			
 
+			oWorld.showKeyboardShortcuts();
+			
 			oIslandList = new cIslandList();	
 			oCityList = new cCityList();
 			oUnitList = new cUnitList(); 
-
-
 
 			oGrid = new cGrid(99, 99, 1, 1); 
 
@@ -246,10 +233,7 @@ void draw() {
 			oPanelPlayer1UnitCounts = new cPanelPlayerUnitCounts(656+130, 8, 180, 1);
 			oPanelPlayer2UnitCounts = new cPanelPlayerUnitCounts(656+130, 358, 180, 2);
 
-
-
 			oGameEngine = new cGameEngine(); 
-			
 			
 			oDialogueStartup = new cDialogueStartup(90,170);
 			oDialogueCityProduction = new cDialogueCityProduction(90,170);
@@ -264,25 +248,22 @@ void draw() {
 		
 		
 		
-		if ( GameState==2 ) {
-			
-			//println("debug#2.1");
+		if ( GameState==2 ) { // startup dialogue closed
+
+			if (debugGameState) println("debug: GameState="+GameState);
 
 			GameState=3;
 
 			background(0);
 
+			fill(255);
+			textSize(26);
+			text("generating map...",(width/2)-90,height/2);
 
 			oGrid.generate();
 			
-
 			//oViewport.draw();
 			//if (debugShowPlayer2Viewport) oViewportPlayer2.draw();
-			
-
-
-
-
 			
 			int iCityListId;
 			iCityListId = oCityList.getPlayerFirstCityListId(1);
@@ -290,10 +271,9 @@ void draw() {
 			oCityList.clearFogOfWarByPlayerId(1);
 			//oCityList.clearFogOfWar(iCityListId);
 
-
+			background(0);
 			oViewport.draw();
 			
-
 			if (debugShowPlayer2Viewport) {
 				iCityListId = oCityList.getPlayerFirstCityListId(2);
 				println("debug: player 2 first iCityListId="+iCityListId);
@@ -302,23 +282,15 @@ void draw() {
 				oViewportPlayer2.draw();
 			}
 			
-
-
-
 			if ( GridDrawMode==2 ) oIslandPolyList.Draw4ScreenBuffer1(); 
 
-				 
 				//copy(ScreenBuffer1,
 				//	0,0,
 				//	1700,1700,
 				//	0,600,
 				//	1700,1700);
-				
-
 
 			if ( oPlayer1.getIsAI() ) {
-
-				//println("debug#2.2");
 
 				//iCityListId = oCityList.getPlayerFirstCityListId(1);
 				//oCityList.clearFogOfWar(iCityListId);
@@ -328,7 +300,7 @@ void draw() {
 				GameState=4;
 				
 			} else {
-				//println("debug#2.3");
+
 				iCityListId = oCityList.getPlayerFirstCityListId(1);
 				//oCityList.clearFogOfWar(iCityListId);
 
@@ -431,6 +403,18 @@ class cWorld {
 
 		imgSubmarine1 = loadImage("images/16x16/submarine1.png");
 		imgSubmarine2 = loadImage("images/16x16/submarine2.png");
+	}
+
+	void showKeyboardShortcuts() {
+
+		println("");
+		println("KeyboardShortcuts:");
+		println("N: Skip");
+		println("S: Sleep");
+		println("R: Random");
+		println("W: Wake");
+		println("M: Stack Move");
+		println("");
 	}
   
 }

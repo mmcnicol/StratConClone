@@ -140,7 +140,6 @@ class cUnit {
 			println( "error: cannot add unit for unit type " + intUnitTypeId_ );
 			//exit();
 		}
-
 	}
 
 
@@ -271,7 +270,6 @@ class cUnit {
 			} 
 			
 		}		
-				
 	}
 	
 	bool isSeaVessel() {
@@ -336,7 +334,6 @@ class cUnit {
 		
 		if (intUnitTypeId==0 || intUnitTypeId==2 || intUnitTypeId==4 || intUnitTypeId==5 || intUnitTypeId==6 || intUnitTypeId==7 || intUnitTypeId==8 ) return true;
 		else return false;	
-		
 	}
 	
 	int getStrength() { return strength; }
@@ -355,7 +352,6 @@ class cUnit {
 		}
 	}
 	
-			
 	void updateSelectedUnitPanelInformation() {
 		
 		string strMsg="";
@@ -371,7 +367,6 @@ class cUnit {
 		}
 	}
 	
-
 
 
 	//****************************************************************
@@ -419,9 +414,7 @@ class cUnit {
 			oGrid.DrawCell4Player(getUnitPlayerId(), getX(), getY(), false);
 			
 		}
-				
 	}
-	
 	
 	void doAttackEnemyCity(int iUnitListId_, int intCellX_, int intCellY_) {
 	
@@ -506,10 +499,7 @@ class cUnit {
 		
 		oDoNothing.set();
 	}
-	
-	
-
-
+		
 	void doAttackEnemyUnit(int iUnitListId_, int intCellX_, int intCellY_) {
 
 		//println("in unit.doAttackEnemyUnit() ");
@@ -615,10 +605,8 @@ class cUnit {
 		reDrawNearBy();
 		
 		oDoNothing.set();
-
 	}
 
-	
 	void doDropBomb(int iUnitListId_, int intCellX_, int intCellY_) {
 
 		int x, y, factor, counter;
@@ -771,7 +759,6 @@ class cUnit {
 		//frameRate(3);
 		
 		oDoNothing.set();
-
 	}
 	
 	void doBombLocation(int x_, int y_) {
@@ -785,10 +772,6 @@ class cUnit {
 		}
 	}
 	
-	
-	
-	
-		
 	void kill() { 
 	
 		setTaskStatus(999);
@@ -836,7 +819,6 @@ class cUnit {
 		
 		for (int i=0; i<6; i++)
 			if ( cargoUnitListId[i] != -1 ) println("cargo["+i+"]="+cargoUnitListId[i]);
-		
 	}
 	
 	void wakeCargo() {
@@ -849,7 +831,6 @@ class cUnit {
 			if ( cargoUnitListId[i] != -1 ) {
 				oUnitList.wake( cargoUnitListId[i] );
 			}
-		
 	}
 
 	void moveCargo(int x_, int y_) {
@@ -907,18 +888,14 @@ class cUnit {
 			}
 			
 		//println("in unit.clearCargoUnit("+iUnitListId_+") leaving function");
-		//printCargo();
-		
+		//printCargo();	
 	}
-	
-	
 	
 	void deleteAllCargo() {
 		
 		for (int i=0; i<6; i++)
 			cargoUnitListId[i]=-1;			
 	}
-	
 	
 	void doAddCargo(int iUnitListId_, int intCellX_, int intCellY_) {
 
@@ -965,7 +942,6 @@ class cUnit {
 			updateSelectedUnitPanelInformation();				
 			
 		} else println("error: expected to add unit as cargo to destination unit but destinationUnitId="+destinationUnitId);
-
 	}
 	
 	void setIsCargoOf(int UnitListId_) {
@@ -989,9 +965,7 @@ class cUnit {
 
 	void resetMovesLeftToday() {
 		movesLeftToday = movesPerTurn; 
-
 	}
-
 
 	void moveToIfSpecified(int iUnitListId_) {
 
@@ -1081,6 +1055,7 @@ class cUnit {
 			move(iUnitListId_, iNextCellX, iNextCellY);
 			
 		} else if ( getMovesLeftToday()>=1 ) {
+
 			int moves_on=0;
 			if (movesOnLand) moves_on=1;
 
@@ -1137,9 +1112,7 @@ class cUnit {
 			//if (intUnitPlayerId==1) println(" in unit.moveTO(), calling unit.move("+iNextCellX+","+iNextCellY+")");
 			move(iUnitListId_, iNextCellX, iNextCellY);
 		}
-
 	}
-
 
 	void move(int iUnitListId_, int intCellX_, int intCellY_) {
 
@@ -1192,7 +1165,7 @@ class cUnit {
 				// draw current location (city or land or sea)
 				//oGrid.DrawCell(intCellX, intCellY, false);
 				//oGrid.DrawCell4Player(getUnitPlayerId(), getX(), getY(), false);
-				reDrawNearBy();
+				///////	reDrawNearBy();  // FISH
 				//oGrid.draw4Player( getUnitPlayerId() );
 				
 			//}
@@ -1290,7 +1263,7 @@ class cUnit {
  
 				setXY(intCellX_, intCellY_);
 				clearFogOfWarNearBy(intCellX_, intCellY_);
-				reDrawNearBy();
+				/////reDrawNearBy(); // FISH
 				updateMovesLeftToday();
 				if ( oUnitRef[intUnitTypeId].canFly() ) updateFuelLeft(iUnitListId_);
 				//if( intUnitPlayerId==1) reDrawNearBy();
@@ -1304,7 +1277,6 @@ class cUnit {
 			}
 		
 		}
-		
 	}
 
 
@@ -1314,6 +1286,7 @@ class cUnit {
 	// *********************************************
 	// PRE-MOVE VALIDATION RULES
 	// *********************************************	
+
 	private bool checkPreMoveValidationRules(int iUnitListId_, int intCellX_, int intCellY_) {
 		
 		bool ValidMove=true;
@@ -1451,9 +1424,6 @@ class cUnit {
 
 	
 
-
-
-
 	// *********************************************
 	// MOVE AI
 	// *********************************************	
@@ -1483,12 +1453,9 @@ class cUnit {
 				identifyNextMoveAI(iUnitListId_);
 
 			}
-		}
-		
+		}	
 	}
-	
-	
-	
+		
 	void identifyNextMoveTankAI(int iUnitListId_) {
 
 		//if ( intUnitPlayerId==1 ) println("in unit.identifyNextMoveTankAI");
@@ -1636,11 +1603,8 @@ class cUnit {
 
 				break;				
 		}
-		
 	}
 
-	
-	
 	void identifyNextMoveTransportAI(int iUnitListId_) {
 
 		//println("===================");
@@ -1924,11 +1888,8 @@ class cUnit {
 			//println("note: transport does not need to move today.");
 			setMovesLeftToday(0);
 		}	
-	
 	}
-	
-	
-	
+		
 	void identifyNextMoveFighterAI(int iUnitListId_) {
 
 		// *****************************
@@ -2029,14 +1990,8 @@ class cUnit {
 				setMovesLeftToday(0);
 			}
 		}
-	
 	}
 
-
-
-
-
-	
 	void identifyNextMoveBomberAI(int iUnitListId_) {
 
 		if ( fuel<18 ) {
@@ -2147,11 +2102,7 @@ class cUnit {
 				setMovesLeftToday(0);
 			}
 		}
-	
 	}
-
-
-
 
 	void identifyNextMoveAI(int iUnitListId_) {
 
@@ -2361,9 +2312,7 @@ class cUnit {
 			println("note: move AI has not identified a move for unit at "+x+","+y+".");
 			setMovesLeftToday(0);
 		}		
-
 	}
-
 
 	
 	
@@ -2588,7 +2537,6 @@ class cUnit {
 		} 
 	}
 	
-
 	void clearFogOfWarNearBy(int x_, y_) {
 
 
@@ -2629,7 +2577,7 @@ class cUnit {
 				if ( getUnitPlayerId()==1 ) {
 					oGrid.clearFogOfWar(x,y);
 					////oGrid.DrawCell(x,y,true);
-					oGrid.DrawCell4Player(getUnitPlayerId(), x,y,true);
+					////oGrid.DrawCell4Player(getUnitPlayerId(), x,y,true); // FISH
 					//reDrawNearBy();
 					//if (oGrid.isFogOfWar(x,y)==false) oGrid.DrawCell(x,y,true);
 
@@ -2637,7 +2585,7 @@ class cUnit {
 
 				} else if ( getUnitPlayerId()==2 ) {
 					oGrid.clearFogOfWarP2(x,y);
-					oGrid.DrawCell4Player(getUnitPlayerId(), x,y,true);
+					////oGrid.DrawCell4Player(getUnitPlayerId(), x,y,true); // FISH
 					//if (oGrid.isFogOfWarP2(x,y)==false) oGrid.DrawCell(x,y,true);
 				}
 				
@@ -2646,16 +2594,15 @@ class cUnit {
 				//}
 			}
 		}
-
-
 	}
-
-
 
 	void reDrawNearBy() {
 
+		oViewport.draw();
+		if (debugShowPlayer2Viewport) oViewportPlayer2.draw();
 
-		//println("in unit.reDrawNearBy()");
+		/*
+		if (debugMove) println("in unit.reDrawNearBy()");
 
 		int x, y;
 		int sx, sy;
@@ -2691,6 +2638,7 @@ class cUnit {
 			for (x=sx;x<=ex;x++) {
 			
 				
+				if (debugMove) println("in unit.reDrawNearBy() DrawCell4Player("+getUnitPlayerId()+","+x+","+y+",true");
 
 				if ( getUnitPlayerId()==1 ) {
 					if (oGrid.isFogOfWar(x,y)==true) setDaysSinceLastClearedFogOfWar(0);
@@ -2698,9 +2646,9 @@ class cUnit {
 					if ( oViewport.isCellWithinViewport(x,y) ) { 	
 						if (oGrid.isFogOfWar(x,y)==false) {
 							//oGrid.DrawCell(x,y,true);
-							oGrid.DrawCell4Player(getUnitPlayerId(), getX(), getY(), true);
+							oGrid.DrawCell4Player(getUnitPlayerId(), x, y, true);
 						}
-					}
+					} 
 				} else if ( getUnitPlayerId()==2 ) {
 					if (oGrid.isFogOfWarP2(x,y)==true) setDaysSinceLastClearedFogOfWar(0);
 					oGrid.clearFogOfWarP2(x,y);
@@ -2708,16 +2656,15 @@ class cUnit {
 						if ( oViewportPlayer2.isCellWithinViewport(x,y) ) { 	
 							if (oGrid.isFogOfWarP2(x,y)==false) {
 								//oGrid.DrawCell(x,y,true);
-								oGrid.DrawCell4Player(getUnitPlayerId(), getX(), getY(), true);
+								oGrid.DrawCell4Player(getUnitPlayerId(), x, y, true);
 							}
 						}
 					}
 				}
-				
 
 			}
 		}
-	
+		*/
 	}
 	
 

@@ -90,7 +90,7 @@ class cViewport {
 	
 	void draw() {
 	
-		//println("debug: in viewport.draw(), oGameEngine.getCurrentPlayerId()="+oGameEngine.getCurrentPlayerId() );
+		if (debugDrawViewport) println("debug: in viewport.draw(), oGameEngine.getCurrentPlayerId()="+oGameEngine.getCurrentPlayerId() );
 
 		if ( oAnimateAttack.getAttackAnimationInProgress()==false ) {
 
@@ -106,9 +106,9 @@ class cViewport {
 					rect(220, 0, viewportWidth, viewportHeight);
 					rect(220, 350, viewportWidth, viewportHeight);
 				} else if ( iPlayerId==1 ) { 
-					rect(220, 0, viewportWidth, viewportHeight);
+					rect(220, 0, viewportWidth+1, viewportHeight+1);
 				} else {
-					rect(220, 350, viewportWidth, viewportHeight);
+					rect(220, 350, viewportWidth+1, viewportHeight+1);
 				}
 				
 
@@ -178,7 +178,9 @@ class cViewport {
 
 			}
 
-			oGrid.draw4Player(iPlayerId); // FISH
+			//oGrid.draw4Player(iPlayerId); // FISH
+			oGrid.draw4Player(1);
+			oGrid.draw4Player(2);
 
 			
 			//oGrid.draw(); // FISH

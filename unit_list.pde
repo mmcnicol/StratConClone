@@ -20,7 +20,6 @@ class cUnitList {
 		//println( "unit list debug#1");
 	}
 
-	
 	//void printPlayerUnitLocations(int iPlayerId_) {
 	//	for (int i = 0; i < listUnit.size(); i++) { 
 	//		cUnit unit = (cUnit) listUnit.get(i);
@@ -28,10 +27,6 @@ class cUnitList {
 	//	}  
 	//}
 	
-
-
-
-
 	int getCountEnemyUnitNearby(int intPlayerId_, int intRow_, int intCol_) {
 	
 		int TempCount=0;
@@ -59,7 +54,6 @@ class cUnitList {
 		return counter;	
 	}
 
-
 	int getCountOfPlayerTankUnitsAt(int iPlayerId_, int x_, int y_) {
 	
 		int counter=0;
@@ -72,7 +66,6 @@ class cUnitList {
 		return counter;	
 	}
 	
-	
 	int getPlayerUnitNumberAtRowCol(int iPlayerId_, int x_, int y_) {
 		int temp=-1;
 		for (int i = 0; i < listUnit.size(); i++) { 
@@ -83,7 +76,6 @@ class cUnitList {
 		}  
 		return temp;	
 	}
-	
 
 	int getHumanUnitNumberAtXY(int x_, int y_) {
 	
@@ -100,8 +92,6 @@ class cUnitList {
 		return temp;
 	}
 
-
-
 	bool isUnit(int cellX_, int cellY_) {
 		
 		for (int i = 0; i < listUnit.size(); i++) { 
@@ -114,7 +104,6 @@ class cUnitList {
 		
 		return false;	
 	}
-	
 	
 	bool isPlayerSeaVesselAtRowCol(int iPlayerId_, int x_, int y_) {
 
@@ -130,8 +119,6 @@ class cUnitList {
 		
 		return false;
 	}
-
-
 
 	void isFighter(int iUnitListId_) {
 
@@ -185,7 +172,6 @@ class cUnitList {
 		//println("in oUnitList.wake(), oGrid.getIslandIdIfIsNextToLand()=" + oGrid.getIslandIdIfIsNextToLand() );
 		unit.setUnitIslandListId( oGrid.getIslandIdIfIsNextToLand(unit.getX(), unit.getY() ) );
 		oIslandList.increaseIslandUnitTypeCount(unit.getUnitTypeId(), unit.getUnitIslandListId(), unit.getUnitPlayerId() );
-		
 	}
 	
 
@@ -210,7 +196,6 @@ class cUnitList {
 		return false;
 	}	
 
-
 	bool isEnemyTransportAtRowCol(int iPlayerId_, int x_, int y_) {
 
 		for (int i = 0; i < listUnit.size(); i++) { 
@@ -227,8 +212,6 @@ class cUnitList {
 		return false;
 	}	
 
-
-
 	void identifyPlayerLandUnitsToLoadTransport(int iPlayerId_, int iUnitIslandId_) {
 
 		int temp=-1;
@@ -244,9 +227,6 @@ class cUnitList {
 			}
 		}  
 	}
-
-
-
 
 	//bool IsTransportNearbyWaitingForUnits(int iPlayerId_, int iUnitListId_, int iCellX_, int iCellY_) {
 	bool IsTransportNearbyWaitingForUnits(int iPlayerId_, int iUnitListId_, int iUnitIslandId_) {
@@ -283,7 +263,6 @@ class cUnitList {
 		return false;
 	}
 
-
 	//int getTransportUnitNumberNearbyWhichIsWaitingForTanks(int iPlayerId_, int x_, int y_) {
 	int getTransportUnitNumberNearbyWhichIsWaitingForTanks(int iPlayerId_, int iUnitIslandId_) {
 
@@ -297,7 +276,6 @@ class cUnitList {
 		}  
 		return temp;	
 	}
-
 
 	bool isPlayerTransportFullAtRowCol(int iPlayerId_, int x_, int y_) {
 	
@@ -371,9 +349,7 @@ class cUnitList {
 		cargoUnit.setMoveToX(-1);
 		cargoUnit.setMoveToY(-1);
 		*/
-		
 	}	
-	
 
 	void clearUnitFromCargoOf(int UnitListId_, int CargoUnitListId_) {
 
@@ -382,8 +358,6 @@ class cUnitList {
 		unit.clearCargoUnit(CargoUnitListId_);
 		if ( debugTransport ) println("debug: end clearUnitFromCargoOf("+UnitListId_+","+CargoUnitListId_+")");
 	}
-
-
 
 	void clearMoveToTransport( int iUnitPlayerId_, int iUnitIslandListId_) {
 
@@ -539,10 +513,8 @@ class cUnitList {
 			unit.kill();
 			/////////listUnit.remove(iUnitListId_);
 		}
-			
 	}	
 
-	
 	int getUnitStrength(int iUnitListId_) {
 	
 		//println("in unitList.getUnitStrength()...");
@@ -551,7 +523,6 @@ class cUnitList {
 
 		return unit.getStrength();
 	}
-
 
 	void doAttackEnemyCity(int AttackerObjectListId_, int DefenderObjectX_, int DefenderObjectY_) {
 
@@ -647,9 +618,6 @@ class cUnitList {
 	}
 
 
-
-
-
 	void move(int iUnitListId_, int Row_, int Col_) {
 
 		//println("in unitlist.move iUnitListId_="+iUnitListId_+" ("+Row_+","+Col_+")");
@@ -661,7 +629,6 @@ class cUnitList {
 		} else {
 			println("error: unitlist.move() called with invalid list unit id.");
 		}
-
 	}
 
 	void moveCargo(int iUnitListId_, int Row_, int Col_) {
@@ -676,7 +643,6 @@ class cUnitList {
 		} else {
 			println("error: unitlist.moveCargo() called with invalid list unit id.");
 		}
-
 	}
 	
 	void moveTo(int iUnitListId_, int x_, int y_) {
@@ -687,7 +653,6 @@ class cUnitList {
 		//println("debug 2");
 		unit.moveTo(iUnitListId_, x_, y_);
 		//println("debug 3");
-
 	}
 	
 	void resetMovesLeftToday() {
@@ -747,7 +712,6 @@ class cUnitList {
 				}
 			}
 		}  
-		
 	}
 	
 	void drawTransportAt(int iPlayerId_, int cellX_, int cellY_) {
@@ -806,7 +770,6 @@ class cUnitList {
 				i=listUnit.size();
 			}
 		}  
-	
 	}
 
 
@@ -838,9 +801,7 @@ class cUnitList {
 				}
 				break;					
 		}	
-	
 	}
-	
 	
 	
 	void selectedUnitSkip(int intPlayerId_) {

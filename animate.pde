@@ -80,7 +80,7 @@ class cAnimateAttack extends cAnimate {
 	
 	int counter;
 	bool AttackAnimationInProgress;
-	int AttackType;
+	int AttackType; // 1=city, 2=unit
 	int AttackerObjectListId;
 	int DefenderObjectX;
 	int DefenderObjectY;
@@ -89,7 +89,7 @@ class cAnimateAttack extends cAnimate {
 		super();
 		counter=0;
 		setAttackAnimationInProgress(false);
-		setAttackType(-1); // 1=city, 2=unit
+		setAttackType(-1);
 		setAttackerObjectListId(-1);
 		setDefenderObjectX(-1);
 		setDefenderObjectY(-1);
@@ -113,6 +113,10 @@ class cAnimateAttack extends cAnimate {
 				
 		if ( AttackAnimationInProgress ) { 
 
+			//setAttackAnimationInProgress(false);
+
+			setAttackAnimationInProgress(false);
+
 			if ( getAttackType()==1 ) { // city
 				
 				if (debugAnimateAttack) println("debug: in animate.clear() calling attack city... ");
@@ -129,7 +133,7 @@ class cAnimateAttack extends cAnimate {
 			}
 
 			counter=0;
-			setAttackAnimationInProgress(false);
+			//setAttackAnimationInProgress(false);
 			iAnimateSwitch=0;
 			//oUnitList.updateDisplay(getAttackerObjectListId(), iAnimateSwitch);
 			setAttackType(-1);
@@ -137,8 +141,8 @@ class cAnimateAttack extends cAnimate {
 			setDefenderObjectX(-1);
 			setDefenderObjectY(-1);
 
-			oViewport.draw();
-			if (debugShowPlayer2Viewport) oViewportPlayer2.draw();
+			//oViewport.draw();
+			//if (debugShowPlayer2Viewport) oViewportPlayer2.draw();
 
 		}
 	}
